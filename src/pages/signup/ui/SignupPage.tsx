@@ -1,9 +1,79 @@
 import { useNavigate } from "react-router-dom";
 import Button from "../../../shared/ui/button";
 import Input from "../../../shared/ui/input";
+import { useState } from "react";
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+type EmailCheckStatus = "idle" | "checking" | "available" | "duplicate" | "error";
 
 export default function SignupPage() {
 	const navigate = useNavigate();
+	const [email, setEmail] = useState("");
+	const [emailState, setEmailState] = useState(false);
+	const [emailCheckStatus, setEmailCheckStatus] = useState<EmailCheckStatus>("idle");
+	const [nicknameState, setNicknameState] = useState("");
+	const [password, setPassword] = useState("");
+	const [passwordConfirm, setPasswordConfirm] = useState("");
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [submitError, setSubmitError] = useState<string | null>(null);
+
+	const isNicknameValid = nicknameState.trim().length > 0;
+	const isPasswordMatch = passwordConfirm.length > 0 && passwordConfirm === password;
+	const isFormValid =
+		emailState &&
+		emailCheckStatus === "available" &&
+		isNicknameValid &&
+		password.length >= 8 &&
+		isPasswordMatch;
+
+	const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const value = e.target.value;
+		setEmail(value);
+		setEmailState(EMAIL_REGEX.test(value));
+		// 이메일을 다시 수정하면 이전 중복확인 결과는 무효화
+		setEmailCheckStatus("idle");
+	};
+
+	const handleCheckEmailDuplicate = async () => {
+		if (!emailState || emailCheckStatus === "checking") return;
+
+		setEmailCheckStatus("checking");
+
+		try {
+			// const response = await checkEmailDuplicateApi({ email });
+			// setEmailCheckStatus(response.isDuplicate ? "duplicate" : "available");
+
+			// TODO: 실제 API 연결되면 아래 임시 딜레이는 제거
+			await new Promise((resolve) => setTimeout(resolve, 500));
+			setEmailCheckStatus("available");
+		} catch {
+			setEmailCheckStatus("error");
+		}
+	};
+
+	const handleSignup = async (e: React.SubmitEvent<HTMLFormElement>) => {
+		e.preventDefault();
+
+		if (!isFormValid || isSubmitting) return;
+
+		setIsSubmitting(true);
+		setSubmitError(null);
+
+		try {
+			// const response = await signupApi({
+			// 	email,
+			// 	nickname: nicknameState,
+			// 	password,
+			// });
+
+			navigate("/login", { replace: true });
+		} catch {
+			setSubmitError("회원가입에 실패했어요. 다시 시도해 주세요.");
+		} finally {
+			setIsSubmitting(false);
+		}
+	};
 
 	return (
 		<main className="mx-auto min-h-full w-full max-w-[430px] bg-secondary-50">
@@ -28,7 +98,10 @@ export default function SignupPage() {
 					</h1>
 				</header>
 
-				<form className="flex flex-col gap-4 px-4 pt-5">
+				<form
+					className="flex flex-col gap-4 px-4 pt-5"
+					onSubmit={handleSignup}
+				>
 					<div className="flex flex-col gap-2">
 						<label
 							htmlFor="email"
@@ -36,14 +109,40 @@ export default function SignupPage() {
 						>
 							이메일
 						</label>
-						<Input
-							id="email"
-							name="email"
-							type="email"
-							autoComplete="email"
-							className="bg-gray-50"
-							required
-						/>
+						<div className="flex gap-2">
+							<Input
+								id="email"
+								name="email"
+								type="email"
+								autoComplete="email"
+								className="min-w-0 flex-1 bg-gray-50"
+								value={email}
+								onChange={handleEmailChange}
+								required
+							/>
+							<Button
+								type="button"
+								variant="secondary"
+								className="h-14 shrink-0 px-4"
+								disabled={!emailState || emailCheckStatus === "checking"}
+								onClick={handleCheckEmailDuplicate}
+							>
+								{emailCheckStatus === "checking" ? "확인 중" : "중복확인"}
+							</Button>
+						</div>
+						{emailCheckStatus === "duplicate" && (
+							<p role="alert" className="text-xs text-error-text">
+								이미 사용 중인 이메일이에요.
+							</p>
+						)}
+						{emailCheckStatus === "available" && (
+							<p className="text-xs text-body">사용할 수 있는 이메일이에요.</p>
+						)}
+						{emailCheckStatus === "error" && (
+							<p role="alert" className="text-xs text-error-text">
+								중복확인에 실패했어요. 다시 시도해 주세요.
+							</p>
+						)}
 					</div>
 
 					<div className="flex flex-col gap-2">
@@ -61,6 +160,8 @@ export default function SignupPage() {
 								autoComplete="nickname"
 								aria-describedby="nickname-description"
 								className="min-w-0 flex-1"
+								value={nicknameState}
+								onChange={(e) => setNicknameState(e.target.value)}
 								required
 							/>
 						</div>
@@ -80,6 +181,8 @@ export default function SignupPage() {
 							autoComplete="new-password"
 							minLength={8}
 							required
+							value={password}
+							onChange={(e) => setPassword(e.target.value)}
 						/>
 					</div>
 
@@ -96,67 +199,25 @@ export default function SignupPage() {
 							type="password"
 							autoComplete="new-password"
 							aria-describedby="password-confirm-error"
-							aria-invalid="true"
-							variant="default"
+							aria-invalid={passwordConfirm.length > 0 && !isPasswordMatch}
+							variant={passwordConfirm.length > 0 && !isPasswordMatch ? "error" : "default"}
 							required
+							value={passwordConfirm}
+							onChange={(e) => setPasswordConfirm(e.target.value)}
 						/>
-						{/* 비밀번호 입력 확인 상태에 따라 조건부 렌더링 추가  */}
-						{/* <p
-							id="password-confirm-error"
-							role="alert"
-							className="text-xs text-error-text"
-						>
-							비밀번호가 일치하지 않아요.
-						</p> */}
+						{passwordConfirm.length > 0 &&
+							(isPasswordMatch ? (
+								<p className="text-xs text-body">비밀번호가 일치해요.</p>
+							) : (
+								<p
+									id="password-confirm-error"
+									role="alert"
+									className="text-xs text-error-text"
+								>
+									비밀번호가 일치하지 않아요.
+								</p>
+							))}
 					</div>
-
-					{/* 여기는 로컬에만 저장해서 사용자가 매칭 시도할 때 자동으로 선택해주는 용도  */}
-					<fieldset className="flex flex-wrap gap-2">
-						<legend className="mb-2 text-sm font-bold text-body">
-							선호 대화 수준
-						</legend>
-
-						<label className="cursor-pointer">
-							<input
-								type="radio"
-								name="conversationLevel"
-								value="SILENT"
-								defaultChecked
-								className="peer sr-only"
-							/>
-							<span className="inline-flex h-11 items-center rounded-full border border-border px-5 text-sm font-bold text-body peer-checked:border-primary-400 peer-checked:bg-primary-400 peer-checked:text-title">
-								SILENT
-							</span>
-						</label>
-
-						<label className="cursor-pointer">
-							<input
-								type="radio"
-								name="conversationLevel"
-								value="GREETING_ONLY"
-								className="peer sr-only"
-							/>
-							<span className="inline-flex h-11 items-center rounded-full border border-border px-5 text-sm font-bold text-body peer-checked:border-primary-400 peer-checked:bg-primary-400 peer-checked:text-title">
-								GREETING_ONLY
-							</span>
-						</label>
-
-						<label className="cursor-pointer">
-							<input
-								type="radio"
-								name="conversationLevel"
-								value="LIGHT_CHAT"
-								className="peer sr-only"
-							/>
-							<span className="inline-flex h-11 items-center rounded-full border border-border px-5 text-sm font-bold text-body peer-checked:border-primary-400 peer-checked:bg-primary-400 peer-checked:text-title">
-								LIGHT_CHAT
-							</span>
-						</label>
-
-						<p className="w-full text-xs leading-5 text-body">
-							나중에 마이페이지에서 바꿀 수 있어요.
-						</p>
-					</fieldset>
 
 					{/* <fieldset className="flex flex-col gap-2 text-sm text-body">
 						<legend className="sr-only">약관 동의</legend>
@@ -185,12 +246,18 @@ export default function SignupPage() {
 					</fieldset> */}
 
 					<footer className="-mx-4 mt-2 border-t border-divider p-4">
+						{submitError && (
+							<p role="alert" className="mb-2 text-xs text-error-text">
+								{submitError}
+							</p>
+						)}
 						<Button
 							type="submit"
 							variant="primary"
 							className="h-14 w-full"
+							disabled={!isFormValid || isSubmitting}
 						>
-							가입하기
+							{isSubmitting ? "가입 중..." : "가입하기"}
 						</Button>
 					</footer>
 				</form>

@@ -1,10 +1,28 @@
 import { useNavigate } from "react-router-dom";
 import Button from "../../../shared/ui/button";
 import Input from "../../../shared/ui/input";
+import { useAuth } from "../../../app/provider/AuthProvider";
 
 export default function LoginPage() {
 	const navigate = useNavigate();
+	const { login } = useAuth();
 
+	const handlerLogin = (e: React.SubmitEvent<HTMLFormElement>) => {
+		e.preventDefault();
+
+		const formData = new FormData(e.currentTarget);
+
+		// const response = await loginApi({
+		// 	email: String(formData.get("email")),
+		// 	password: String(formData.get("password")),
+		// });
+
+		// login(response.accessToken);
+
+		login("temporary-access-token");
+
+		navigate("/home", { replace: true });
+	};
 	return (
 		<main className="mx-auto h-full w-full max-w-[430px] bg-secondary-50">
 			{/* <h1 className="">01 로그인 / 회원가입</h1> */}
@@ -14,14 +32,19 @@ export default function LoginPage() {
 					<header className="mb-14 flex flex-col items-center text-center">
 						<h2
 							id="login-title"
-							className="text-3xl font-bold tracking-tight text-title"
+							className="text-5xl font-bold tracking-tight text-title font-jejudoldam"
 						>
 							한뼘
 						</h2>
-						<p className="mt-2 text-base font-medium text-body">필요한 활동만, 조용히 함께</p>
+						<p className="mt-2 text-base font-medium text-body ">
+							필요한 활동만, 조용히 함께
+						</p>
 					</header>
 
-					<form className="flex w-full flex-col items-center gap-5">
+					<form
+						className="flex w-full flex-col items-center gap-5"
+						onSubmit={handlerLogin}
+					>
 						<div className="flex flex-col gap-2  w-full">
 							<label
 								htmlFor="email"

@@ -1,21 +1,35 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Button from "../../../shared/ui/button";
+import Input from "../../../shared/ui/input";
 
 export default function LoginPage() {
-	return (
-		<main>
-			{/* <h1>01 로그인 / 회원가입</h1> */}
+	const navigate = useNavigate();
 
-			<section aria-labelledby="login-title">
-				<div>
-					<header>
-						<h2 id="login-title">한뼘</h2>
-						<p>필요한 활동만, 조용히 함께</p>
+	return (
+		<main className="mx-auto h-full w-full max-w-[430px] bg-secondary-50">
+			{/* <h1 className="">01 로그인 / 회원가입</h1> */}
+
+			<section className="mx-auto flex h-full w-full flex-col bg-surface px-6 py-8">
+				<div className="flex w-full flex-1 flex-col justify-center">
+					<header className="mb-14 flex flex-col items-center text-center">
+						<h2
+							id="login-title"
+							className="text-3xl font-bold tracking-tight text-title"
+						>
+							한뼘
+						</h2>
+						<p className="mt-2 text-base font-medium text-body">필요한 활동만, 조용히 함께</p>
 					</header>
 
-					<form>
-						<div>
-							<label htmlFor="email">이메일</label>
-							<input
+					<form className="flex w-full flex-col items-center gap-5">
+						<div className="flex flex-col gap-2  w-full">
+							<label
+								htmlFor="email"
+								className="text-sm font-bold text-body"
+							>
+								이메일
+							</label>
+							<Input
 								id="email"
 								name="email"
 								type="email"
@@ -25,9 +39,14 @@ export default function LoginPage() {
 							/>
 						</div>
 
-						<div>
-							<label htmlFor="password">비밀번호</label>
-							<input
+						<div className="flex flex-col gap-2  w-full">
+							<label
+								htmlFor="password"
+								className="text-sm font-bold text-body"
+							>
+								비밀번호
+							</label>
+							<Input
 								id="password"
 								name="password"
 								type="password"
@@ -38,25 +57,50 @@ export default function LoginPage() {
 							/>
 						</div>
 
-						<div>
-							<button type="submit">
+						<div className="mt-2 flex w-full flex-col gap-3">
+							<Button
+								type="submit"
+								variant="primary"
+								className="h-14 w-full"
+							>
 								로그인
-							</button>
+							</Button>
 
-							<Link to="/signup">
+							<Button
+								type="button"
+								variant="secondary"
+								onClick={() => navigate("/signup")}
+								className="h-14 w-full"
+							>
 								회원가입
-							</Link>
+							</Button>
 						</div>
 					</form>
 
-					<nav aria-label="로그인 도움말">
-						<a href="/password-reset">비밀번호 찾기</a>
-						<span aria-hidden="true" />
-						<a href="/terms">이용약관</a>
+					<nav
+						aria-label="로그인 도움말"
+						className="flex items-center justify-center gap-5 pt-6 text-sm font-medium text-body"
+					>
+						<a
+							href="/password-reset"
+							className=""
+						>
+							비밀번호 찾기
+						</a>
+						<span
+							aria-hidden="true"
+							className="h-4 w-px bg-gray-300"
+						/>
+						<a
+							href="/terms"
+							className=""
+						>
+							이용약관
+						</a>
 					</nav>
 				</div>
 
-				<p>
+				<p className="mt-auto pt-12 text-center text-xs leading-5 text-body">
 					한뼘은 상대를 직접 고르지 않아요. 조건이 맞으면 랜덤으로
 					연결됩니다.
 				</p>

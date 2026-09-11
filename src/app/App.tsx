@@ -6,7 +6,11 @@ function App() {
 	return (
 		<BrowserRouter>
 			<AuthProvider>
-				<AppRouter />
+				<div className="h-dvh bg-secondary-50">
+					<div className="mx-auto h-full w-full overflow-y-auto bg-secondary-50">
+						<AppRouter />
+					</div>
+				</div>
 			</AuthProvider>
 		</BrowserRouter>
 	);

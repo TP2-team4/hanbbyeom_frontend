@@ -4,14 +4,23 @@ import Input from "../../../shared/ui/input";
 import { useState } from "react";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const TEMP_VERIFICATION_CODE = "123456";
 
-type EmailCheckStatus = "idle" | "checking" | "available" | "duplicate" | "error";
+type EmailVerificationStatus =
+	| "idle"
+	| "requesting"
+	| "sent"
+	| "verified"
+	| "error";
 
 export default function SignupPage() {
 	const navigate = useNavigate();
 	const [email, setEmail] = useState("");
 	const [emailState, setEmailState] = useState(false);
-	const [emailCheckStatus, setEmailCheckStatus] = useState<EmailCheckStatus>("idle");
+	const [emailVerificationStatus, setEmailVerificationStatus] =
+		useState<EmailVerificationStatus>("idle");
+	const [verificationCode, setVerificationCode] = useState("");
+	const [verificationError, setVerificationError] = useState<string | null>(null);
 	const [nicknameState, setNicknameState] = useState("");
 	const [password, setPassword] = useState("");
 	const [passwordConfirm, setPasswordConfirm] = useState("");
@@ -22,7 +31,7 @@ export default function SignupPage() {
 	const isPasswordMatch = passwordConfirm.length > 0 && passwordConfirm === password;
 	const isFormValid =
 		emailState &&
-		emailCheckStatus === "available" &&
+		emailVerificationStatus === "verified" &&
 		isNicknameValid &&
 		password.length >= 8 &&
 		isPasswordMatch;
@@ -31,25 +40,38 @@ export default function SignupPage() {
 		const value = e.target.value;
 		setEmail(value);
 		setEmailState(EMAIL_REGEX.test(value));
-		// 이메일을 다시 수정하면 이전 중복확인 결과는 무효화
-		setEmailCheckStatus("idle");
+		// 이메일을 다시 수정하면 이전 인증 결과는 무효화
+		setEmailVerificationStatus("idle");
+		setVerificationCode("");
+		setVerificationError(null);
 	};
 
-	const handleCheckEmailDuplicate = async () => {
-		if (!emailState || emailCheckStatus === "checking") return;
+	const handleRequestVerificationCode = async () => {
+		if (!emailState || emailVerificationStatus === "requesting") return;
 
-		setEmailCheckStatus("checking");
+		setEmailVerificationStatus("requesting");
+		setVerificationCode("");
+		setVerificationError(null);
 
 		try {
-			// const response = await checkEmailDuplicateApi({ email });
-			// setEmailCheckStatus(response.isDuplicate ? "duplicate" : "available");
+			// await requestEmailVerificationApi({ email });
 
 			// TODO: 실제 API 연결되면 아래 임시 딜레이는 제거
 			await new Promise((resolve) => setTimeout(resolve, 500));
-			setEmailCheckStatus("available");
+			setEmailVerificationStatus("sent");
 		} catch {
-			setEmailCheckStatus("error");
+			setEmailVerificationStatus("error");
 		}
+	};
+
+	const handleVerifyEmail = () => {
+		if (verificationCode === TEMP_VERIFICATION_CODE) {
+			setEmailVerificationStatus("verified");
+			setVerificationError(null);
+			return;
+		}
+
+		setVerificationError("인증번호가 올바르지 않아요.");
 	};
 
 	const handleSignup = async (e: React.SubmitEvent<HTMLFormElement>) => {
@@ -114,6 +136,7 @@ export default function SignupPage() {
 								id="email"
 								name="email"
 								type="email"
+								placeholder="이메일을 입력해 주세요"
 								autoComplete="email"
 								className="min-w-0 flex-1 bg-gray-50"
 								value={email}
@@ -124,23 +147,65 @@ export default function SignupPage() {
 								type="button"
 								variant="secondary"
 								className="h-14 shrink-0 px-4"
-								disabled={!emailState || emailCheckStatus === "checking"}
-								onClick={handleCheckEmailDuplicate}
+								disabled={!emailState || emailVerificationStatus === "requesting"}
+								onClick={handleRequestVerificationCode}
 							>
-								{emailCheckStatus === "checking" ? "확인 중" : "중복확인"}
+								{emailVerificationStatus === "requesting"
+									? "요청 중"
+									: emailVerificationStatus === "sent"
+										? "재요청"
+										: "인증요청"}
 							</Button>
 						</div>
-						{emailCheckStatus === "duplicate" && (
-							<p role="alert" className="text-xs text-error-text">
-								이미 사용 중인 이메일이에요.
+						{(emailVerificationStatus === "sent" ||
+							emailVerificationStatus === "verified") && (
+							<div className="flex gap-2">
+								<Input
+									id="email-verification-code"
+									name="emailVerificationCode"
+									type="text"
+									inputMode="numeric"
+									autoComplete="one-time-code"
+									placeholder="인증번호 6자리"
+									className="min-w-0 flex-1"
+									maxLength={6}
+									value={verificationCode}
+									disabled={emailVerificationStatus === "verified"}
+									onChange={(e) => {
+										setVerificationCode(e.target.value.replace(/\D/g, ""));
+										setVerificationError(null);
+									}}
+								/>
+								<Button
+									type="button"
+									variant="secondary"
+									className="h-14 shrink-0 px-4"
+									disabled={
+										verificationCode.length !== 6 ||
+										emailVerificationStatus === "verified"
+									}
+									onClick={handleVerifyEmail}
+								>
+									{emailVerificationStatus === "verified" ? "인증완료" : "확인"}
+								</Button>
+							</div>
+						)}
+						{emailVerificationStatus === "sent" && !verificationError && (
+							<p className="text-xs text-body">
+								임시 인증번호는 {TEMP_VERIFICATION_CODE}입니다.
 							</p>
 						)}
-						{emailCheckStatus === "available" && (
-							<p className="text-xs text-body">사용할 수 있는 이메일이에요.</p>
+						{emailVerificationStatus === "verified" && (
+							<p className="text-xs text-body">이메일 인증이 완료됐어요.</p>
 						)}
-						{emailCheckStatus === "error" && (
+						{verificationError && (
 							<p role="alert" className="text-xs text-error-text">
-								중복확인에 실패했어요. 다시 시도해 주세요.
+								{verificationError}
+							</p>
+						)}
+						{emailVerificationStatus === "error" && (
+							<p role="alert" className="text-xs text-error-text">
+								인증번호 요청에 실패했어요. 다시 시도해 주세요.
 							</p>
 						)}
 					</div>

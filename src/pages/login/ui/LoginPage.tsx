@@ -10,7 +10,7 @@ export default function LoginPage() {
     const handlerLogin = (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const formData = new FormData(e.currentTarget);
+        // const formData = new FormData(e.currentTarget);
 
         // const response = await loginApi({
         // 	email: String(formData.get("email")),

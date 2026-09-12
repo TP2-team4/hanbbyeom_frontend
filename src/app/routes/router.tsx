@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import HomePage from "../../pages/home/HomePage";
 import LoginPage from "../../pages/login/ui/LoginPage";
+import ConversationPreferencePage from "../../pages/onboarding/conversation-preference/ui/ConversationPreferencePage";
 import PasswordResetPage from "../../pages/password-reset/ui/passwordResetPage";
 import SignupPage from "../../pages/signup/ui/SignupPage";
 import { InitialRedirect } from "./InitialRedirect";
@@ -22,6 +23,10 @@ export function AppRouter() {
 
             {/* 로그인한 사용자만 접근 가능 */}
             <Route element={<ProtectedRoute />}>
+                <Route
+                    path="/onboarding/conversation-preference"
+                    element={<ConversationPreferencePage />}
+                />
                 <Route path="/home" element={<HomePage />} />
             </Route>
 

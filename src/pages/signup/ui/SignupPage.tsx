@@ -1,8 +1,15 @@
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../app/provider/AuthProvider";
 import { SignupForm } from "../../../features/sign-up";
 
 export default function SignupPage() {
     const navigate = useNavigate();
+    const { login } = useAuth();
+
+    const handleSignupSuccess = (accessToken: string) => {
+        login(accessToken);
+        navigate("/onboarding/conversation-preference", { replace: true });
+    };
 
     return (
         <main className="mx-auto min-h-full w-full max-w-[430px] bg-secondary-50">
@@ -26,9 +33,7 @@ export default function SignupPage() {
                         회원가입
                     </h1>
                 </header>
-                <SignupForm
-                    onSuccess={() => navigate("/user/login", { replace: true })}
-                />
+                <SignupForm onSuccess={handleSignupSuccess} />
             </section>
         </main>
     );

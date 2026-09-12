@@ -11,6 +11,7 @@ import {
     isValidNickname,
     isValidPassword,
     NICKNAME_MAX_LENGTH,
+    NICKNAME_MIN_LENGTH,
 } from "../../../shared/lib/validation";
 
 type UseSignupFormOptions = { onSuccess: (accessToken: string) => void };
@@ -62,9 +63,11 @@ export function useSignupForm({ onSuccess }: UseSignupFormOptions) {
     const nicknameError =
         nicknameTouched && nickname.trim().length === 0
             ? "닉네임을 입력해주세요."
-            : nickname.length >= NICKNAME_MAX_LENGTH
-              ? "닉네임은 최대 16자까지 입력할 수 있어요."
-              : null;
+            : nicknameTouched && nickname.trim().length < NICKNAME_MIN_LENGTH
+              ? "닉네임은 2자 이상 입력해주세요."
+              : nickname.length >= NICKNAME_MAX_LENGTH
+                ? "닉네임은 최대 16자까지 입력할 수 있어요."
+                : null;
 
     // 이메일 값을 변경하고 기존에 진행한 이메일 인증 상태를 초기화하는 함수
     const changeEmail = (value: string) => {

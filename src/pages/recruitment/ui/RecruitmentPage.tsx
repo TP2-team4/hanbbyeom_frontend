@@ -17,6 +17,7 @@ export default function RecruitmentPage() {
                 onSelect={(item) => {
                     if (item === "home") navigate("/home");
                     if (item === "chat") navigate("/chats");
+                    if (item === "profile") navigate("/my-page");
                 }}
             />
         </main>

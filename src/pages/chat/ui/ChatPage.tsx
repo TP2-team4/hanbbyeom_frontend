@@ -20,6 +20,7 @@ export default function ChatPage() {
                 onSelect={(item) => {
                     if (item === "home") navigate("/home");
                     if (item === "recruit") navigate("/recruitments");
+                    if (item === "profile") navigate("/my-page");
                 }}
             />
         </main>

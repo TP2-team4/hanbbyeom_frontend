@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import HomePage from "../../pages/home/HomePage";
 import ChatPage from "../../pages/chat/ui/ChatPage";
 import LoginPage from "../../pages/login/ui/LoginPage";
+import MyPage from "../../pages/my-page/ui/MyPage";
 import ConversationPreferencePage from "../../pages/onboarding/conversation-preference/ui/ConversationPreferencePage";
 import PasswordResetPage from "../../pages/password-reset/ui/passwordResetPage";
 import RecruitmentPage from "../../pages/recruitment/ui/RecruitmentPage";
@@ -37,6 +38,7 @@ export function AppRouter() {
                     <Route path="/home" element={<HomePage />} />
                     <Route path="/recruitments" element={<RecruitmentPage />} />
                     <Route path="/chats" element={<ChatPage />} />
+                    <Route path="/my-page" element={<MyPage />} />
                 </Route>
             </Route>
 

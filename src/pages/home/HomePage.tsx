@@ -69,6 +69,7 @@ export default function HomePage() {
                 onSelect={(item) => {
                     if (item === "recruit") navigate("/recruitments");
                     if (item === "chat") navigate("/chats");
+                    if (item === "profile") navigate("/my-page");
                 }}
             />
         </main>

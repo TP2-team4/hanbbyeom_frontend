@@ -2,17 +2,21 @@ import Input from "../../../shared/ui/input";
 
 type Props = {
     password: string;
+    passwordError: string | null;
     passwordConfirm: string;
     isPasswordMatch: boolean;
     onPasswordChange: (value: string) => void;
+    onPasswordBlur: () => void;
     onPasswordConfirmChange: (value: string) => void;
 };
 
 export function PasswordFields({
     password,
+    passwordError,
     passwordConfirm,
     isPasswordMatch,
     onPasswordChange,
+    onPasswordBlur,
     onPasswordConfirmChange,
 }: Props) {
     return (
@@ -28,13 +32,21 @@ export function PasswordFields({
                     id="password"
                     name="password"
                     type="password"
-                    placeholder="8자 이상 입력해주세요."
+                    placeholder="8자 이상 64자 이하로 입력해주세요."
                     autoComplete="new-password"
                     minLength={8}
+                    maxLength={64}
+                    variant={passwordError ? "error" : "default"}
                     required
                     value={password}
                     onChange={(event) => onPasswordChange(event.target.value)}
+                    onBlur={onPasswordBlur}
                 />
+                {passwordError && (
+                    <p role="alert" className="text-xs text-error-text">
+                        {passwordError}
+                    </p>
+                )}
             </div>
             <div className="flex flex-col gap-2">
                 <label

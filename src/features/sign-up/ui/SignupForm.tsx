@@ -19,11 +19,13 @@ export function SignupForm({ onSuccess }: Props) {
             <EmailVerificationField
                 email={form.email}
                 emailIsValid={form.emailIsValid}
+                emailError={form.emailError}
                 status={form.emailVerificationStatus}
                 verificationCode={form.verificationCode}
                 verificationError={form.verificationError}
                 temporaryVerificationCode={form.temporaryVerificationCode}
                 onEmailChange={form.changeEmail}
+                onEmailBlur={form.touchEmail}
                 onVerificationCodeChange={form.changeVerificationCode}
                 onRequest={() => void form.requestVerificationCode()}
                 onVerify={() => void form.confirmVerificationCode()}
@@ -40,20 +42,30 @@ export function SignupForm({ onSuccess }: Props) {
                     id="nickname"
                     name="nickname"
                     type="text"
-                    placeholder="2~10자로 입력해 주세요."
+                    placeholder="최대 16자로 입력해 주세요."
                     autoComplete="nickname"
                     className="min-w-0"
+                    maxLength={16}
+                    variant={form.nicknameError ? "error" : "default"}
                     value={form.nickname}
                     onChange={(event) => form.setNickname(event.target.value)}
+                    onBlur={form.touchNickname}
                     required
                 />
+                {form.nicknameError && (
+                    <p role="alert" className="text-xs text-error-text">
+                        {form.nicknameError}
+                    </p>
+                )}
             </div>
 
             <PasswordFields
                 password={form.password}
+                passwordError={form.passwordError}
                 passwordConfirm={form.passwordConfirm}
                 isPasswordMatch={form.isPasswordMatch}
                 onPasswordChange={form.setPassword}
+                onPasswordBlur={form.touchPassword}
                 onPasswordConfirmChange={form.setPasswordConfirm}
             />
 

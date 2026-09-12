@@ -5,11 +5,13 @@ import type { EmailVerificationStatus } from "../model/types";
 type Props = {
     email: string;
     emailIsValid: boolean;
+    emailError: string | null;
     status: EmailVerificationStatus;
     verificationCode: string;
     verificationError: string | null;
     temporaryVerificationCode: string;
     onEmailChange: (value: string) => void;
+    onEmailBlur: () => void;
     onVerificationCodeChange: (value: string) => void;
     onRequest: () => void;
     onVerify: () => void;
@@ -18,11 +20,13 @@ type Props = {
 export function EmailVerificationField({
     email,
     emailIsValid,
+    emailError,
     status,
     verificationCode,
     verificationError,
     temporaryVerificationCode,
     onEmailChange,
+    onEmailBlur,
     onVerificationCodeChange,
     onRequest,
     onVerify,
@@ -43,8 +47,11 @@ export function EmailVerificationField({
                     placeholder="이메일을 입력해 주세요"
                     autoComplete="email"
                     className="min-w-0 flex-1 bg-gray-50"
+                    maxLength={255}
+                    variant={emailError ? "error" : "default"}
                     value={email}
                     onChange={(event) => onEmailChange(event.target.value)}
+                    onBlur={onEmailBlur}
                     required
                 />
                 <Button
@@ -61,6 +68,11 @@ export function EmailVerificationField({
                           : "인증요청"}
                 </Button>
             </div>
+            {emailError && (
+                <p role="alert" className="text-xs text-error-text">
+                    {emailError}
+                </p>
+            )}
 
             {showsCode && (
                 <div className="flex gap-2">

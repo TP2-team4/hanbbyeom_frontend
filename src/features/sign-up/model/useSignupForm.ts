@@ -8,7 +8,9 @@ import { signup } from "../api/signup";
 import type { EmailVerificationStatus } from "./types";
 import {
     isValidEmail,
+    isValidNickname,
     isValidPassword,
+    NICKNAME_MAX_LENGTH,
 } from "../../../shared/lib/validation";
 
 type UseSignupFormOptions = { onSuccess: (accessToken: string) => void };
@@ -27,6 +29,9 @@ export function useSignupForm({ onSuccess }: UseSignupFormOptions) {
     const [passwordConfirm, setPasswordConfirm] = useState(""); //password 2 input
     const [isSubmitting, setIsSubmitting] = useState(false); //submit state
     const [submitError, setSubmitError] = useState<string | null>(null); //submit error message
+    const [emailTouched, setEmailTouched] = useState(false);
+    const [passwordTouched, setPasswordTouched] = useState(false);
+    const [nicknameTouched, setNicknameTouched] = useState(false);
 
     const emailIsValid = isValidEmail(email);
     const isPasswordMatch =
@@ -34,9 +39,32 @@ export function useSignupForm({ onSuccess }: UseSignupFormOptions) {
     const isFormValid =
         emailIsValid &&
         emailVerificationStatus === "verified" &&
-        nickname.trim().length > 0 &&
+        isValidNickname(nickname) &&
         isValidPassword(password) &&
         isPasswordMatch;
+
+    const emailError = !emailTouched
+        ? null
+        : email.trim().length === 0
+          ? "이메일을 입력해주세요."
+          : !emailIsValid
+            ? "올바른 이메일 형식으로 입력해주세요."
+            : null;
+
+    const passwordError = !passwordTouched
+        ? null
+        : password.length === 0
+          ? "비밀번호를 입력해주세요."
+          : !isValidPassword(password)
+            ? "비밀번호는 8자 이상 입력해주세요."
+            : null;
+
+    const nicknameError =
+        nicknameTouched && nickname.trim().length === 0
+            ? "닉네임을 입력해주세요."
+            : nickname.length >= NICKNAME_MAX_LENGTH
+              ? "닉네임은 최대 16자까지 입력할 수 있어요."
+              : null;
 
     // 이메일 값을 변경하고 기존에 진행한 이메일 인증 상태를 초기화하는 함수
     const changeEmail = (value: string) => {
@@ -45,6 +73,10 @@ export function useSignupForm({ onSuccess }: UseSignupFormOptions) {
         setVerificationCode("");
         setVerificationError(null);
     };
+
+    const touchEmail = () => setEmailTouched(true);
+    const touchPassword = () => setPasswordTouched(true);
+    const touchNickname = () => setNicknameTouched(true);
 
     // 인증번호에서 숫자가 아닌 문자를 제거하고 이전 인증 오류를 초기화하는 함수
     const changeVerificationCode = (value: string) => {
@@ -108,11 +140,14 @@ export function useSignupForm({ onSuccess }: UseSignupFormOptions) {
     return {
         email,
         emailIsValid,
+        emailError,
         emailVerificationStatus,
         verificationCode,
         verificationError,
         nickname,
+        nicknameError,
         password,
+        passwordError,
         passwordConfirm,
         isPasswordMatch,
         isFormValid,
@@ -126,6 +161,9 @@ export function useSignupForm({ onSuccess }: UseSignupFormOptions) {
         setPasswordConfirm,
         requestVerificationCode,
         confirmVerificationCode,
+        touchEmail,
+        touchPassword,
+        touchNickname,
         submit,
     };
 }

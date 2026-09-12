@@ -1,11 +1,12 @@
 export type RecruitmentStatus = "open" | "applied" | "matching";
-export type ConversationStyle = "SILENT" | "GREETING_ONLY" | "LIGHT_CHAT";
+export type ConversationStyle = "SILENT" | "LIGHT_CHAT";
 
 export type Recruitment = {
     id: number;
     location: string;
     distanceKm: number;
     conversationStyle: ConversationStyle;
+    startsAt: string;
     dateLabel: string;
     time: string;
     pace: string;

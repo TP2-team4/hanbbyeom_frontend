@@ -6,9 +6,16 @@ import type {
 } from "../model/types";
 
 const OPTIONS: ConversationPreferenceOption[] = [
-    { value: "SILENT", description: "서로 확인만 하고 활동은 침묵으로 이어가요." },
-    { value: "GREETING_ONLY", description: "인사와 짧은 안부까지는 주고받아요." },
-    { value: "LIGHT_CHAT", description: "가벼운 대화는 괜찮아요." },
+    {
+        value: "SILENT",
+        label: "조용히",
+        description: "인사만 나누고 활동은 조용히 이어가요.",
+    },
+    {
+        value: "LIGHT_CHAT",
+        label: "가벼운 대화",
+        description: "활동 중에도 가벼운 대화를 이어가요.",
+    },
 ];
 
 type Props = {
@@ -102,7 +109,7 @@ function PreferenceOption({
         >
             <span>
                 <strong className="block text-xl font-bold text-title">
-                    {option.value}
+                    {option.label}
                 </strong>
                 <span className="mt-1 block text-sm text-body">
                     {option.description}

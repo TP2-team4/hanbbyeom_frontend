@@ -28,6 +28,7 @@ export function PasswordFields({
                     id="password"
                     name="password"
                     type="password"
+                    placeholder="8자 이상 입력해주세요."
                     autoComplete="new-password"
                     minLength={8}
                     required
@@ -46,6 +47,7 @@ export function PasswordFields({
                     id="password-confirm"
                     name="passwordConfirm"
                     type="password"
+                    placeholder="다시 한번 입력해 주세요."
                     autoComplete="new-password"
                     aria-describedby="password-confirm-error"
                     aria-invalid={

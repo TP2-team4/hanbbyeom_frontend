@@ -4,7 +4,7 @@ import { useSignupForm } from "../model/useSignupForm";
 import { EmailVerificationField } from "./EmailVerificationField";
 import { PasswordFields } from "./PasswordFields";
 
-type Props = { onSuccess: () => void };
+type Props = { onSuccess: (accessToken: string) => void };
 
 export function SignupForm({ onSuccess }: Props) {
     const form = useSignupForm({ onSuccess });
@@ -40,6 +40,7 @@ export function SignupForm({ onSuccess }: Props) {
                     id="nickname"
                     name="nickname"
                     type="text"
+                    placeholder="2~10자로 입력해 주세요."
                     autoComplete="nickname"
                     className="min-w-0"
                     value={form.nickname}

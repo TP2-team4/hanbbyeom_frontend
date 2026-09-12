@@ -6,9 +6,12 @@ import {
 } from "../api/emailVerification";
 import { signup } from "../api/signup";
 import type { EmailVerificationStatus } from "./types";
-import { isValidEmail } from "./validation";
+import {
+    isValidEmail,
+    isValidPassword,
+} from "../../../shared/lib/validation";
 
-type UseSignupFormOptions = { onSuccess: () => void };
+type UseSignupFormOptions = { onSuccess: (accessToken: string) => void };
 
 // 회원가입 폼의 입력값, 유효성 검사, 이메일 인증 및 제출 상태를 관리하는 훅
 export function useSignupForm({ onSuccess }: UseSignupFormOptions) {
@@ -32,7 +35,7 @@ export function useSignupForm({ onSuccess }: UseSignupFormOptions) {
         emailIsValid &&
         emailVerificationStatus === "verified" &&
         nickname.trim().length > 0 &&
-        password.length >= 8 &&
+        isValidPassword(password) &&
         isPasswordMatch;
 
     // 이메일 값을 변경하고 기존에 진행한 이메일 인증 상태를 초기화하는 함수
@@ -93,8 +96,8 @@ export function useSignupForm({ onSuccess }: UseSignupFormOptions) {
         setSubmitError(null);
 
         try {
-            await signup({ email, nickname, password });
-            onSuccess();
+            const response = await signup({ email, nickname, password });
+            onSuccess(response.accessToken);
         } catch {
             setSubmitError("회원가입에 실패했어요. 다시 시도해 주세요.");
         } finally {

@@ -92,7 +92,7 @@ export default function LoginPage() {
                             <Button
                                 type="button"
                                 variant="secondary"
-                                onClick={() => navigate("/signup")}
+                                onClick={() => navigate("/user/signup")}
                                 className="h-14 w-full"
                             >
                                 회원가입
@@ -104,7 +104,7 @@ export default function LoginPage() {
                         aria-label="로그인 도움말"
                         className="flex items-center justify-center gap-5 pt-6 text-sm font-medium text-body"
                     >
-                        <a href="/password-reset" className="">
+                        <a href="/user/password/reset" className="">
                             비밀번호 찾기
                         </a>
                         {/* <span

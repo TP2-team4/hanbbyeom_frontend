@@ -6,7 +6,7 @@ export function InitialRedirect() {
 
 	return (
 		<Navigate
-			to={isAuthenticated ? '/home' : '/login'}
+			to={isAuthenticated ? '/home' : '/user/login'}
 			replace
 		/>
 	);

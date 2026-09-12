@@ -4,10 +4,11 @@ import { SignupForm } from "../../../features/sign-up";
 
 export default function SignupPage() {
     const navigate = useNavigate();
-    const { login } = useAuth();
+    const { login, startOnboarding } = useAuth();
 
     const handleSignupSuccess = (accessToken: string) => {
         login(accessToken);
+        startOnboarding();
         navigate("/onboarding/conversation-preference", { replace: true });
     };
 

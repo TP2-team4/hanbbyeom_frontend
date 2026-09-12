@@ -27,7 +27,7 @@ export default function SignupPage() {
                     </h1>
                 </header>
                 <SignupForm
-                    onSuccess={() => navigate("/login", { replace: true })}
+                    onSuccess={() => navigate("/user/login", { replace: true })}
                 />
             </section>
         </main>

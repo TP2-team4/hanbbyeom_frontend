@@ -41,7 +41,7 @@ export function SignupForm({ onSuccess }: Props) {
                     name="nickname"
                     type="text"
                     autoComplete="nickname"
-                    className="min-w-0 flex-1"
+                    className="min-w-0"
                     value={form.nickname}
                     onChange={(event) => form.setNickname(event.target.value)}
                     required

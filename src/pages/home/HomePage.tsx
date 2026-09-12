@@ -6,8 +6,10 @@ import {
 } from "../../entities/activity";
 import { AppHeader } from "../../widgets/app-header";
 import { BottomNavigation } from "../../widgets/bottom-navigation";
+import { useNavigate } from "react-router-dom";
 
 export default function HomePage() {
+    const navigate = useNavigate();
     const featuredActivity: FeaturedActivity = {
         title: "Silent Run",
         description: "서로 말 없이 페이스만 맞춰 달려요.",
@@ -62,7 +64,12 @@ export default function HomePage() {
                 </section>
             </div>
 
-            <BottomNavigation />
+            <BottomNavigation
+                activeItem="home"
+                onSelect={(item) => {
+                    if (item === "recruit") navigate("/recruitments");
+                }}
+            />
         </main>
     );
 }

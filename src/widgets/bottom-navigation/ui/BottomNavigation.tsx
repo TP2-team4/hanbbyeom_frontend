@@ -1,6 +1,8 @@
+export type NavigationItemId = "home" | "recruit" | "chat" | "profile";
+
 type NavigationItem = {
     label: string;
-    icon: "home" | "recruit" | "chat" | "profile";
+    icon: NavigationItemId;
 };
 
 const ITEMS: NavigationItem[] = [
@@ -10,20 +12,26 @@ const ITEMS: NavigationItem[] = [
     { label: "마이페이지", icon: "profile" },
 ];
 
-export function BottomNavigation() {
+type Props = {
+    activeItem: NavigationItemId;
+    onSelect?: (item: NavigationItemId) => void;
+};
+
+export function BottomNavigation({ activeItem, onSelect }: Props) {
     return (
         <nav
             aria-label="주요 메뉴"
-            className="border-t border-divider bg-surface px-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3"
+            className="sticky bottom-0 z-20 border-t border-divider bg-surface px-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3"
         >
             <ul className="grid grid-cols-4">
                 {ITEMS.map((item) => {
-                    const active = item.icon === "home";
+                    const active = item.icon === activeItem;
                     return (
                         <li key={item.icon}>
                             <button
                                 type="button"
                                 aria-current={active ? "page" : undefined}
+                                onClick={() => onSelect?.(item.icon)}
                                 className={`flex w-full flex-col items-center gap-1 text-xs font-medium ${active ? "text-secondary-400" : "text-gray-500"}`}
                             >
                                 <NavigationIcon

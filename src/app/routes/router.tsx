@@ -3,6 +3,7 @@ import HomePage from "../../pages/home/HomePage";
 import LoginPage from "../../pages/login/ui/LoginPage";
 import ConversationPreferencePage from "../../pages/onboarding/conversation-preference/ui/ConversationPreferencePage";
 import PasswordResetPage from "../../pages/password-reset/ui/passwordResetPage";
+import RecruitmentPage from "../../pages/recruitment/ui/RecruitmentPage";
 import SignupPage from "../../pages/signup/ui/SignupPage";
 import { InitialRedirect } from "./InitialRedirect";
 import { OnboardingRoute } from "./OnboardingRoute";
@@ -33,6 +34,7 @@ export function AppRouter() {
                 </Route>
                 <Route element={<OnboardingRoute required={false} />}>
                     <Route path="/home" element={<HomePage />} />
+                    <Route path="/recruitments" element={<RecruitmentPage />} />
                 </Route>
             </Route>
 

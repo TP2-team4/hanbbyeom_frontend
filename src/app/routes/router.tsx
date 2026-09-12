@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import HomePage from "../../pages/home/HomePage";
+import ChatPage from "../../pages/chat/ui/ChatPage";
 import LoginPage from "../../pages/login/ui/LoginPage";
 import ConversationPreferencePage from "../../pages/onboarding/conversation-preference/ui/ConversationPreferencePage";
 import PasswordResetPage from "../../pages/password-reset/ui/passwordResetPage";
@@ -35,6 +36,7 @@ export function AppRouter() {
                 <Route element={<OnboardingRoute required={false} />}>
                     <Route path="/home" element={<HomePage />} />
                     <Route path="/recruitments" element={<RecruitmentPage />} />
+                    <Route path="/chats" element={<ChatPage />} />
                 </Route>
             </Route>
 

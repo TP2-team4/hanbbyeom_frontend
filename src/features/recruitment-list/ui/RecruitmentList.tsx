@@ -14,7 +14,7 @@ type SortOption = "LATEST" | "DATE" | "DISTANCE";
 
 const FILTER_LABELS = {
     date: { TODAY: "오늘", TOMORROW: "내일", THIS_WEEKEND: "이번 주말" },
-    conversationStyle: { SILENT: "조용히", GREETING_ONLY: "인사만", LIGHT_CHAT: "가벼운 대화" },
+    conversationStyle: { SILENT: "조용히", LIGHT_CHAT: "가벼운 대화" },
 } as const;
 
 export function RecruitmentList() {

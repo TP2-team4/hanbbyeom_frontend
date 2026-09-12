@@ -11,6 +11,11 @@ const STATUS_LABEL: Record<RecruitmentStatus, string> = {
     matching: "매칭 중",
 };
 
+const CONVERSATION_STYLE_LABEL = {
+    SILENT: "조용히",
+    LIGHT_CHAT: "가벼운 대화",
+} as const;
+
 export function RecruitmentCard({ recruitment, onApply }: Props) {
     const canApply = recruitment.status === "open";
 
@@ -21,7 +26,7 @@ export function RecruitmentCard({ recruitment, onApply }: Props) {
                     {recruitment.location} · {recruitment.distanceKm}km
                 </h3>
                 <span className="rounded-full bg-primary-100 px-3 py-1.5 text-xs font-medium text-secondary-400">
-                    {recruitment.conversationStyle}
+                    {CONVERSATION_STYLE_LABEL[recruitment.conversationStyle]}
                 </span>
             </div>
             <p className="mt-3 text-sm text-body">

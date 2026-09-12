@@ -13,7 +13,7 @@ export default function HomePage() {
     const featuredActivity: FeaturedActivity = {
         title: "Silent Run",
         description: "서로 말 없이 페이스만 맞춰 달려요.",
-        tags: ["한강 5개 코스", "1~20km"],
+        tags: ["5개 코스", "1~20km"],
     };
 
     const scheduledActivity: ScheduledActivity = {

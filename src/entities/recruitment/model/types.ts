@@ -6,6 +6,7 @@ export type Recruitment = {
     location: string;
     distanceKm: number;
     conversationStyle: ConversationStyle;
+    startsAt: string;
     dateLabel: string;
     time: string;
     pace: string;

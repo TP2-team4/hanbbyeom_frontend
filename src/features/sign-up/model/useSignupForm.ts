@@ -6,7 +6,10 @@ import {
 } from "../api/emailVerification";
 import { signup } from "../api/signup";
 import type { EmailVerificationStatus } from "./types";
-import { isValidEmail } from "./validation";
+import {
+    isValidEmail,
+    isValidPassword,
+} from "../../../shared/lib/validation";
 
 type UseSignupFormOptions = { onSuccess: () => void };
 
@@ -32,7 +35,7 @@ export function useSignupForm({ onSuccess }: UseSignupFormOptions) {
         emailIsValid &&
         emailVerificationStatus === "verified" &&
         nickname.trim().length > 0 &&
-        password.length >= 8 &&
+        isValidPassword(password) &&
         isPasswordMatch;
 
     // 이메일 값을 변경하고 기존에 진행한 이메일 인증 상태를 초기화하는 함수

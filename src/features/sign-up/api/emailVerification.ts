@@ -1,12 +1,84 @@
 export const TEMP_VERIFICATION_CODE = "123456";
 
-//실제 api 개발 전 임시 모듈 (데이터 가져오는 척)
+// 인증 번호 유효시간 및 재전송 제한 추가
+export const VERIFICATION_CODE_EXPIRY_SECONDS = 5 * 60;
+export const VERIFICATION_RESEND_COOLDOWN_SECONDS = 60;
+export const MAX_VERIFICATION_ATTEMPTS = 5;
+
+type VerificationSession = {
+    code: string;
+    expiresAt: number;
+    resendAvailableAt: number;
+    failedAttempts: number;
+    verified: boolean;
+};
+
+const verificationSessions = new Map<string, VerificationSession>();
+
+export class EmailVerificationError extends Error {}
+
+// 인증 번호 요청 및 재전송 상태 검증 추가
 export async function requestEmailVerification(email: string) {
     await new Promise((resolve) => setTimeout(resolve, 500));
-    return { email, success: true };
+
+    const now = Date.now();
+    const currentSession = verificationSessions.get(email);
+
+    if (currentSession?.verified) {
+        throw new EmailVerificationError("이미 인증이 완료되었습니다");
+    }
+
+    if (currentSession && now < currentSession.resendAvailableAt) {
+        throw new EmailVerificationError("1분 후 다시 요청해주세요");
+    }
+
+    const expiresAt = now + VERIFICATION_CODE_EXPIRY_SECONDS * 1000;
+    const resendAvailableAt = now + VERIFICATION_RESEND_COOLDOWN_SECONDS * 1000;
+
+    // 재전송 시 기존 인증 번호 및 시도 횟수 초기화
+    verificationSessions.set(email, {
+        code: TEMP_VERIFICATION_CODE,
+        expiresAt,
+        resendAvailableAt,
+        failedAttempts: 0,
+        verified: false,
+    });
+
+    return { email, success: true, expiresAt, resendAvailableAt };
 }
 
-export async function verifyEmail(code: string) {
+// 인증 번호 만료 및 최대 입력 시도 검증 추가
+export async function verifyEmail(email: string, code: string) {
     await new Promise((resolve) => setTimeout(resolve, 300));
-    return { verified: code === TEMP_VERIFICATION_CODE };
+
+    const session = verificationSessions.get(email);
+    if (!session) {
+        throw new EmailVerificationError("인증 코드를 먼저 요청해주세요");
+    }
+    if (session.verified) {
+        throw new EmailVerificationError("이미 인증이 완료되었습니다");
+    }
+    if (Date.now() >= session.expiresAt) {
+        throw new EmailVerificationError(
+            "인증 코드가 만료되었습니다. 재전송 버튼을 눌러주세요",
+        );
+    }
+    if (session.failedAttempts >= MAX_VERIFICATION_ATTEMPTS) {
+        throw new EmailVerificationError(
+            "시도 횟수를 초과했습니다. 인증 코드를 재전송해주세요",
+        );
+    }
+
+    if (session.code !== code) {
+        session.failedAttempts += 1;
+        if (session.failedAttempts >= MAX_VERIFICATION_ATTEMPTS) {
+            throw new EmailVerificationError(
+                "시도 횟수를 초과했습니다. 인증 코드를 재전송해주세요",
+            );
+        }
+        throw new EmailVerificationError("인증 코드가 일치하지 않습니다");
+    }
+
+    session.verified = true;
+    return { verified: true };
 }

@@ -23,6 +23,8 @@ export function SignupForm({ onSuccess }: Props) {
                 status={form.emailVerificationStatus}
                 verificationCode={form.verificationCode}
                 verificationError={form.verificationError}
+                verificationExpirySeconds={form.verificationExpirySeconds}
+                resendCooldownSeconds={form.resendCooldownSeconds}
                 temporaryVerificationCode={form.temporaryVerificationCode}
                 onEmailChange={form.changeEmail}
                 onEmailBlur={form.touchEmail}

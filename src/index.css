@@ -89,3 +89,63 @@
 	--font-sans: "Pretendard Variable", system-ui, sans-serif;
 	--font-jejudoldam: "EF_jejudoldam", var(--font-sans);
 }
+
+/* react-datepicker 브랜드 컬러 오버라이드 */
+.react-datepicker-popper {
+	z-index: 40;
+}
+
+.react-datepicker {
+	font-family: var(--font-sans);
+	border-radius: var(--radius-md);
+	border-color: var(--color-border) !important;
+	background-color: var(--color-surface) !important;
+}
+
+.react-datepicker__header {
+	background-color: var(--color-surface) !important;
+	border-bottom-color: var(--color-border) !important;
+}
+
+.react-datepicker-popper .react-datepicker__triangle {
+	stroke: var(--color-border) !important;
+}
+
+.react-datepicker-popper[data-placement^="bottom"] .react-datepicker__triangle,
+.react-datepicker-popper[data-placement^="top"] .react-datepicker__triangle {
+	fill: var(--color-surface) !important;
+	color: var(--color-surface) !important;
+}
+
+.react-datepicker__current-month,
+.react-datepicker-time__header {
+	color: var(--color-title);
+}
+
+.react-datepicker__day-name,
+.react-datepicker__day,
+.react-datepicker__time-name {
+	color: var(--color-body);
+}
+
+.react-datepicker__day--today {
+	font-weight: bold;
+	color: var(--color-action-primary);
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected {
+	background-color: var(--color-action-primary) !important;
+	color: var(--color-title) !important;
+	border-radius: 9999px;
+}
+
+.react-datepicker__day--selected:hover,
+.react-datepicker__day--keyboard-selected:hover {
+	background-color: var(--color-primary-300) !important;
+}
+
+.react-datepicker__time-list-item--selected {
+	background-color: var(--color-action-primary) !important;
+	color: var(--color-title) !important;
+}

@@ -1,13 +1,13 @@
 @import "tailwindcss";
 @import "./shared/assets/fonts/fonts.css";
 
-.filter-range {
+.range-slider-input {
 	pointer-events: none;
 	appearance: none;
 	background: transparent;
 }
 
-.filter-range::-webkit-slider-thumb {
+.range-slider-input::-webkit-slider-thumb {
 	pointer-events: auto;
 	appearance: none;
 	width: 24px;
@@ -18,7 +18,7 @@
 	cursor: pointer;
 }
 
-.filter-range::-moz-range-thumb {
+.range-slider-input::-moz-range-thumb {
 	pointer-events: auto;
 	width: 20px;
 	height: 20px;

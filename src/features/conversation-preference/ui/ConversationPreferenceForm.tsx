@@ -1,9 +1,7 @@
 import Button from "../../../shared/ui/button";
+import { SelectableCard } from "../../../shared/ui/selectable-card";
 import { useConversationPreference } from "../model/useConversationPreference";
-import type {
-    ConversationPreference,
-    ConversationPreferenceOption,
-} from "../model/types";
+import type { ConversationPreferenceOption } from "../model/types";
 
 const OPTIONS: ConversationPreferenceOption[] = [
     {
@@ -51,11 +49,14 @@ export function ConversationPreferenceForm({ onSuccess }: Props) {
                     aria-label="선호 대화 수준"
                 >
                     {OPTIONS.map((option) => (
-                        <PreferenceOption
+                        <SelectableCard
                             key={option.value}
-                            option={option}
+                            label={option.label}
+                            description={option.description}
                             selected={form.selectedPreference === option.value}
-                            onSelect={form.selectPreference}
+                            role="radio"
+                            aria-checked={form.selectedPreference === option.value}
+                            onClick={() => form.selectPreference(option.value)}
                         />
                     ))}
                 </div>
@@ -81,48 +82,5 @@ export function ConversationPreferenceForm({ onSuccess }: Props) {
                 </Button>
             </footer>
         </form>
-    );
-}
-
-type PreferenceOptionProps = {
-    option: ConversationPreferenceOption;
-    selected: boolean;
-    onSelect: (preference: ConversationPreference) => void;
-};
-
-function PreferenceOption({
-    option,
-    selected,
-    onSelect,
-}: PreferenceOptionProps) {
-    return (
-        <button
-            type="button"
-            role="radio"
-            aria-checked={selected}
-            onClick={() => onSelect(option.value)}
-            className={`flex min-h-28 w-full items-center justify-between rounded-lg border px-5 py-4 text-left transition-colors ${
-                selected
-                    ? "border-primary-400 bg-primary-100"
-                    : "border-border bg-surface"
-            }`}
-        >
-            <span>
-                <strong className="block text-xl font-bold text-title">
-                    {option.label}
-                </strong>
-                <span className="mt-1 block text-sm text-body">
-                    {option.description}
-                </span>
-            </span>
-            {selected && (
-                <span
-                    aria-hidden="true"
-                    className="text-3xl leading-none text-secondary-400"
-                >
-                    ✓
-                </span>
-            )}
-        </button>
     );
 }

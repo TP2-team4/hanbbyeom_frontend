@@ -1,4 +1,6 @@
 import Button from "../../../shared/ui/button";
+import { RangeSlider } from "../../../shared/ui/range-slider";
+import { SelectableChip } from "../../../shared/ui/selectable-chip";
 import type {
     DateFilter,
     RecruitmentFilters,
@@ -36,13 +38,13 @@ export function RecruitmentFilterModal({ filters, resultCount, onChange, onReset
 
                 <FilterGroup title="지역">
                     {LOCATIONS.map((location) => (
-                        <FilterChip key={location} label={location} selected={filters.location === location} onClick={() => onChange({ ...filters, location: filters.location === location ? null : location })} />
+                        <SelectableChip key={location} label={location} selected={filters.location === location} onClick={() => onChange({ ...filters, location: filters.location === location ? null : location })} />
                     ))}
                 </FilterGroup>
 
                 <FilterGroup title="날짜">
                     {DATES.map((date) => (
-                        <FilterChip key={date.value} label={date.label} selected={filters.date === date.value} onClick={() => onChange({ ...filters, date: filters.date === date.value ? null : date.value })} />
+                        <SelectableChip key={date.value} label={date.label} selected={filters.date === date.value} onClick={() => onChange({ ...filters, date: filters.date === date.value ? null : date.value })} />
                     ))}
                 </FilterGroup>
 
@@ -53,34 +55,16 @@ export function RecruitmentFilterModal({ filters, resultCount, onChange, onReset
                             {filters.minDistanceKm} ~ {filters.maxDistanceKm}km
                         </strong>
                     </div>
-                    <div className="relative h-6">
-                        <div className="absolute left-0 right-0 top-2.5 h-1.5 rounded-full bg-gray-200" />
-                        <div
-                            className="absolute top-2.5 h-1.5 rounded-full bg-primary-300"
-                            style={{
-                                left: `${((filters.minDistanceKm - 1) / 19) * 100}%`,
-                                right: `${100 - ((filters.maxDistanceKm - 1) / 19) * 100}%`,
-                            }}
-                        />
-                        <input
-                            aria-label="최소 거리"
-                            type="range"
-                            min="1"
-                            max="20"
-                            value={filters.minDistanceKm}
-                            onChange={(event) => onChange({ ...filters, minDistanceKm: Math.min(Number(event.target.value), filters.maxDistanceKm - 1) })}
-                            className="filter-range absolute inset-0 w-full"
-                        />
-                        <input
-                            aria-label="최대 거리"
-                            type="range"
-                            min="1"
-                            max="20"
-                            value={filters.maxDistanceKm}
-                            onChange={(event) => onChange({ ...filters, maxDistanceKm: Math.max(Number(event.target.value), filters.minDistanceKm + 1) })}
-                            className="filter-range absolute inset-0 w-full"
-                        />
-                    </div>
+                    <RangeSlider
+                        min={1}
+                        max={20}
+                        value={[filters.minDistanceKm, filters.maxDistanceKm]}
+                        minAriaLabel="최소 거리"
+                        maxAriaLabel="최대 거리"
+                        onChange={([minDistanceKm, maxDistanceKm]) =>
+                            onChange({ ...filters, minDistanceKm, maxDistanceKm })
+                        }
+                    />
                     <div className="mt-1 flex justify-between text-sm text-body">
                         <span>1km</span><span>20km</span>
                     </div>
@@ -88,7 +72,7 @@ export function RecruitmentFilterModal({ filters, resultCount, onChange, onReset
 
                 <FilterGroup title="대화 수준">
                     {CONVERSATIONS.map((conversation) => (
-                        <FilterChip key={conversation.value} label={conversation.label} selected={filters.conversationStyle === conversation.value} onClick={() => onChange({ ...filters, conversationStyle: filters.conversationStyle === conversation.value ? null : conversation.value })} />
+                        <SelectableChip key={conversation.value} label={conversation.label} selected={filters.conversationStyle === conversation.value} onClick={() => onChange({ ...filters, conversationStyle: filters.conversationStyle === conversation.value ? null : conversation.value })} />
                     ))}
                 </FilterGroup>
 
@@ -107,13 +91,5 @@ function FilterGroup({ title, children }: { title: string; children: React.React
             <legend className="mb-3 text-base font-bold text-body">{title}</legend>
             <div className="flex flex-wrap gap-2">{children}</div>
         </fieldset>
-    );
-}
-
-function FilterChip({ label, selected, onClick }: { label: string; selected: boolean; onClick: () => void }) {
-    return (
-        <button type="button" aria-pressed={selected} onClick={onClick} className={`rounded-full border px-4 py-2 text-sm font-bold ${selected ? "border-primary-400 bg-primary-400 text-title" : "border-border bg-surface text-body"}`}>
-            {label}
-        </button>
     );
 }

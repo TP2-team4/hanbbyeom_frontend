@@ -1,3 +1,2 @@
-export { FeaturedActivityCard } from "./ui/FeaturedActivityCard";
 export { ScheduledActivityCard } from "./ui/ScheduledActivityCard";
-export type { FeaturedActivity, ScheduledActivity } from "./model/types";
+export type { ScheduledActivity } from "./model/types";

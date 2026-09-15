@@ -8,6 +8,7 @@ import PasswordResetPage from "../../pages/password-reset/ui/passwordResetPage";
 import RecruitmentCreatePage from "../../pages/recruitment-create/ui/RecruitmentCreatePage";
 import RecruitmentPage from "../../pages/recruitment/ui/RecruitmentPage";
 import SignupPage from "../../pages/signup/ui/SignupPage";
+import { TabLayout } from "../../widgets/tab-layout";
 import { InitialRedirect } from "./InitialRedirect";
 import { OnboardingRoute } from "./OnboardingRoute";
 import { ProtectedRoute } from "./ProtectedRoute";
@@ -36,10 +37,15 @@ export function AppRouter() {
                     />
                 </Route>
                 <Route element={<OnboardingRoute required={false} />}>
-                    <Route path="/home" element={<HomePage />} />
-                    <Route path="/recruitments" element={<RecruitmentPage />} />
-                    <Route path="/chats" element={<ChatPage />} />
-                    <Route path="/my-page" element={<MyPage />} />
+                    <Route element={<TabLayout />}>
+                        <Route path="/home" element={<HomePage />} />
+                        <Route
+                            path="/recruitments"
+                            element={<RecruitmentPage />}
+                        />
+                        <Route path="/chats" element={<ChatPage />} />
+                        <Route path="/my-page" element={<MyPage />} />
+                    </Route>
                 </Route>
                 <Route
                     path="/recruitments/new"

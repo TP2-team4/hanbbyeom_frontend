@@ -2,7 +2,7 @@ import { http, HttpResponse } from "msw";
 
 export const handlers = [
 	//모집글 작성 - 코스 전체 리스트
-	http.get("/api/courses", () => {
+	http.get("/api/run/courses", () => {
 		return HttpResponse.json([
 			{
 				id: 1,

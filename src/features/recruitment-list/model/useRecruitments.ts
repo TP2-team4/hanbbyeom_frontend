@@ -25,7 +25,13 @@ export function useRecruitments() {
 
     const apply = (id: number) => {
         setRecruitments((current) =>
-            current.map((item) => item.id === id ? { ...item, status: "applied" } : item),
+            current.map((item) => {
+                if (item.id !== id) return item;
+                return {
+                    ...item,
+                    status: item.status === "applied" ? "open" : "applied",
+                };
+            }),
         );
     };
 

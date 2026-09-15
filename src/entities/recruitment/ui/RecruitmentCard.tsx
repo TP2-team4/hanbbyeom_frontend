@@ -9,8 +9,7 @@ type Props = {
 
 const STATUS_LABEL: Record<RecruitmentStatus, string> = {
 	open: "신청",
-	applied: "신청함",
-	matching: "매칭 중",
+	applied: "신청취소",
 };
 
 const CONVERSATION_STYLE_LABEL = {
@@ -19,7 +18,6 @@ const CONVERSATION_STYLE_LABEL = {
 } as const;
 
 export function RecruitmentCard({ recruitment, onApply, onClick }: Props) {
-	const canApply = recruitment.status === "open";
 	const handleCardClick = () => onClick?.(recruitment.id);
 
 	return (
@@ -76,19 +74,17 @@ export function RecruitmentCard({ recruitment, onApply, onClick }: Props) {
 				</p>
 				<Button
 					type="button"
-					disabled={!canApply}
+					variant={
+						recruitment.status === "applied"
+							? "secondary"
+							: "primary"
+					}
 					onClick={(event) => {
 						event.stopPropagation();
 						onApply?.(recruitment.id);
 					}}
 					onKeyDown={(event) => event.stopPropagation()}
-					className={`h-12 shrink-0 rounded-md px-4 text-sm font-bold ${
-						canApply
-							? "bg-action-primary text-title"
-							: recruitment.status === "matching"
-								? "bg-secondary-100 text-secondary-400"
-								: "bg-disabled text-gray-500"
-					}`}
+					className="h-12 shrink-0 rounded-md px-4 text-sm font-bold"
 				>
 					{STATUS_LABEL[recruitment.status]}
 				</Button>

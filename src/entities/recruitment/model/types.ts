@@ -1,4 +1,4 @@
-export type RecruitmentStatus = "open" | "applied" | "matching";
+export type RecruitmentStatus = "open" | "applied";
 export type ConversationStyle = "SILENT" | "LIGHT_CHAT";
 
 export type Recruitment = {

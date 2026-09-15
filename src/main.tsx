@@ -5,7 +5,7 @@ import App from "./app/App";
 
 async function enableMocking() {
 	if (import.meta.env.VITE_ENABLE_MSW !== "true") return;
-	const { worker } = await import("./mocks/brower");
+	const { worker } = await import("./mocks/browser");
 	await worker.start().catch((error) => {
 		console.error("[MSW] 서비스워커 시작 실패:", error);
 	});

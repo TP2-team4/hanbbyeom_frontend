@@ -23,7 +23,7 @@ export function SelectableCard({
 			className={`flex w-full items-center justify-between rounded-lg border-2 px-5 py-4 text-left transition-colors ${
 				selected
 					? "border-primary-400 bg-primary-100"
-					: "border-border bg-surface"
+					: "border-border bg-surface hover:border-primary-300 hover:bg-primary-100"
 			} ${className}`}
 			{...props}
 		>

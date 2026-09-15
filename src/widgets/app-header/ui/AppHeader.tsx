@@ -1,7 +1,13 @@
+import { useNavigate } from "react-router-dom";
+
 export function AppHeader() {
+	const navigate = useNavigate();
 	return (
 		<header className="sticky top-0 z-20 flex h-20 items-center justify-between bg-primary-50 px-6">
-			<h1 className="flex items-center gap-2 font-jejudoldam text-3xl text-secondary-500">
+			<h1
+				className="flex items-center gap-2 font-jejudoldam text-3xl text-secondary-500"
+				onClick={() => navigate("/home", { replace: true })}
+			>
 				<img
 					src="/logo-hb.svg"
 					alt=""

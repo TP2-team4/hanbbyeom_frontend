@@ -21,7 +21,12 @@ export function RecruitmentCard({ recruitment, onApply }: Props) {
 	const canApply = recruitment.status === "open";
 
 	return (
-		<article className="rounded-lg border border-border bg-surface px-5 py-5">
+		<article
+			className="rounded-lg border border-border bg-surface px-5 py-5
+			transition-all duration-200
+  			hover:-translate-y-0.5
+			active:-translate-y-0.5"
+		>
 			<div className="flex flex-wrap items-center gap-2">
 				<h3 className="text-xl font-bold text-title">
 					{recruitment.location} · {recruitment.minDistanceKm}~

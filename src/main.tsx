@@ -6,10 +6,12 @@ import App from "./app/App";
 async function enableMocking() {
 	if (import.meta.env.PROD) return;
 	const { worker } = await import("./mocks/brower");
-	return worker.start();
+	await worker.start().catch((error) => {
+		console.error("[MSW] 서비스워커 시작 실패:", error);
+	});
 }
 
-enableMocking().then(() => {
+enableMocking().finally(() => {
 	createRoot(document.getElementById("root")!).render(
 		<StrictMode>
 			<App />

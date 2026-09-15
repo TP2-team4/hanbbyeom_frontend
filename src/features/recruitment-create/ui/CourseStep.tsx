@@ -57,7 +57,7 @@ export function CourseStep({ form }: Props) {
 							<SelectableCard
 								key={course.id}
 								label={course.name}
-								description={course.description}
+								description={course.routeDescription}
 								selected={form.selectedCourseId === course.id}
 								onClick={() =>
 									form.selectCourse(course.id, course.name)

@@ -164,8 +164,8 @@ function filterRecruitments(
 		if (filters.location && item.location !== filters.location)
 			return false;
 		if (
-			item.distanceKm < filters.minDistanceKm ||
-			item.distanceKm > filters.maxDistanceKm
+			item.maxDistanceKm < filters.minDistanceKm ||
+			item.minDistanceKm > filters.maxDistanceKm
 		)
 			return false;
 		if (
@@ -181,7 +181,11 @@ function filterRecruitments(
 
 function sortRecruitments(recruitments: Recruitment[], sortOption: SortOption) {
 	if (sortOption === "DISTANCE") {
-		return [...recruitments].sort((a, b) => a.distanceKm - b.distanceKm);
+		return [...recruitments].sort(
+			(a, b) =>
+				a.minDistanceKm - b.minDistanceKm ||
+				a.maxDistanceKm - b.maxDistanceKm,
+		);
 	}
 	if (sortOption === "DATE") {
 		return [...recruitments].sort(

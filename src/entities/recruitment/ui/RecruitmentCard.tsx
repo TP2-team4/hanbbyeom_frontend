@@ -24,7 +24,8 @@ export function RecruitmentCard({ recruitment, onApply }: Props) {
 		<article className="rounded-lg border border-border bg-surface px-5 py-5">
 			<div className="flex flex-wrap items-center gap-2">
 				<h3 className="text-xl font-bold text-title">
-					{recruitment.location} · {recruitment.distanceKm}km
+					{recruitment.location} · {recruitment.minDistanceKm}~
+					{recruitment.maxDistanceKm}km
 				</h3>
 				<span className="rounded-full bg-primary-100 px-3 py-1.5 text-xs font-medium text-secondary-400">
 					{CONVERSATION_STYLE_LABEL[recruitment.conversationStyle]}

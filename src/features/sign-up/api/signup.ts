@@ -1,10 +1,19 @@
 export type SignupRequest = {
-    email: string;
-    nickname: string;
-    password: string;
+	email: string;
+	nickname: string;
+	password: string;
 };
 
-export async function signup(_request: SignupRequest) {
-    // TODO: 회원가입 API가 개발되면 실제 요청으로 교체
-    return { success: true, accessToken: "temporary-access-token" };
+export async function signup(request: SignupRequest) {
+	const response = await fetch("/api/auth/signup", {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify(request),
+	});
+
+	if (!response.ok) {
+		throw new Error("회원가입에 실패했어요.");
+	}
+
+	return response.json(); 
 }

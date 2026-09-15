@@ -11,6 +11,8 @@ export type Recruitment = {
 	dateLabel: string;
 	time: string;
 	pace: string;
+	minPaceSeconds: number;
+	maxPaceSeconds: number;
 	authorNickname: string;
 	authorRating: number;
 	authorCompletedCount: number;

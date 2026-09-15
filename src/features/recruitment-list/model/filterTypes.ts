@@ -7,6 +7,8 @@ export type RecruitmentFilters = {
     date: DateFilter | null;
     minDistanceKm: number;
     maxDistanceKm: number;
+    minPaceSeconds: number;
+    maxPaceSeconds: number;
     conversationStyle: ConversationStyle | null;
 };
 
@@ -15,5 +17,7 @@ export const EMPTY_FILTERS: RecruitmentFilters = {
     date: null,
     minDistanceKm: 1,
     maxDistanceKm: 20,
+    minPaceSeconds: 300,
+    maxPaceSeconds: 480,
     conversationStyle: null,
 };

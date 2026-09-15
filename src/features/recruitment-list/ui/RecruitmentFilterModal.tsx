@@ -70,6 +70,29 @@ export function RecruitmentFilterModal({ filters, resultCount, onChange, onReset
                     </div>
                 </fieldset>
 
+				<fieldset className="mt-5">
+					<div className="mb-4 flex items-center justify-between">
+						<legend className="text-base font-bold text-body">페이스</legend>
+						<strong className="text-base text-secondary-400">
+							{formatPace(filters.minPaceSeconds)} ~ {formatPace(filters.maxPaceSeconds)}
+						</strong>
+					</div>
+					<RangeSlider
+						min={300}
+						max={480}
+						step={10}
+						value={[filters.minPaceSeconds, filters.maxPaceSeconds]}
+						minAriaLabel="최소 페이스"
+						maxAriaLabel="최대 페이스"
+						onChange={([minPaceSeconds, maxPaceSeconds]) =>
+							onChange({ ...filters, minPaceSeconds, maxPaceSeconds })
+						}
+					/>
+					<div className="mt-1 flex justify-between text-sm text-body">
+						<span>5'00\"/km</span><span>8'00\"/km</span>
+					</div>
+				</fieldset>
+
                 <FilterGroup title="대화 수준">
                     {CONVERSATIONS.map((conversation) => (
                         <SelectableChip key={conversation.value} label={conversation.label} selected={filters.conversationStyle === conversation.value} onClick={() => onChange({ ...filters, conversationStyle: filters.conversationStyle === conversation.value ? null : conversation.value })} />
@@ -83,6 +106,12 @@ export function RecruitmentFilterModal({ filters, resultCount, onChange, onReset
             </section>
         </div>
     );
+}
+
+function formatPace(totalSeconds: number) {
+	const minutes = Math.floor(totalSeconds / 60);
+	const seconds = String(totalSeconds % 60).padStart(2, "0");
+	return `${minutes}'${seconds}"`;
 }
 
 function FilterGroup({ title, children }: { title: string; children: React.ReactNode }) {

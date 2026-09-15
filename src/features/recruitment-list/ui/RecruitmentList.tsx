@@ -172,6 +172,11 @@ function filterRecruitments(
 		)
 			return false;
 		if (
+			item.maxPaceSeconds < filters.minPaceSeconds ||
+			item.minPaceSeconds > filters.maxPaceSeconds
+		)
+			return false;
+		if (
 			filters.conversationStyle &&
 			item.conversationStyle !== filters.conversationStyle
 		)
@@ -236,6 +241,12 @@ function getActiveFilters(filters: RecruitmentFilters) {
 			label: `${filters.minDistanceKm}~${filters.maxDistanceKm}km`,
 		});
 	}
+	if (filters.minPaceSeconds !== 300 || filters.maxPaceSeconds !== 480) {
+		active.push({
+			key: "minPaceSeconds",
+			label: `${formatPace(filters.minPaceSeconds)}~${formatPace(filters.maxPaceSeconds)}/km`,
+		});
+	}
 	if (filters.conversationStyle)
 		active.push({
 			key: "conversationStyle",
@@ -251,5 +262,14 @@ function clearFilter(
 	if (key === "minDistanceKm" || key === "maxDistanceKm") {
 		return { ...filters, minDistanceKm: 1, maxDistanceKm: 20 };
 	}
+	if (key === "minPaceSeconds" || key === "maxPaceSeconds") {
+		return { ...filters, minPaceSeconds: 300, maxPaceSeconds: 480 };
+	}
 	return { ...filters, [key]: null };
+}
+
+function formatPace(totalSeconds: number) {
+	const minutes = Math.floor(totalSeconds / 60);
+	const seconds = String(totalSeconds % 60).padStart(2, "0");
+	return `${minutes}'${seconds}"`;
 }

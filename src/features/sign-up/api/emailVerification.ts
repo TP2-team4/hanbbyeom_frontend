@@ -58,8 +58,6 @@ export async function requestEmailVerification(email: string) {
 
 // 인증 번호 만료 및 최대 입력 시도 검증 추가
 export async function verifyEmail(email: string, code: string) {
-	await new Promise((resolve) => setTimeout(resolve, 300));
-
 	const session = verificationSessions.get(email);
 	if (!session) {
 		throw new EmailVerificationError("인증 코드를 먼저 요청해주세요");
@@ -78,7 +76,14 @@ export async function verifyEmail(email: string, code: string) {
 		);
 	}
 
-	if (session.code !== code) {
+	// 코드가 실제로 맞는지는 서버만 알 수 있으니 서버에 확인 요청
+	const response = await fetch("/api/auth/email-verifications/confirm", {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify({ email, purpose: "SIGNUP", code }),
+	});
+
+	if (!response.ok) {
 		session.failedAttempts += 1;
 		if (session.failedAttempts >= MAX_VERIFICATION_ATTEMPTS) {
 			throw new EmailVerificationError(

@@ -47,4 +47,13 @@ export const handlers = [
 	}),
 
 	//회원 가입 - 회원 가입 요청
+	http.post("/api/auth/signup", async ({ request }) => {
+		const body = await request.json();
+		console.log("클라이언트가 보낸 데이터 : ", body);
+		return HttpResponse.json({
+			id: 1,
+			email: "user@example.com",
+			nickname: "닉네임 결과",
+		});
+	}),
 ];

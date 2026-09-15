@@ -11,9 +11,11 @@ type Props = {
 };
 
 export function ConversationStep({ form }: Props) {
-
 	const summaryRows = [
-		{ label: "코스", value: `${form.selectedCourseName} · ${form.meetingPlace}` },
+		{
+			label: "코스",
+			value: `${form.selectedCourseName} · ${form.meetingPlace}`,
+		},
 		{
 			label: "거리",
 			value: `${form.minDistanceKm}~${form.maxDistanceKm}km`,
@@ -62,10 +64,10 @@ export function ConversationStep({ form }: Props) {
 				</div>
 			</fieldset>
 
-			<fieldset className="mt-7 flex flex-col rounded-lg bg-gray-50 px-4 py-4">
-				<legend className="px-1 text-base font-bold text-title">
+			<section className="mt-7 flex flex-col rounded-lg bg-gray-50 px-4 py-4">
+				<h3 className="px-1 text-base font-bold text-title">
 					입력한 조건
-				</legend>
+				</h3>
 				<div className="mt-2 flex flex-col gap-2">
 					{summaryRows.map((row) => (
 						<div
@@ -79,7 +81,7 @@ export function ConversationStep({ form }: Props) {
 						</div>
 					))}
 				</div>
-			</fieldset>
+			</section>
 		</div>
 	);
 }

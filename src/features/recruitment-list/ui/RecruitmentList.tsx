@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
 	RecruitmentCard,
 	type Recruitment,
@@ -22,6 +23,7 @@ const FILTER_LABELS = {
 } as const;
 
 export function RecruitmentList() {
+	const navigate = useNavigate();
 	const { recruitments, isLoading, error, apply } = useRecruitments();
 	const [filters, setFilters] = useState<RecruitmentFilters>(EMPTY_FILTERS);
 	const [draftFilters, setDraftFilters] =
@@ -135,6 +137,7 @@ export function RecruitmentList() {
 						key={recruitment.id}
 						recruitment={recruitment}
 						onApply={apply}
+						onClick={(id) => navigate(`/recruitments/${id}`)}
 					/>
 				))}
 			</div>

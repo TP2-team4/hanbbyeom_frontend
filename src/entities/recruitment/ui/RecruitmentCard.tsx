@@ -4,6 +4,7 @@ import type { Recruitment, RecruitmentStatus } from "../model/types";
 type Props = {
 	recruitment: Recruitment;
 	onApply?: (id: number) => void;
+	onClick?: (id: number) => void;
 };
 
 const STATUS_LABEL: Record<RecruitmentStatus, string> = {
@@ -17,15 +18,26 @@ const CONVERSATION_STYLE_LABEL = {
 	LIGHT_CHAT: "가벼운 대화",
 } as const;
 
-export function RecruitmentCard({ recruitment, onApply }: Props) {
+export function RecruitmentCard({ recruitment, onApply, onClick }: Props) {
 	const canApply = recruitment.status === "open";
+	const handleCardClick = () => onClick?.(recruitment.id);
 
 	return (
 		<article
-			className="rounded-lg border border-border bg-surface px-5 py-5
+			className={`rounded-lg border border-border bg-surface px-5 py-5
 			transition-all duration-200
   			hover:-translate-y-0.5
-			active:-translate-y-0.5"
+			active:-translate-y-0.5
+			${onClick ? "cursor-pointer focus-visible:outline-2 focus-visible:outline-primary-400" : ""}`}
+			onClick={handleCardClick}
+			onKeyDown={(event) => {
+				if (onClick && (event.key === "Enter" || event.key === " ")) {
+					event.preventDefault();
+					handleCardClick();
+				}
+			}}
+			role={onClick ? "link" : undefined}
+			tabIndex={onClick ? 0 : undefined}
 		>
 			<div className="flex flex-wrap items-center gap-2">
 				<h3 className="text-xl font-bold text-title">
@@ -65,7 +77,11 @@ export function RecruitmentCard({ recruitment, onApply }: Props) {
 				<Button
 					type="button"
 					disabled={!canApply}
-					onClick={() => onApply?.(recruitment.id)}
+					onClick={(event) => {
+						event.stopPropagation();
+						onApply?.(recruitment.id);
+					}}
+					onKeyDown={(event) => event.stopPropagation()}
 					className={`h-12 shrink-0 rounded-md px-4 text-sm font-bold ${
 						canApply
 							? "bg-action-primary text-title"

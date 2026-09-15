@@ -1,2 +1,4 @@
 export { RecruitmentCard } from "./ui/RecruitmentCard";
-export type { ConversationStyle, Recruitment, RecruitmentStatus } from "./model/types";
+export { RecruitmentInfoCard } from "./ui/RecruitmentInfoCard";
+export { getRecruitmentDetail } from "./api/getRecruitmentDetail";
+export type { ConversationStyle, Recruitment, RecruitmentDetail, RecruitmentStatus } from "./model/types";

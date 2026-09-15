@@ -1,2 +1,4 @@
 export { ProfileSummaryCard } from "./ui/ProfileSummaryCard";
-export type { UserProfile } from "./model/types";
+export { RecruitmentAuthorCard } from "./ui/RecruitmentAuthorCard";
+export { getRecruitmentAuthorProfile } from "./api/getRecruitmentAuthorProfile";
+export type { RecruitmentAuthorProfile, UserProfile } from "./model/types";

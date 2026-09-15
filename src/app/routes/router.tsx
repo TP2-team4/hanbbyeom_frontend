@@ -6,6 +6,7 @@ import MyPage from "../../pages/my-page/ui/MyPage";
 import ConversationPreferencePage from "../../pages/onboarding/conversation-preference/ui/ConversationPreferencePage";
 import PasswordResetPage from "../../pages/password-reset/ui/passwordResetPage";
 import RecruitmentCreatePage from "../../pages/recruitment-create/ui/RecruitmentCreatePage";
+import RecruitmentDetailPage from "../../pages/recruitment-detail/ui/RecruitmentDetailPage";
 import RecruitmentPage from "../../pages/recruitment/ui/RecruitmentPage";
 import SignupPage from "../../pages/signup/ui/SignupPage";
 import { TabLayout } from "../../widgets/tab-layout";
@@ -50,6 +51,10 @@ export function AppRouter() {
                 <Route
                     path="/recruitments/new"
                     element={<RecruitmentCreatePage />}
+                />
+                <Route
+                    path="/recruitments/:recruitmentId"
+                    element={<RecruitmentDetailPage />}
                 />
             </Route>
 

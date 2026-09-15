@@ -1,15 +1,21 @@
+import chatIcon from "../../../shared/assets/images/navi/chat.svg";
+import homeIcon from "../../../shared/assets/images/navi/home.svg";
+import profileIcon from "../../../shared/assets/images/navi/person.svg";
+import recruitIcon from "../../../shared/assets/images/navi/recruitment.svg";
+
 export type NavigationItemId = "home" | "recruit" | "chat" | "profile";
 
 type NavigationItem = {
 	label: string;
-	icon: NavigationItemId;
+	id: NavigationItemId;
+	icon: string;
 };
 
 const ITEMS: NavigationItem[] = [
-	{ label: "홈", icon: "home" },
-	{ label: "모집", icon: "recruit" },
-	{ label: "채팅", icon: "chat" },
-	{ label: "마이페이지", icon: "profile" },
+	{ id: "home", label: "홈", icon: homeIcon },
+	{ id: "recruit", label: "모집", icon: recruitIcon },
+	{ id: "chat", label: "채팅", icon: chatIcon },
+	{ id: "profile", label: "마이페이지", icon: profileIcon },
 ];
 
 type Props = {
@@ -25,17 +31,17 @@ export function BottomNavigation({ activeItem, onSelect }: Props) {
 		>
 			<ul className="grid grid-cols-4">
 				{ITEMS.map((item) => {
-					const active = item.icon === activeItem;
+					const active = item.id === activeItem;
 					return (
-						<li key={item.icon}>
+						<li key={item.id}>
 							<button
 								type="button"
 								aria-current={active ? "page" : undefined}
-								onClick={() => onSelect?.(item.icon)}
+								onClick={() => onSelect?.(item.id)}
 								className={`flex w-full flex-col items-center gap-1 text-xs font-medium ${active ? "text-secondary-500" : "text-gray-500"}`}
 							>
 								<NavigationIcon
-									type={item.icon}
+									src={item.icon}
 									active={active}
 								/>
 								{item.label}
@@ -48,73 +54,21 @@ export function BottomNavigation({ activeItem, onSelect }: Props) {
 	);
 }
 
-function NavigationIcon({
-	type,
-	active,
-}: {
-	type: NavigationItem["icon"];
-	active: boolean;
-}) {
-	const className = `size-7 ${active ? "fill-primary-400 stroke-primary-400" : "fill-none stroke-gray-400"}`;
-
-	if (type === "home") {
-		return (
-			<svg
-				aria-hidden="true"
-				viewBox="0 0 24 24"
-				className={className}
-				strokeWidth="1.8"
-			>
-				<path
-					d="m3.5 10 8.5-7 8.5 7v10H15v-6H9v6H3.5Z"
-					strokeLinejoin="round"
-				/>
-			</svg>
-		);
-	}
-	if (type === "recruit") {
-		return (
-			<svg
-				aria-hidden="true"
-				viewBox="0 0 24 24"
-				className={className}
-				strokeWidth="1.8"
-			>
-				<path
-					d="M6 21V3m0 2h11l-2 3 2 3H6"
-					strokeLinejoin="round"
-				/>
-			</svg>
-		);
-	}
-	if (type === "chat") {
-		return (
-			<svg
-				aria-hidden="true"
-				viewBox="0 0 24 24"
-				className={className}
-				strokeWidth="1.8"
-			>
-				<path
-					d="M4 5.5h16v11H9l-5 4Z"
-					strokeLinejoin="round"
-				/>
-			</svg>
-		);
-	}
+function NavigationIcon({ src, active }: { src: string; active: boolean }) {
 	return (
-		<svg
+		<span
 			aria-hidden="true"
-			viewBox="0 0 24 24"
-			className={className}
-			strokeWidth="1.8"
-		>
-			<circle
-				cx="12"
-				cy="7"
-				r="3"
-			/>
-			<path d="M5 21c.5-4.5 2.8-6.5 7-6.5s6.5 2 7 6.5" />
-		</svg>
+			className={`block size-7 ${active ? "bg-action-primary" : "bg-gray-400"}`}
+			style={{
+				WebkitMaskImage: `url("${src}")`,
+				maskImage: `url("${src}")`,
+				WebkitMaskRepeat: "no-repeat",
+				maskRepeat: "no-repeat",
+				WebkitMaskSize: "contain",
+				maskSize: "contain",
+				WebkitMaskPosition: "center",
+				maskPosition: "center",
+			}}
+		/>
 	);
 }

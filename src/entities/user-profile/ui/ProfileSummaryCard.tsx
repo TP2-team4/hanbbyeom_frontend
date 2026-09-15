@@ -9,11 +9,8 @@ export function ProfileSummaryCard({ profile, onEdit }: Props) {
     return (
         <section className="rounded-lg border border-border bg-surface p-6" aria-labelledby="profile-nickname">
             <div className="flex items-center gap-4">
-                <span aria-hidden="true" className="grid size-16 shrink-0 place-items-center rounded-full bg-primary-100 text-secondary-300">
-                    <svg viewBox="0 0 24 24" className="size-8 fill-current">
-                        <circle cx="12" cy="8" r="3" />
-                        <path d="M6 20c.4-4.2 2.4-6 6-6s5.6 1.8 6 6Z" />
-                    </svg>
+                <span aria-hidden="true" className="grid size-16 shrink-0 place-items-center rounded-full bg-primary-100">
+                    <img src="/logo-hb.svg" alt="" className="size-10 object-contain" />
                 </span>
                 <div className="min-w-0 flex-1">
                     <h2 id="profile-nickname" className="truncate text-2xl font-bold text-title">{profile.nickname}</h2>

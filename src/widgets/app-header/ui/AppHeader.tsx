@@ -5,7 +5,9 @@ export function AppHeader() {
 				<img
 					src="/logo-hb.svg"
 					alt=""
-					className="h-8 w-auto mr-2"
+					width={32}
+					height={32}
+					className="h-8 w-8 mr-2"
 				/>
 				한뼘
 			</h1>

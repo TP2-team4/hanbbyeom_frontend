@@ -15,53 +15,87 @@ import { InitialRedirect } from "./InitialRedirect";
 import { OnboardingRoute } from "./OnboardingRoute";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { PublicOnlyRoute } from "./PublicOnlyRoute";
+import MyRecruitmentDetailPage from "../../pages/my-recruitment-detail/ui/MyRecruitmentDetailPage";
 
 export function AppRouter() {
-    return (
-        <Routes>
-            {/* 접속 시 로그인 여부에 따라 첫 페이지 결정 */}
-            <Route path="/" element={<InitialRedirect />} />
-            <Route element={<PublicOnlyRoute />}>
-                <Route path="/user/login" element={<LoginPage />} />
-                <Route
-                    path="/user/password/reset"
-                    element={<PasswordResetPage />}
-                />
-                <Route path="/user/signup" element={<SignupPage />} />
-            </Route>
+	return (
+		<Routes>
+			{/* 접속 시 로그인 여부에 따라 첫 페이지 결정 */}
+			<Route
+				path="/"
+				element={<InitialRedirect />}
+			/>
+			<Route element={<PublicOnlyRoute />}>
+				<Route
+					path="/user/login"
+					element={<LoginPage />}
+				/>
+				<Route
+					path="/user/password/reset"
+					element={<PasswordResetPage />}
+				/>
+				<Route
+					path="/user/signup"
+					element={<SignupPage />}
+				/>
+			</Route>
 
-            {/* 로그인한 사용자만 접근 가능 */}
-            <Route element={<ProtectedRoute />}>
-                <Route element={<OnboardingRoute required />}>
-                    <Route
-                        path="/onboarding/conversation-preference"
-                        element={<ConversationPreferencePage />}
-                    />
-                </Route>
-                <Route element={<OnboardingRoute required={false} />}>
-                    <Route element={<TabLayout />}>
-                        <Route path="/home" element={<HomePage />} />
-                        <Route
-                            path="/recruitments"
-                            element={<RecruitmentPage />}
-                        />
-                        <Route path="/chats" element={<ChatPage />} />
-                        <Route path="/my-page" element={<MyPage />} />
-                    </Route>
-                </Route>
-                <Route path="/activities" element={<ActivityPage />} />
-                <Route
-                    path="/recruitments/new"
-                    element={<RecruitmentCreatePage />}
-                />
-                <Route
-                    path="/recruitments/:recruitmentId"
-                    element={<RecruitmentDetailPage />}
-                />
-            </Route>
+			{/* 로그인한 사용자만 접근 가능 */}
+			<Route element={<ProtectedRoute />}>
+				<Route element={<OnboardingRoute required />}>
+					<Route
+						path="/onboarding/conversation-preference"
+						element={<ConversationPreferencePage />}
+					/>
+				</Route>
+				<Route element={<OnboardingRoute required={false} />}>
+					<Route element={<TabLayout />}>
+						<Route
+							path="/home"
+							element={<HomePage />}
+						/>
+						<Route
+							path="/recruitments"
+							element={<RecruitmentPage />}
+						/>
+						<Route
+							path="/chats"
+							element={<ChatPage />}
+						/>
+						<Route
+							path="/my-page"
+							element={<MyPage />}
+						/>
+					</Route>
+				</Route>
+				<Route
+					path="/activities"
+					element={<ActivityPage />}
+				/>
+				<Route
+					path="/recruitments/new"
+					element={<RecruitmentCreatePage />}
+				/>
+				<Route
+					path="/recruitments/:recruitmentId"
+					element={<RecruitmentDetailPage />}
+				/>
+				<Route
+					path="/recruitments/:recruitmentId/applicants"
+					element={<MyRecruitmentDetailPage />}
+				/>
+			</Route>
 
-            {/* 존재 하지 않는 경로 이동 시 홈으로 보내기 */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-    );
+			{/* 존재 하지 않는 경로 이동 시 홈으로 보내기 */}
+			<Route
+				path="*"
+				element={
+					<Navigate
+						to="/"
+						replace
+					/>
+				}
+			/>
+		</Routes>
+	);
 }

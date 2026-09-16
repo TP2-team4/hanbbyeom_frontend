@@ -55,4 +55,14 @@ export type RecruitmentDetail = {
 	pace: string;
 	meetingPlace: string;
 	status: RecruitmentStatus;
+	applicantCount: number;
+};
+
+export type Applicant = {
+	id: number;
+	nickname: string;
+	conversationStyle: string;
+	averageRating: number;
+	completedActivityCount: number;
+	noShowReportCount: number;
 };

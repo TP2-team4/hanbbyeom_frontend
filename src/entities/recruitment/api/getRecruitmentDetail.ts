@@ -14,6 +14,7 @@ const MOCK_RECRUITMENT_DETAILS: RecruitmentDetail[] = [
 		pace: "6'00\" ~ 6'40\"",
 		meetingPlace: "뚝섬유원지역 3번 출구",
 		status: "open",
+		applicantCount: 3,
 	},
 	{
 		id: 2,
@@ -27,6 +28,7 @@ const MOCK_RECRUITMENT_DETAILS: RecruitmentDetail[] = [
 		pace: "5'40\" ~ 6'10\"",
 		meetingPlace: "여의나루역 2번 출구",
 		status: "open",
+		applicantCount: 0,
 	},
 	{
 		id: 3,
@@ -40,6 +42,7 @@ const MOCK_RECRUITMENT_DETAILS: RecruitmentDetail[] = [
 		pace: "6'30\" ~ 7'00\"",
 		meetingPlace: "고속터미널역 8-1번 출구",
 		status: "applied",
+		applicantCount: 1,
 	},
 ];
 

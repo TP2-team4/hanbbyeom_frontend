@@ -59,7 +59,7 @@ export function MyRecruitmentList() {
 									: "대기 중"
 							}
 							badgeTone={r.applicantCount > 0 ? "green" : "gray"}
-							onClick={() => navigate(`/recruitments/${r.id}`)}
+							onClick={() => navigate(`/recruitments/${r.id}/applicants`)}
 						/>
 					))}
 			</div>

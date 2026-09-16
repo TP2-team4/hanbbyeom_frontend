@@ -8,6 +8,7 @@ import { useRecruitments } from "../model/useRecruitments";
 import { EMPTY_FILTERS, type RecruitmentFilters } from "../model/filterTypes";
 import { RecruitmentFilterModal } from "./RecruitmentFilterModal";
 import { Dropdown } from "../../../shared/ui/dropdown";
+import Button from "../../../shared/ui/button";
 
 type SortOption = "LATEST" | "DATE" | "DISTANCE";
 
@@ -24,12 +25,15 @@ const FILTER_LABELS = {
 
 export function RecruitmentList() {
 	const navigate = useNavigate();
-	const { recruitments, isLoading, error, apply } = useRecruitments();
+	const { recruitments, isLoading, error, processingId, actionError, apply } =
+		useRecruitments();
 	const [filters, setFilters] = useState<RecruitmentFilters>(EMPTY_FILTERS);
 	const [draftFilters, setDraftFilters] =
 		useState<RecruitmentFilters>(EMPTY_FILTERS);
 	const [sortOption, setSortOption] = useState<SortOption>("LATEST");
 	const [isFilterOpen, setIsFilterOpen] = useState(false);
+	const [pendingId, setPendingId] = useState<number | null>(null);
+	const pendingRecruitment = recruitments.find((item) => item.id === pendingId);
 
 	const filteredRecruitments = useMemo(() => {
 		return sortRecruitments(
@@ -127,6 +131,11 @@ export function RecruitmentList() {
 						{error}
 					</p>
 				)}
+				{actionError && (
+					<p role="alert" className="text-sm text-error-text">
+						{actionError}
+					</p>
+				)}
 				{!isLoading && !error && filteredRecruitments.length === 0 && (
 					<p className="py-10 text-center text-sm text-body">
 						조건에 맞는 모집글이 없어요.
@@ -136,8 +145,9 @@ export function RecruitmentList() {
 					<RecruitmentCard
 						key={recruitment.id}
 						recruitment={recruitment}
-						onApply={apply}
+						onApply={setPendingId}
 						onClick={(id) => navigate(`/recruitments/${id}`)}
+						isProcessing={processingId === recruitment.id}
 					/>
 				))}
 			</div>
@@ -154,6 +164,52 @@ export function RecruitmentList() {
 						setIsFilterOpen(false);
 					}}
 				/>
+			)}
+
+			{pendingRecruitment && (
+				<div
+					className="fixed inset-0 z-50 grid place-items-center bg-gray-900/40 px-4"
+					role="presentation"
+				>
+					<section
+						role="dialog"
+						aria-modal="true"
+						aria-labelledby="recruitment-apply-confirm-title"
+						className="w-full max-w-[360px] rounded-2xl bg-surface p-6 shadow-xl"
+					>
+						<p id="recruitment-apply-confirm-title" className="text-base font-bold text-title">
+							{pendingRecruitment.status === "applied"
+								? "신청을 취소할까요?"
+								: "이 모집에 신청할까요?"}
+						</p>
+						<p className="mt-2 text-sm text-body">
+							{pendingRecruitment.status === "applied"
+								? "취소한 후에도 모집 중이라면 다시 신청할 수 있어요."
+								: "작성자가 수락하면 활동이 최종 확정돼요."}
+						</p>
+						<div className="mt-6 flex gap-2">
+							<Button
+								type="button"
+								variant="secondary"
+								className="h-12 flex-1 text-sm"
+								onClick={() => setPendingId(null)}
+							>
+								{pendingRecruitment.status === "applied" ? "계속 기다리기" : "취소"}
+							</Button>
+							<Button
+								type="button"
+								variant="primary"
+								className="h-12 flex-1 text-sm"
+								onClick={async () => {
+									await apply(pendingRecruitment.id);
+									setPendingId(null);
+								}}
+							>
+								{pendingRecruitment.status === "applied" ? "신청 취소" : "신청"}
+							</Button>
+						</div>
+					</section>
+				</div>
 			)}
 		</>
 	);

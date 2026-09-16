@@ -5,6 +5,7 @@ type Props = {
 	recruitment: Recruitment;
 	onApply?: (id: number) => void;
 	onClick?: (id: number) => void;
+	isProcessing?: boolean;
 };
 
 const STATUS_LABEL: Record<RecruitmentStatus, string> = {
@@ -17,7 +18,12 @@ const CONVERSATION_STYLE_LABEL = {
 	LIGHT_CHAT: "가벼운 대화",
 } as const;
 
-export function RecruitmentCard({ recruitment, onApply, onClick }: Props) {
+export function RecruitmentCard({
+	recruitment,
+	onApply,
+	onClick,
+	isProcessing,
+}: Props) {
 	const handleCardClick = () => onClick?.(recruitment.id);
 
 	return (
@@ -79,6 +85,7 @@ export function RecruitmentCard({ recruitment, onApply, onClick }: Props) {
 							? "secondary"
 							: "primary"
 					}
+					disabled={isProcessing}
 					onClick={(event) => {
 						event.stopPropagation();
 						onApply?.(recruitment.id);
@@ -86,7 +93,7 @@ export function RecruitmentCard({ recruitment, onApply, onClick }: Props) {
 					onKeyDown={(event) => event.stopPropagation()}
 					className="h-12 shrink-0 rounded-md px-4 text-sm font-bold"
 				>
-					{STATUS_LABEL[recruitment.status]}
+					{isProcessing ? "처리 중…" : STATUS_LABEL[recruitment.status]}
 				</Button>
 			</div>
 		</article>

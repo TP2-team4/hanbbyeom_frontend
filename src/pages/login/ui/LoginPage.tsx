@@ -1,27 +1,36 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../../shared/ui/button";
 import Input from "../../../shared/ui/input";
 import { useAuth } from "../../../app/provider/AuthProvider";
+import { requestLogin } from "../../../features/login";
 
 export default function LoginPage() {
     const navigate = useNavigate();
     const { login } = useAuth();
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    const handlerLogin = (e: React.SubmitEvent<HTMLFormElement>) => {
+    const handlerLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        if (isSubmitting) return;
 
-        // const formData = new FormData(e.currentTarget);
+        const formData = new FormData(e.currentTarget);
+        setIsSubmitting(true);
+        setError(null);
 
-        // const response = await loginApi({
-        // 	email: String(formData.get("email")),
-        // 	password: String(formData.get("password")),
-        // });
-
-        // login(response.accessToken);
-
-        login("temporary-access-token");
-
-        navigate("/home", { replace: true });
+        try {
+            const response = await requestLogin({
+                email: String(formData.get("email")),
+                password: String(formData.get("password")),
+            });
+            login(response.accessToken);
+            navigate("/home", { replace: true });
+        } catch {
+            setError("이메일 또는 비밀번호가 일치하지 않아요.");
+        } finally {
+            setIsSubmitting(false);
+        }
     };
     return (
         <main className="mx-auto h-full w-full max-w-[430px] bg-secondary-50">
@@ -80,13 +89,20 @@ export default function LoginPage() {
                             />
                         </div>
 
+                        {error && (
+                            <p role="alert" className="w-full text-sm text-error-text">
+                                {error}
+                            </p>
+                        )}
+
                         <div className="mt-2 flex w-full flex-col gap-3">
                             <Button
                                 type="submit"
                                 variant="primary"
+                                disabled={isSubmitting}
                                 className="h-14 w-full"
                             >
-                                로그인
+                                {isSubmitting ? "로그인 중…" : "로그인"}
                             </Button>
 
                             <Button

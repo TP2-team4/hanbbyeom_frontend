@@ -57,6 +57,15 @@ export const handlers = [
 		});
 	}),
 
+	//로그인
+	http.post("/api/auth/login", async ({ request }) => {
+		const body = await request.json();
+		console.log("클라이언트가 보낸 데이터 : ", body);
+		return HttpResponse.json({
+			accessToken: "mock-access-token",
+		});
+	}),
+
 	//모집 게시판 - 목록 조회
 	http.get("/api/matching/board", () => {
 		return HttpResponse.json([

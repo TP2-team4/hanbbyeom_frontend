@@ -7,14 +7,8 @@ export type UserProfile = {
 };
 
 export type RecruitmentAuthorProfile = {
-	id: number;
-	nickname: string;
-	averageRating: number;
+	averageRating: number | null;
+	reviewCount: number;
 	completedActivityCount: number;
 	noShowReportCount: number;
-	recentReview: {
-		content: string;
-		dateLabel: string;
-		authorLabel: string;
-	} | null;
 };

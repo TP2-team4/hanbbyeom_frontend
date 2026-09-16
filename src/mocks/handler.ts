@@ -96,6 +96,16 @@ export const handlers = [
 		]);
 	}),
 
+	//모집 게시판 - 호스트 신뢰 프로필 조회
+	http.get("/api/matching/board/:id/host-profile", () => {
+		return HttpResponse.json({
+			averageRating: 4.8,
+			reviewCount: 10,
+			completedCount: 12,
+			noShowReportCount: 0,
+		});
+	}),
+
 	//모집 게시판 - 신청
 	http.post("/api/matching/board/:id/apply", () => {
 		return new HttpResponse(null, {

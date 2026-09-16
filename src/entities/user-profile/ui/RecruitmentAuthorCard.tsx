@@ -2,14 +2,14 @@ import type { RecruitmentAuthorProfile } from "../model/types";
 
 type Props = {
 	profile: RecruitmentAuthorProfile;
-	onViewProfile?: (id: number) => void;
+	onViewProfile?: () => void;
 };
 
 export function RecruitmentAuthorCard({ profile, onViewProfile }: Props) {
 	return (
 		<section
 			className="rounded-2xl border border-border bg-surface p-6"
-			aria-labelledby="author-nickname"
+			aria-labelledby="author-heading"
 		>
 			<div className="flex items-center gap-4">
 				<span
@@ -30,36 +30,33 @@ export function RecruitmentAuthorCard({ profile, onViewProfile }: Props) {
 				</span>
 				<div>
 					<h2
-						id="author-nickname"
+						id="author-heading"
 						className="text-xl font-bold text-title"
 					>
-						{profile.nickname}
+						작성자 신뢰 정보
 					</h2>
 					<p className="mt-1 text-sm text-body">
-						★{" "}
-						<strong className="text-title">
-							{profile.averageRating.toFixed(1)}
-						</strong>{" "}
-						· 완료 {profile.completedActivityCount}회 · 노쇼{" "}
+						{profile.averageRating !== null ? (
+							<>
+								★{" "}
+								<strong className="text-title">
+									{profile.averageRating.toFixed(1)}
+								</strong>{" "}
+								· 후기 {profile.reviewCount}개 ·{" "}
+							</>
+						) : (
+							"평가 없음 · "
+						)}
+						완료 {profile.completedActivityCount}회 · 노쇼{" "}
 						{profile.noShowReportCount}회
 					</p>
 				</div>
 			</div>
 
-			{profile.recentReview && (
-				<blockquote className="mt-5 rounded-lg bg-gray-50 p-5 text-sm text-body">
-					<p>{profile.recentReview.content}</p>
-					<footer className="mt-2 text-xs">
-						{profile.recentReview.dateLabel} ·{" "}
-						{profile.recentReview.authorLabel}
-					</footer>
-				</blockquote>
-			)}
-
 			<button
 				type="button"
 				className="mt-5 w-full rounded-md bg-primary-100 px-4 py-4 font-bold text-secondary-400 transition-colors hover:bg-primary-200"
-				onClick={() => onViewProfile?.(profile.id)}
+				onClick={() => onViewProfile?.()}
 			>
 				상세 프로필 보기
 			</button>

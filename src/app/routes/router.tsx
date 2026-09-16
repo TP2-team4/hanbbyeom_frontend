@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
+import ActivityPage from "../../pages/activity/ui/ActivityPage";
 import HomePage from "../../pages/home/ui/HomePage";
 import ChatPage from "../../pages/chat/ui/ChatPage";
 import LoginPage from "../../pages/login/ui/LoginPage";
@@ -48,6 +49,7 @@ export function AppRouter() {
                         <Route path="/my-page" element={<MyPage />} />
                     </Route>
                 </Route>
+                <Route path="/activities" element={<ActivityPage />} />
                 <Route
                     path="/recruitments/new"
                     element={<RecruitmentCreatePage />}

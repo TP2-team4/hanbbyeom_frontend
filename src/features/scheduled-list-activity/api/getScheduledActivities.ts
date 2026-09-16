@@ -40,8 +40,8 @@ const MOCK_ACTIVITIES: ScheduledActivity[] = [
 	},
 ];
 
-export async function getScheduledActivities(limit: number) {
+export async function getScheduledActivities(limit?: number) {
 	// TODO: 예정된 활동 조회 API 연동 필요
 	await new Promise((resolve) => setTimeout(resolve, 300));
-	return MOCK_ACTIVITIES.slice(0, limit);
+	return limit === undefined ? MOCK_ACTIVITIES : MOCK_ACTIVITIES.slice(0, limit);
 }

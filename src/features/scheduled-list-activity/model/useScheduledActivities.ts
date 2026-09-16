@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { ScheduledActivity } from "../../../entities/activity";
 import { getScheduledActivities } from "../api/getScheduledActivities";
 
-export function useScheduledActivities(limit: number) {
+export function useScheduledActivities(limit?: number) {
 	const [activities, setActivities] = useState<ScheduledActivity[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);

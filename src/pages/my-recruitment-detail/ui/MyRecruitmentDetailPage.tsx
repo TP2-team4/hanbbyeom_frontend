@@ -11,6 +11,7 @@ export default function MyRecruitmentDetailPage() {
 	const navigate = useNavigate();
 	const { recruitmentId } = useParams();
 	const [detail, setDetail] = useState<RecruitmentDetail | null>();
+	const [loadError, setLoadError] = useState<string | null>(null);
 	const id = Number(recruitmentId);
 	const isValidId = Number.isInteger(id);
 
@@ -19,8 +20,12 @@ export default function MyRecruitmentDetailPage() {
 		let isActive = true;
 
 		const loadDetail = async () => {
-			const recruitment = await getRecruitmentDetail(id);
-			if (isActive) setDetail(recruitment);
+			try {
+				const recruitment = await getRecruitmentDetail(id);
+				if (isActive) setDetail(recruitment);
+			} catch {
+				if (isActive) setLoadError("정보를 불러오지 못했어요. 다시 시도해 주세요.");
+			}
 		};
 
 		void loadDetail();
@@ -56,12 +61,17 @@ export default function MyRecruitmentDetailPage() {
 				className="flex-1 space-y-5 px-6 py-6"
 				aria-live="polite"
 			>
-				{isValidId && detail === undefined && (
+				{isValidId && !loadError && detail === undefined && (
 					<p className="py-10 text-center text-sm text-body">
 						모집글을 불러오는 중...
 					</p>
 				)}
-				{(!isValidId || detail === null) && (
+				{loadError && (
+					<p role="alert" className="py-10 text-center text-sm text-error-text">
+						{loadError}
+					</p>
+				)}
+				{!loadError && (!isValidId || detail === null) && (
 					<p className="py-10 text-center text-sm text-body">
 						모집글을 찾을 수 없어요.
 					</p>

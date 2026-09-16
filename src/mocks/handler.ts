@@ -115,6 +115,24 @@ export const handlers = [
 		});
 	}),
 
+	//모집글 상세 조회
+	http.get("/api/matching/requests/:id", ({ params }) => {
+		return HttpResponse.json({
+			id: Number(params.id),
+			courseName: "뚝섬 한강공원",
+			distanceMinMeters: 5000,
+			distanceMaxMeters: 12000,
+			paceMinSec: 360,
+			paceMaxSec: 400,
+			meetingPoint: "뚝섬유원지역 3번 출구",
+			scheduledAt: "2026-09-12T07:00:00+09:00",
+			talkLevel: "SILENT",
+			status: "SEARCHING",
+			isOwner: false,
+			pendingApplicantCount: 3,
+		});
+	}),
+
 	//모집글 생성
 	http.post("/api/matching/requests", async ({ request }) => {
 		const body = await request.json();

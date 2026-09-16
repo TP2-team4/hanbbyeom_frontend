@@ -1,53 +1,61 @@
-import type { RecruitmentDetail } from "../model/types";
+import type { ConversationStyle, RecruitmentDetail } from "../model/types";
+import { withUserIdHeader } from "../../../shared/lib/apiHeaders";
+import { formatDate, toTimeValue } from "../../../shared/lib/date";
 
-// 목업 데이터: 모집글 상세 조회 API 응답을 임시로 대체합니다.
-const MOCK_RECRUITMENT_DETAILS: RecruitmentDetail[] = [
-	{
-		id: 1,
-		authorId: 1,
-		location: "뚝섬 한강공원",
-		minDistanceKm: 5,
-		maxDistanceKm: 12,
-		conversationStyle: "SILENT",
-		dateLabel: "9월 12일 (금)",
-		time: "07:00",
-		pace: "6'00\" ~ 6'40\"",
-		meetingPlace: "뚝섬유원지역 3번 출구",
-		status: "open",
-		applicantCount: 3,
-	},
-	{
-		id: 2,
-		authorId: 2,
-		location: "여의도 한강공원",
-		minDistanceKm: 8,
-		maxDistanceKm: 10,
-		conversationStyle: "LIGHT_CHAT",
-		dateLabel: "9월 13일 (일)",
-		time: "06:30",
-		pace: "5'40\" ~ 6'10\"",
-		meetingPlace: "여의나루역 2번 출구",
-		status: "open",
-		applicantCount: 0,
-	},
-	{
-		id: 3,
-		authorId: 3,
-		location: "반포 한강공원",
-		minDistanceKm: 3,
-		maxDistanceKm: 5,
-		conversationStyle: "SILENT",
-		dateLabel: "9월 14일 (월)",
-		time: "20:00",
-		pace: "6'30\" ~ 7'00\"",
-		meetingPlace: "고속터미널역 8-1번 출구",
-		status: "applied",
-		applicantCount: 1,
-	},
-];
+type MatchRequestResponse = {
+	id: number;
+	courseName: string;
+	distanceMinMeters: number;
+	distanceMaxMeters: number;
+	paceMinSec: number;
+	paceMaxSec: number;
+	meetingPoint: string;
+	scheduledAt: string;
+	talkLevel: ConversationStyle;
+	status:
+		| "SEARCHING"
+		| "PENDING_CONFIRMATION"
+		| "MATCHED"
+		| "CANCELLED"
+		| "EXPIRED"
+		| "CLOSED";
+	isOwner: boolean;
+	pendingApplicantCount: number;
+};
+
+function formatPace(totalSeconds: number) {
+	const minutes = Math.floor(totalSeconds / 60);
+	const seconds = String(totalSeconds % 60).padStart(2, "0");
+	return `${minutes}'${seconds}"`;
+}
+
+function toRecruitmentDetail(response: MatchRequestResponse): RecruitmentDetail {
+	return {
+		id: response.id,
+		authorId: response.id,
+		location: response.courseName,
+		minDistanceKm: response.distanceMinMeters / 1000,
+		maxDistanceKm: response.distanceMaxMeters / 1000,
+		conversationStyle: response.talkLevel,
+		dateLabel: formatDate(response.scheduledAt),
+		time: toTimeValue(new Date(response.scheduledAt)),
+		pace: `${formatPace(response.paceMinSec)} ~ ${formatPace(response.paceMaxSec)}`,
+		meetingPlace: response.meetingPoint,
+		// TODO: 이 응답엔 "내가 이미 신청했는지" 필드가 없어 SEARCHING(모집중)만 open, 나머지는 전부 applied로 뭉뚱그림 (백엔드 API 갭)
+		status: response.status === "SEARCHING" ? "open" : "applied",
+		applicantCount: response.pendingApplicantCount,
+	};
+}
 
 export async function getRecruitmentDetail(id: number) {
-	// TODO: 모집글 상세 조회 API가 개발되면 실제 요청과 응답 파싱으로 교체
-	await new Promise((resolve) => setTimeout(resolve, 200));
-	return MOCK_RECRUITMENT_DETAILS.find((detail) => detail.id === id) ?? null;
+	const response = await fetch(`/api/matching/requests/${id}`, {
+		headers: withUserIdHeader(),
+	});
+
+	if (!response.ok) {
+		return null;
+	}
+
+	const body: MatchRequestResponse = await response.json();
+	return toRecruitmentDetail(body);
 }

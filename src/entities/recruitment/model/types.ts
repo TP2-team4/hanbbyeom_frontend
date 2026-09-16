@@ -19,6 +19,17 @@ export type Recruitment = {
 	status: RecruitmentStatus;
 };
 
+export type MyRecruitmentSummary = {
+	id: number;
+	location: string;
+	minDistanceKm: number;
+	maxDistanceKm: number;
+	conversationStyle: ConversationStyle;
+	dateLabel: string;
+	time: string;
+	applicantCount: number;
+};
+
 export type RecruitmentDetail = {
 	id: number;
 	authorId: number;

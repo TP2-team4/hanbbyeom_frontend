@@ -115,6 +115,16 @@ export const handlers = [
 		});
 	}),
 
+	//모집글 생성
+	http.post("/api/matching/requests", async ({ request }) => {
+		const body = await request.json();
+		console.log("클라이언트가 보낸 데이터 : ", body);
+		return new HttpResponse(null, {
+			status: 201,
+			headers: { Location: "/api/matching/requests/1" },
+		});
+	}),
+
 	//모집 게시판 - 신청
 	http.post("/api/matching/board/:id/apply", () => {
 		return new HttpResponse(null, {

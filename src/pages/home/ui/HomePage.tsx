@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { CreateRecruitmentBanner } from "./CreateRecruitmentBanner";
 import { ScheduledActivityList } from "../../../features/scheduled-list-activity";
 import { MyRecruitmentList } from "../../../features/my-recruitment-list";
+import { AppliedRecruitmentList } from "../../../features/applied-recruitment-list";
 
 export default function HomePage() {
 	const navigate = useNavigate();
@@ -29,6 +30,8 @@ export default function HomePage() {
 			<ScheduledActivityList />
 
 			<MyRecruitmentList />
+
+			<AppliedRecruitmentList />
 		</div>
 	);
 }

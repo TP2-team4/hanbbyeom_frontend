@@ -30,6 +30,19 @@ export type MyRecruitmentSummary = {
 	applicantCount: number;
 };
 
+export type AppliedRecruitmentStatus = "WAITING" | "ACCEPTED";
+
+export type AppliedRecruitmentSummary = {
+	id: number;
+	location: string;
+	minDistanceKm: number;
+	maxDistanceKm: number;
+	dateLabel: string;
+	time: string;
+	authorNickname: string;
+	status: AppliedRecruitmentStatus;
+};
+
 export type RecruitmentDetail = {
 	id: number;
 	authorId: number;

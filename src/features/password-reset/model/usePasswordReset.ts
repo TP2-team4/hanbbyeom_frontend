@@ -61,7 +61,7 @@ export function usePasswordReset() {
         setVerificationError(null);
 
         try {
-            const response = await verifyPasswordResetCode(verificationCode);
+            const response = await verifyPasswordResetCode(email, verificationCode);
             if (response.verified) {
                 setStep("reset-password");
                 return;

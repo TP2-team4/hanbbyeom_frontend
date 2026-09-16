@@ -57,6 +57,45 @@ export const handlers = [
 		});
 	}),
 
+	//모집 게시판 - 목록 조회
+	http.get("/api/matching/board", () => {
+		return HttpResponse.json([
+			{
+				id: 1,
+				courseName: "뚝섬 한강공원",
+				distanceMinMeters: 6000,
+				distanceMaxMeters: 8000,
+				talkLevel: "SILENT",
+				scheduledAt: "2026-09-12T07:00:00+09:00",
+				paceMinSec: 360,
+				paceMaxSec: 400,
+				author: { nickname: "조용한러너", rating: 4.8, completedCount: 31 },
+			},
+			{
+				id: 2,
+				courseName: "여의도 한강공원",
+				distanceMinMeters: 8000,
+				distanceMaxMeters: 10000,
+				talkLevel: "LIGHT_CHAT",
+				scheduledAt: "2026-09-13T06:30:00+09:00",
+				paceMinSec: 340,
+				paceMaxSec: 370,
+				author: { nickname: "새벽공기", rating: 4.6, completedCount: 12 },
+			},
+			{
+				id: 3,
+				courseName: "반포 한강공원",
+				distanceMinMeters: 3000,
+				distanceMaxMeters: 5000,
+				talkLevel: "SILENT",
+				scheduledAt: "2026-09-14T20:00:00+09:00",
+				paceMinSec: 390,
+				paceMaxSec: 420,
+				author: { nickname: "밤산책", rating: 4.9, completedCount: 8 },
+			},
+		]);
+	}),
+
 	//모집 게시판 - 신청
 	http.post("/api/matching/board/:id/apply", () => {
 		return new HttpResponse(null, {

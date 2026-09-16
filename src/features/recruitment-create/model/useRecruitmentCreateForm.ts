@@ -69,6 +69,11 @@ export function useRecruitmentCreateForm({ onSuccess }: Options) {
 	const [submitError, setSubmitError] = useState<string | null>(null);
 
 	const goNext = () => {
+		if (step === 1 && meetingPlace === "") {
+			setSubmitError("만나는 곳이 비어있습니다. 입력 해주세요.");
+			return;
+		}
+
 		if (step === 2 && parseScheduledAt(date, time).getTime() < Date.now()) {
 			setSubmitError(
 				"선택한 날짜·시간이 이미 지났어요. 다시 선택해 주세요.",

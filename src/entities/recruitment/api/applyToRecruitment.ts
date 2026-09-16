@@ -1,5 +1,13 @@
+import { withUserIdHeader } from "../../../shared/lib/apiHeaders";
+
 export async function applyToRecruitment(recruitmentId: number) {
-	// TODO: 모집 신청 API 연동 필요
-	await new Promise((resolve) => setTimeout(resolve, 300));
-	return { recruitmentId, success: true };
+	const response = await fetch(`/api/matching/board/${recruitmentId}/apply`, {
+		method: "POST",
+		headers: withUserIdHeader({ "Content-Type": "application/json" }),
+		body: JSON.stringify({}),
+	});
+
+	if (!response.ok) {
+		throw new Error("모집 신청에 실패했습니다.");
+	}
 }

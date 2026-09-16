@@ -56,4 +56,17 @@ export const handlers = [
 			nickname: "닉네임 결과",
 		});
 	}),
+
+	//모집 게시판 - 신청
+	http.post("/api/matching/board/:id/apply", () => {
+		return new HttpResponse(null, {
+			status: 201,
+			headers: { Location: "/api/matching/matches/1" },
+		});
+	}),
+
+	//모집 게시판 - 신청 취소
+	http.post("/api/matching/board/:id/apply/cancel", () => {
+		return new HttpResponse(null, { status: 204 });
+	}),
 ];

@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { Applicant } from "../../../entities/recruitment";
 import Button from "../../../shared/ui/button";
 import { useApplicants } from "../model/useApplicants";
+import { useNavigate } from "react-router-dom";
 
 type PendingAction = {
 	type: "accept" | "reject";
@@ -9,6 +10,7 @@ type PendingAction = {
 };
 
 export function ApplicantList({ recruitmentId }: { recruitmentId: number }) {
+	const navigate = useNavigate();
 	const {
 		applicants,
 		isLoading,
@@ -31,7 +33,9 @@ export function ApplicantList({ recruitmentId }: { recruitmentId: number }) {
 	if (matchedApplicant) {
 		return (
 			<div className="rounded-lg border border-border bg-surface px-5 py-10 text-center">
-				<p className="text-lg font-bold text-title">매칭이 확정됐어요</p>
+				<p className="text-lg font-bold text-title">
+					매칭이 확정됐어요
+				</p>
 				<p className="mt-2 text-sm text-body">
 					{matchedApplicant.nickname} 님의 신청을 수락했어요.
 				</p>
@@ -47,7 +51,10 @@ export function ApplicantList({ recruitmentId }: { recruitmentId: number }) {
 				</p>
 			)}
 			{error && (
-				<p role="alert" className="py-10 text-center text-sm text-error-text">
+				<p
+					role="alert"
+					className="py-10 text-center text-sm text-error-text"
+				>
 					{error}
 				</p>
 			)}
@@ -82,6 +89,11 @@ export function ApplicantList({ recruitmentId }: { recruitmentId: number }) {
 								<button
 									type="button"
 									className="text-sm font-medium text-body underline"
+									onClick={() => {
+										navigate(
+											`/matches/${applicant.id}/applicant-profile`,
+										);
+									}}
 								>
 									프로필 보기
 								</button>
@@ -91,7 +103,10 @@ export function ApplicantList({ recruitmentId }: { recruitmentId: number }) {
 										variant="destructive"
 										disabled={isProcessing}
 										onClick={() =>
-											setPending({ type: "reject", applicant })
+											setPending({
+												type: "reject",
+												applicant,
+											})
 										}
 										className="h-10 px-4 text-sm"
 									>
@@ -102,7 +117,10 @@ export function ApplicantList({ recruitmentId }: { recruitmentId: number }) {
 										variant="primary"
 										disabled={isProcessing}
 										onClick={() =>
-											setPending({ type: "accept", applicant })
+											setPending({
+												type: "accept",
+												applicant,
+											})
 										}
 										className="h-10 px-4 text-sm"
 									>
@@ -114,7 +132,10 @@ export function ApplicantList({ recruitmentId }: { recruitmentId: number }) {
 					);
 				})}
 			{actionError && (
-				<p role="alert" className="text-sm text-error-text">
+				<p
+					role="alert"
+					className="text-sm text-error-text"
+				>
 					{actionError}
 				</p>
 			)}
@@ -130,7 +151,10 @@ export function ApplicantList({ recruitmentId }: { recruitmentId: number }) {
 						aria-labelledby="applicant-confirm-title"
 						className="w-full max-w-[360px] rounded-2xl bg-surface p-6 shadow-xl"
 					>
-						<p id="applicant-confirm-title" className="text-base font-bold text-title">
+						<p
+							id="applicant-confirm-title"
+							className="text-base font-bold text-title"
+						>
 							{pending.type === "accept"
 								? "이 분의 신청을 수락할까요?"
 								: "이 신청을 거절할까요?"}
@@ -151,7 +175,11 @@ export function ApplicantList({ recruitmentId }: { recruitmentId: number }) {
 							</Button>
 							<Button
 								type="button"
-								variant={pending.type === "accept" ? "primary" : "destructive"}
+								variant={
+									pending.type === "accept"
+										? "primary"
+										: "destructive"
+								}
 								className="h-12 flex-1 text-sm"
 								onClick={handleConfirm}
 							>

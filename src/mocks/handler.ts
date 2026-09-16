@@ -78,7 +78,11 @@ export const handlers = [
 				scheduledAt: "2026-09-12T07:00:00+09:00",
 				paceMinSec: 360,
 				paceMaxSec: 400,
-				author: { nickname: "조용한러너", rating: 4.8, completedCount: 31 },
+				author: {
+					nickname: "조용한러너",
+					rating: 4.8,
+					completedCount: 31,
+				},
 			},
 			{
 				id: 2,
@@ -89,7 +93,11 @@ export const handlers = [
 				scheduledAt: "2026-09-13T06:30:00+09:00",
 				paceMinSec: 340,
 				paceMaxSec: 370,
-				author: { nickname: "새벽공기", rating: 4.6, completedCount: 12 },
+				author: {
+					nickname: "새벽공기",
+					rating: 4.6,
+					completedCount: 12,
+				},
 			},
 			{
 				id: 3,
@@ -107,6 +115,16 @@ export const handlers = [
 
 	//모집 게시판 - 호스트 신뢰 프로필 조회
 	http.get("/api/matching/board/:id/host-profile", () => {
+		return HttpResponse.json({
+			averageRating: 4.8,
+			reviewCount: 10,
+			completedCount: 12,
+			noShowReportCount: 0,
+		});
+	}),
+
+	//모집 게시판 - 지원자 신뢰 프로필 조회
+	http.get("/api/matching/matches/:id/applicant-profile", () => {
 		return HttpResponse.json({
 			averageRating: 4.8,
 			reviewCount: 10,

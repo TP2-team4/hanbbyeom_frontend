@@ -16,6 +16,7 @@ import { OnboardingRoute } from "./OnboardingRoute";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { PublicOnlyRoute } from "./PublicOnlyRoute";
 import MyRecruitmentDetailPage from "../../pages/my-recruitment-detail/ui/MyRecruitmentDetailPage";
+import ApplicantProfilePage from "../../pages/applicant-profile/ui/ApplicantProfilePage";
 
 export function AppRouter() {
 	return (
@@ -83,6 +84,10 @@ export function AppRouter() {
 				<Route
 					path="/recruitments/:recruitmentId/applicants"
 					element={<MyRecruitmentDetailPage />}
+				/>
+				<Route
+					path="/matches/:activityMatchId/applicant-profile"
+					element={<ApplicantProfilePage />}
 				/>
 			</Route>
 

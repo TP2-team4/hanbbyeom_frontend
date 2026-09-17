@@ -1,6 +1,7 @@
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./provider/AuthProvider";
 import { AppRouter } from "./routes/router";
+import { SessionExpiredModal } from "./provider/SessionExpiredModal";
 
 function App() {
 	return (
@@ -11,6 +12,7 @@ function App() {
 						<AppRouter />
 					</div>
 				</div>
+				<SessionExpiredModal />
 			</AuthProvider>
 		</BrowserRouter>
 	);

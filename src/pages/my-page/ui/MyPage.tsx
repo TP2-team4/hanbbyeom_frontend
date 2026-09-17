@@ -5,7 +5,7 @@ import Button from "../../../shared/ui/button";
 
 export default function MyPage() {
 	const navigate = useNavigate();
-	const { logout } = useAuth();
+	const { logout, triggerSessionExpired } = useAuth();
 
 	const handleLogout = () => {
 		logout();
@@ -18,6 +18,15 @@ export default function MyPage() {
 				<MyProfileContent />
 			</div>
 			<footer className="p-4">
+				{/* TODO: 실제 401 응답 감지 로직 연동 필요 - 연동되면 이 버튼 삭제 */}
+				<Button
+					type="button"
+					variant="secondary"
+					className="h-14 w-full text-secondary-400"
+					onClick={triggerSessionExpired}
+				>
+					세션 만료 테스트
+				</Button>
 				<Button
 					type="button"
 					variant="secondary"

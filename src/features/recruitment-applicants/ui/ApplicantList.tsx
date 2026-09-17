@@ -3,6 +3,7 @@ import type { Applicant } from "../../../entities/recruitment";
 import Button from "../../../shared/ui/button";
 import { StatusText } from "../../../shared/ui/status-text";
 import { ErrorText } from "../../../shared/ui/error-text";
+import { ConfirmModal } from "../../../shared/ui/confirm-modal";
 import { useApplicants } from "../model/useApplicants";
 import { useNavigate } from "react-router-dom";
 
@@ -129,53 +130,23 @@ export function ApplicantList({ recruitmentId }: { recruitmentId: number }) {
 			)}
 
 			{pending && (
-				<div
-					className="fixed inset-0 z-50 grid place-items-center bg-gray-900/40 px-4"
-					role="presentation"
-				>
-					<section
-						role="dialog"
-						aria-modal="true"
-						aria-labelledby="applicant-confirm-title"
-						className="w-full max-w-[360px] rounded-2xl bg-surface p-6 shadow-xl"
-					>
-						<p
-							id="applicant-confirm-title"
-							className="text-base font-bold text-title"
-						>
-							{pending.type === "accept"
-								? "이 분의 신청을 수락할까요?"
-								: "이 신청을 거절할까요?"}
-						</p>
-						<p className="mt-2 text-sm text-body">
-							{pending.type === "accept"
-								? "수락하면 활동이 확정되고 모집글은 내려가요."
-								: "거절 사유는 상대에게 공개되지 않아요."}
-						</p>
-						<div className="mt-6 flex gap-2">
-							<Button
-								type="button"
-								variant="secondary"
-								className="h-12 flex-1 text-sm"
-								onClick={() => setPending(null)}
-							>
-								취소
-							</Button>
-							<Button
-								type="button"
-								variant={
-									pending.type === "accept"
-										? "primary"
-										: "destructive"
-								}
-								className="h-12 flex-1 text-sm"
-								onClick={handleConfirm}
-							>
-								{pending.type === "accept" ? "수락" : "거절"}
-							</Button>
-						</div>
-					</section>
-				</div>
+				<ConfirmModal
+					title={
+						pending.type === "accept"
+							? "이 분의 신청을 수락할까요?"
+							: "이 신청을 거절할까요?"
+					}
+					description={
+						pending.type === "accept"
+							? "수락하면 활동이 확정되고 모집글은 내려가요."
+							: "거절 사유는 상대에게 공개되지 않아요."
+					}
+					cancelLabel="취소"
+					confirmLabel={pending.type === "accept" ? "수락" : "거절"}
+					confirmVariant={pending.type === "accept" ? "primary" : "destructive"}
+					onCancel={() => setPending(null)}
+					onConfirm={handleConfirm}
+				/>
 			)}
 		</div>
 	);

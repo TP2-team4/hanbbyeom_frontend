@@ -13,6 +13,7 @@ import {
 import Button from "../../../shared/ui/button";
 import { StatusText } from "../../../shared/ui/status-text";
 import { ErrorText } from "../../../shared/ui/error-text";
+import { ConfirmModal } from "../../../shared/ui/confirm-modal";
 import { useApplication } from "../../../features/recruitment-detail";
 
 type DetailData = {
@@ -141,46 +142,22 @@ export default function RecruitmentDetailPage() {
 			)}
 
 			{pending && (
-				<div
-					className="fixed inset-0 z-50 grid place-items-center bg-gray-900/40 px-4"
-					role="presentation"
-				>
-					<section
-						role="dialog"
-						aria-modal="true"
-						aria-labelledby="application-confirm-title"
-						className="w-full max-w-[360px] rounded-2xl bg-surface p-6 shadow-xl"
-					>
-						<p id="application-confirm-title" className="text-base font-bold text-title">
-							{pending === "apply"
-								? "이 모집에 신청할까요?"
-								: "신청을 취소할까요?"}
-						</p>
-						<p className="mt-2 text-sm text-body">
-							{pending === "apply"
-								? "작성자가 수락하면 활동이 최종 확정돼요."
-								: "취소한 후에도 모집 중이라면 다시 신청할 수 있어요."}
-						</p>
-						<div className="mt-6 flex gap-2">
-							<Button
-								type="button"
-								variant="secondary"
-								className="h-12 flex-1 text-sm"
-								onClick={() => setPending(null)}
-							>
-								{pending === "apply" ? "취소" : "계속 기다리기"}
-							</Button>
-							<Button
-								type="button"
-								variant="primary"
-								className="h-12 flex-1 text-sm"
-								onClick={handleConfirm}
-							>
-								{pending === "apply" ? "신청" : "신청 취소"}
-							</Button>
-						</div>
-					</section>
-				</div>
+				<ConfirmModal
+					title={
+						pending === "apply"
+							? "이 모집에 신청할까요?"
+							: "신청을 취소할까요?"
+					}
+					description={
+						pending === "apply"
+							? "작성자가 수락하면 활동이 최종 확정돼요."
+							: "취소한 후에도 모집 중이라면 다시 신청할 수 있어요."
+					}
+					cancelLabel={pending === "apply" ? "취소" : "계속 기다리기"}
+					confirmLabel={pending === "apply" ? "신청" : "신청 취소"}
+					onCancel={() => setPending(null)}
+					onConfirm={handleConfirm}
+				/>
 			)}
 		</main>
 	);

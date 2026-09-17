@@ -6,6 +6,7 @@ import {
     verifyEmail,
 } from "../api/emailVerification";
 import { signup } from "../api/signup";
+import { requestLogin } from "../../login/api/login";
 import type { EmailVerificationStatus } from "./types";
 import {
     isValidEmail,
@@ -168,8 +169,10 @@ export function useSignupForm({ onSuccess }: UseSignupFormOptions) {
         setSubmitError(null);
 
         try {
-            const response = await signup({ email, nickname, password });
-            onSuccess(response.accessToken);
+            // 회원가입 응답엔 토큰이 없어서(백엔드가 계정 생성만 처리), 가입 직후 로그인 API를 한 번 더 호출해 토큰을 받음
+            await signup({ email, nickname, password });
+            const loginResponse = await requestLogin({ email, password });
+            onSuccess(loginResponse.accessToken);
         } catch {
             setSubmitError("회원가입에 실패했어요. 다시 시도해 주세요.");
         } finally {

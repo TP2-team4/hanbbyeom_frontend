@@ -1,0 +1,220 @@
+import { useEffect, useState } from "react";
+import {
+    EmailVerificationError,
+    requestEmailVerification,
+    TEMP_VERIFICATION_CODE,
+    verifyEmail,
+} from "../api/emailVerification";
+import { signup } from "../api/signup";
+import { requestLogin } from "../../login/api/login";
+import type { EmailVerificationStatus } from "./types";
+import {
+    isValidEmail,
+    isValidNickname,
+    isValidPassword,
+    NICKNAME_MAX_LENGTH,
+    NICKNAME_MIN_LENGTH,
+} from "../../../shared/lib/validation";
+
+type UseSignupFormOptions = { onSuccess: (accessToken: string) => void };
+
+// 회원가입 폼의 입력값, 유효성 검사, 이메일 인증 및 제출 상태를 관리하는 훅
+export function useSignupForm({ onSuccess }: UseSignupFormOptions) {
+    const [email, setEmail] = useState(""); //email input
+    const [emailVerificationStatus, setEmailVerificationStatus] =
+        useState<EmailVerificationStatus>("idle"); //email input state
+    const [verificationCode, setVerificationCode] = useState(""); // email verification code input
+    const [verificationError, setVerificationError] = useState<string | null>(
+        null,
+    ); // email code error message
+    // 인증 번호 유효시간과 재전송 대기시간 추가
+    const [verificationExpiresAt, setVerificationExpiresAt] = useState<
+        number | null
+    >(null);
+    const [resendAvailableAt, setResendAvailableAt] = useState<number | null>(
+        null,
+    );
+    const [currentTime, setCurrentTime] = useState(() => Date.now());
+    const [nickname, setNickname] = useState(""); //nick name input
+    const [password, setPassword] = useState(""); //password input
+    const [passwordConfirm, setPasswordConfirm] = useState(""); //password 2 input
+    const [isSubmitting, setIsSubmitting] = useState(false); //submit state
+    const [submitError, setSubmitError] = useState<string | null>(null); //submit error message
+    const [emailTouched, setEmailTouched] = useState(false);
+    const [passwordTouched, setPasswordTouched] = useState(false);
+    const [nicknameTouched, setNicknameTouched] = useState(false);
+
+    const emailIsValid = isValidEmail(email);
+    const isPasswordMatch =
+        passwordConfirm.length > 0 && passwordConfirm === password;
+    const isFormValid =
+        emailIsValid &&
+        emailVerificationStatus === "verified" &&
+        isValidNickname(nickname) &&
+        isValidPassword(password) &&
+        isPasswordMatch;
+
+    const verificationExpirySeconds = verificationExpiresAt
+        ? Math.max(0, Math.ceil((verificationExpiresAt - currentTime) / 1000))
+        : 0;
+    const resendCooldownSeconds = resendAvailableAt
+        ? Math.max(0, Math.ceil((resendAvailableAt - currentTime) / 1000))
+        : 0;
+
+    // 인증 번호와 재전송 카운트다운 갱신 추가
+    useEffect(() => {
+        if (!verificationExpiresAt && !resendAvailableAt) return;
+        const timerId = window.setInterval(
+            () => setCurrentTime(Date.now()),
+            1000,
+        );
+        return () => window.clearInterval(timerId);
+    }, [resendAvailableAt, verificationExpiresAt]);
+
+    const emailError = !emailTouched
+        ? null
+        : email.trim().length === 0
+          ? "이메일을 입력해주세요."
+          : !emailIsValid
+            ? "올바른 이메일 형식으로 입력해주세요."
+            : null;
+
+    const passwordError = !passwordTouched
+        ? null
+        : password.length === 0
+          ? "비밀번호를 입력해주세요."
+          : !isValidPassword(password)
+            ? "비밀번호는 8자 이상 입력해주세요."
+            : null;
+
+    const nicknameError =
+        nicknameTouched && nickname.trim().length === 0
+            ? "닉네임을 입력해주세요."
+            : nicknameTouched && nickname.trim().length < NICKNAME_MIN_LENGTH
+              ? "닉네임은 2자 이상 입력해주세요."
+              : nickname.length >= NICKNAME_MAX_LENGTH
+                ? "닉네임은 최대 16자까지 입력할 수 있어요."
+                : null;
+
+    // 이메일 값을 변경하고 기존에 진행한 이메일 인증 상태를 초기화하는 함수
+    const changeEmail = (value: string) => {
+        setEmail(value);
+        setEmailVerificationStatus("idle");
+        setVerificationCode("");
+        setVerificationError(null);
+        setVerificationExpiresAt(null);
+        setResendAvailableAt(null);
+    };
+
+    const touchEmail = () => setEmailTouched(true);
+    const touchPassword = () => setPasswordTouched(true);
+    const touchNickname = () => setNicknameTouched(true);
+
+    // 인증번호에서 숫자가 아닌 문자를 제거하고 이전 인증 오류를 초기화하는 함수
+    const changeVerificationCode = (value: string) => {
+        setVerificationCode(value.replace(/\D/g, ""));
+        setVerificationError(
+            verificationExpiresAt && Date.now() >= verificationExpiresAt
+                ? "인증 코드가 만료되었습니다. 재전송 버튼을 눌러주세요"
+                : null,
+        );
+    };
+
+    // 입력한 이메일로 인증번호를 요청하고 요청 진행 상태를 관리하는 함수
+    const requestVerificationCode = async () => {
+        if (!emailIsValid || emailVerificationStatus === "requesting") return;
+        setEmailVerificationStatus("requesting");
+        setVerificationCode("");
+        setVerificationError(null);
+
+        try {
+            const response = await requestEmailVerification(email);
+            setVerificationExpiresAt(response.expiresAt);
+            setResendAvailableAt(response.resendAvailableAt);
+            setCurrentTime(Date.now());
+            setEmailVerificationStatus("sent");
+        } catch (error) {
+            setVerificationError(getVerificationErrorMessage(error));
+            setEmailVerificationStatus(
+                emailVerificationStatus === "sent" ||
+                    emailVerificationStatus === "verified"
+                    ? emailVerificationStatus
+                    : "error",
+            );
+        }
+    };
+
+    // 사용자가 입력한 6자리 인증번호를 확인하고 이메일 인증 결과를 저장하는 함수
+    const confirmVerificationCode = async () => {
+        if (verificationCode.length !== 6) return;
+        setEmailVerificationStatus("verifying");
+        setVerificationError(null);
+
+        try {
+            const response = await verifyEmail(email, verificationCode);
+            if (response.verified) {
+                setEmailVerificationStatus("verified");
+                return;
+            }
+        } catch (error) {
+            setEmailVerificationStatus("sent");
+            setVerificationError(getVerificationErrorMessage(error));
+        }
+    };
+
+    // 유효한 회원가입 정보를 API에 전달하고 성공 시 onSuccess를 실행하는 함수
+    const submit = async () => {
+        if (!isFormValid || isSubmitting) return;
+        setIsSubmitting(true);
+        setSubmitError(null);
+
+        try {
+            // 회원가입 응답엔 토큰이 없어서(백엔드가 계정 생성만 처리), 가입 직후 로그인 API를 한 번 더 호출해 토큰을 받음
+            await signup({ email, nickname, password });
+            const loginResponse = await requestLogin({ email, password });
+            onSuccess(loginResponse.accessToken);
+        } catch {
+            setSubmitError("회원가입에 실패했어요. 다시 시도해 주세요.");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    return {
+        email,
+        emailIsValid,
+        emailError,
+        emailVerificationStatus,
+        verificationCode,
+        verificationError,
+        verificationExpirySeconds,
+        resendCooldownSeconds,
+        nickname,
+        nicknameError,
+        password,
+        passwordError,
+        passwordConfirm,
+        isPasswordMatch,
+        isFormValid,
+        isSubmitting,
+        submitError,
+        temporaryVerificationCode: TEMP_VERIFICATION_CODE,
+        changeEmail,
+        changeVerificationCode,
+        setNickname,
+        setPassword,
+        setPasswordConfirm,
+        requestVerificationCode,
+        confirmVerificationCode,
+        touchEmail,
+        touchPassword,
+        touchNickname,
+        submit,
+    };
+}
+
+function getVerificationErrorMessage(error: unknown) {
+    return error instanceof EmailVerificationError
+        ? error.message
+        : "인증번호 처리에 실패했어요. 다시 시도해 주세요.";
+}

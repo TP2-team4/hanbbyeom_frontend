@@ -5,4 +5,17 @@ export { MyRecruitmentCard } from "./ui/MyRecruitmentCard";
 export { getRecruitmentDetail } from "./api/getRecruitmentDetail";
 export { applyToRecruitment } from "./api/applyToRecruitment";
 export { cancelApplication } from "./api/cancelApplication";
-export type { Applicant, AppliedRecruitmentStatus, AppliedRecruitmentSummary, ConversationStyle, MyRecruitmentStatus, MyRecruitmentSummary, Recruitment, RecruitmentDetail, RecruitmentStatus } from "./model/types";
+export { cancelRecruitment } from "./api/cancelRecruitment";
+export { updateRecruitment } from "./api/updateRecruitment";
+export type { UpdateRecruitmentRequest } from "./api/updateRecruitment";
+export type {
+	AppliedRecruitmentStatus,
+	AppliedRecruitmentSummary,
+	ConversationStyle,
+	MyRecruitmentStatus,
+	MyRecruitmentSummary,
+	Recruitment,
+	RecruitmentDetail,
+	RecruitmentStatus,
+	MatchRequestStatus,
+} from "./model/types";

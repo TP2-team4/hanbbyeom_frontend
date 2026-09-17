@@ -1,12 +1,9 @@
-import { withUserIdHeader } from "../../../shared/lib/apiHeaders";
+import { authorizedFetch } from "../../../shared/lib/authorizedFetch";
 
 export async function cancelApplication(recruitmentId: number) {
-	const response = await fetch(
+	const response = await authorizedFetch(
 		`/api/matching/board/${recruitmentId}/apply/cancel`,
-		{
-			method: "POST",
-			headers: withUserIdHeader(),
-		},
+		{ method: "POST" },
 	);
 
 	if (!response.ok) {

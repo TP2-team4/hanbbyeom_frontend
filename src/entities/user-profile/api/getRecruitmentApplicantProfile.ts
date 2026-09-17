@@ -1,5 +1,5 @@
 import type { RecruitmentAuthorProfile } from "../model/types";
-import { withUserIdHeader } from "../../../shared/lib/apiHeaders";
+import { authorizedFetch } from "../../../shared/lib/authorizedFetch";
 
 type ApplicantProfileResponse = {
 	averageRating: number | null;
@@ -11,9 +11,8 @@ type ApplicantProfileResponse = {
 export async function getRecruitmentApplicantProfile(
 	activityMatchId: number,
 ): Promise<RecruitmentAuthorProfile | null> {
-	const response = await fetch(
+	const response = await authorizedFetch(
 		`/api/matching/matches/${activityMatchId}/applicant-profile`,
-		{ headers: withUserIdHeader() },
 	);
 
 	if (!response.ok) {

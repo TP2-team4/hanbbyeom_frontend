@@ -13,6 +13,7 @@ export function ProfileSummaryCard({ profile }: Props) {
                 </span>
                 <div className="min-w-0 flex-1">
                     <h2 id="profile-nickname" className="truncate text-2xl font-bold text-title">{profile.nickname}</h2>
+					<p className="mt-1 truncate text-sm text-body">{profile.email}</p>
                     <p className="mt-1 text-sm text-body">
                         선호 대화 수준 · {profile.conversationPreference === "SILENT" ? "조용히" : "가벼운 대화"}
                     </p>

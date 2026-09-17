@@ -8,6 +8,12 @@ import {
 import { ApplicantList } from "../../../features/recruitment-applicants/ui/ApplicantList";
 import { StatusText } from "../../../shared/ui/status-text";
 import { ErrorText } from "../../../shared/ui/error-text";
+import {
+	RecruitmentEditForm,
+	useCancelRecruitment,
+} from "../../../features/recruitment-detail";
+import Button from "../../../shared/ui/button";
+import { ConfirmModal } from "../../../shared/ui/confirm-modal";
 
 export default function MyRecruitmentDetailPage() {
 	const navigate = useNavigate();
@@ -16,6 +22,14 @@ export default function MyRecruitmentDetailPage() {
 	const [loadError, setLoadError] = useState<string | null>(null);
 	const id = Number(recruitmentId);
 	const isValidId = Number.isInteger(id);
+	const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+	const [isEditing, setIsEditing] = useState(false);
+
+	const {
+		cancel,
+		isProcessing: isCancelProcessing,
+		error: cancelError,
+	} = useCancelRecruitment(id);
 
 	useEffect(() => {
 		if (!isValidId) return;
@@ -26,7 +40,10 @@ export default function MyRecruitmentDetailPage() {
 				const recruitment = await getRecruitmentDetail(id);
 				if (isActive) setDetail(recruitment);
 			} catch {
-				if (isActive) setLoadError("정보를 불러오지 못했어요. 다시 시도해 주세요.");
+				if (isActive)
+					setLoadError(
+						"정보를 불러오지 못했어요. 다시 시도해 주세요.",
+					);
 			}
 		};
 
@@ -35,6 +52,23 @@ export default function MyRecruitmentDetailPage() {
 			isActive = false;
 		};
 	}, [id, isValidId]);
+
+	const handleCancelRecruitment = async () => {
+		const success = await cancel();
+
+		if (success) {
+			setDetail((current) =>
+				current
+					? {
+							...current,
+							requestStatus: "CANCELLED",
+						}
+					: current,
+			);
+		}
+
+		setIsCancelModalOpen(false);
+	};
 
 	return (
 		<main className="mx-auto flex min-h-full w-full max-w-[430px] flex-col bg-primary-50">
@@ -74,16 +108,95 @@ export default function MyRecruitmentDetailPage() {
 				{!loadError && (!isValidId || detail === null) && (
 					<StatusText>모집글을 찾을 수 없어요.</StatusText>
 				)}
-				{isValidId && detail && (
+				{isValidId && detail && !detail.isOwner && (
+					<StatusText>
+						내가 작성한 모집글만 확인할 수 있어요.
+					</StatusText>
+				)}
+
+				{isValidId && detail && detail.isOwner && (
 					<>
-						<p className="text-sm text-body">
-							신청자 {detail.applicantCount}명이 기다리고 있어요.
-						</p>
 						<RecruitmentInfoCard recruitment={detail} />
-						<ApplicantList recruitmentId={id} />
+
+						{detail.requestStatus === "SEARCHING" && isEditing && (
+							<RecruitmentEditForm
+								recruitment={detail}
+								onCancel={() => setIsEditing(false)}
+								onSaved={(patch) => {
+									setDetail((current) =>
+										current ? { ...current, ...patch } : current,
+									);
+									setIsEditing(false);
+								}}
+							/>
+						)}
+
+						{detail.requestStatus === "SEARCHING" && !isEditing && (
+							<div>
+								<div className="flex gap-2">
+									<Button
+										type="button"
+										variant="secondary"
+										onClick={() => setIsEditing(true)}
+										className="h-12 flex-1"
+									>
+										모집 수정
+									</Button>
+									<Button
+										type="button"
+										variant="destructive"
+										isLoading={isCancelProcessing}
+										onClick={() => setIsCancelModalOpen(true)}
+										className="h-12 flex-1"
+									>
+										모집 취소
+									</Button>
+								</div>
+
+								{cancelError && (
+									<ErrorText className="mt-2 text-sm">
+										{cancelError}
+									</ErrorText>
+								)}
+							</div>
+						)}
+
+						{(detail.requestStatus === "SEARCHING" ||
+							detail.requestStatus ===
+								"PENDING_CONFIRMATION") &&
+							!isEditing && (
+							<ApplicantList recruitmentId={id} />
+						)}
+
+						{detail.requestStatus === "MATCHED" && (
+							<StatusText>매칭이 확정된 모집이에요.</StatusText>
+						)}
+
+						{detail.requestStatus === "CANCELLED" && (
+							<StatusText>취소한 모집이에요.</StatusText>
+						)}
+
+						{detail.requestStatus === "EXPIRED" && (
+							<StatusText>기간이 만료된 모집이에요.</StatusText>
+						)}
+
+						{detail.requestStatus === "CLOSED" && (
+							<StatusText>마감된 모집이에요.</StatusText>
+						)}
 					</>
 				)}
 			</section>
+			{isCancelModalOpen && (
+				<ConfirmModal
+					title="모집을 취소할까요?"
+					description="취소한 모집은 다시 신청받을 수 없어요."
+					cancelLabel="계속 모집하기"
+					confirmLabel="모집 취소"
+					confirmVariant="destructive"
+					onCancel={() => setIsCancelModalOpen(false)}
+					onConfirm={handleCancelRecruitment}
+				/>
+			)}
 		</main>
 	);
 }

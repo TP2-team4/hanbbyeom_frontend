@@ -1,7 +1,8 @@
 import type { ActivityHistory } from "../../../entities/activity-history";
-import type { UserProfile } from "../../../entities/user-profile";
+import { getCurrentUser, type UserProfile } from "../../../entities/user-profile";
 
 const MOCK_PROFILE: UserProfile = {
+	id: 1,
     nickname: "담백한하루",
     email: "user@hanbbyeom.com",
     conversationPreference: "SILENT",
@@ -25,7 +26,9 @@ const MOCK_ACTIVITY_HISTORY: ActivityHistory[] = [
 ];
 
 export async function getMyPage() {
-    // TODO: 마이페이지 API가 개발되면 실제 요청으로 교체
-    await new Promise((resolve) => setTimeout(resolve, 350));
-    return { profile: MOCK_PROFILE, activityHistory: MOCK_ACTIVITY_HISTORY };
+	const currentUser = await getCurrentUser();
+	return {
+		profile: { ...MOCK_PROFILE, ...currentUser },
+		activityHistory: MOCK_ACTIVITY_HISTORY,
+	};
 }

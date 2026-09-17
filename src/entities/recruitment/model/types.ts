@@ -54,22 +54,24 @@ export type RecruitmentDetail = {
 	minDistanceKm: number;
 	maxDistanceKm: number;
 	conversationStyle: ConversationStyle;
+	scheduledAt: string;
 	dateLabel: string;
 	time: string;
 	pace: string;
 	meetingPlace: string;
 	status: RecruitmentStatus;
+	requestStatus: MatchRequestStatus;
+	isOwner: boolean;
 	applicantCount: number;
 	authorNickname: string;
 	authorRating: number;
 	authorCompletedCount: number;
 };
 
-export type Applicant = {
-	id: number;
-	nickname: string;
-	conversationStyle: string;
-	averageRating: number;
-	completedActivityCount: number;
-	noShowReportCount: number;
-};
+export type MatchRequestStatus =
+	| "SEARCHING"
+	| "PENDING_CONFIRMATION"
+	| "MATCHED"
+	| "CANCELLED"
+	| "EXPIRED"
+	| "CLOSED";

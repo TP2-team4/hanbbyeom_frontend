@@ -1,5 +1,5 @@
 import type { ConversationStyle, Recruitment } from "../../../entities/recruitment";
-import { withUserIdHeader } from "../../../shared/lib/apiHeaders";
+import { authorizedFetch } from "../../../shared/lib/authorizedFetch";
 import { formatDate, toTimeValue } from "../../../shared/lib/date";
 
 type BoardItemResponse = {
@@ -46,9 +46,7 @@ function toRecruitment(item: BoardItemResponse): Recruitment {
 }
 
 export async function getRecruitments() {
-	const response = await fetch("/api/matching/board", {
-		headers: withUserIdHeader(),
-	});
+	const response = await authorizedFetch("/api/matching/board");
 
 	if (!response.ok) {
 		throw new Error("모집글을 불러오지 못했습니다.");

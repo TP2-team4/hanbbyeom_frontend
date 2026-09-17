@@ -2,10 +2,12 @@ import {
 	createContext,
 	useCallback,
 	useContext,
+	useEffect,
 	useMemo,
 	useState,
 	type ReactNode,
 } from "react";
+import { setSessionExpiredListener } from "../../shared/lib/sessionExpiry";
 
 const ACCESS_TOKEN_KEY = "accessToken"; // 임시 , localStorage에서 사용할 키 이름
 const ONBOARDING_REQUIRED_KEY = "onboardingRequired";
@@ -68,6 +70,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
 	const triggerSessionExpired = useCallback(() => {
 		setIsSessionExpired(true);
 	}, []);
+
+	// api/*.ts에서 401을 받았을 때 authorizedFetch가 이걸 통해 triggerSessionExpired를 호출함
+	useEffect(() => {
+		setSessionExpiredListener(triggerSessionExpired);
+		return () => setSessionExpiredListener(null);
+	}, [triggerSessionExpired]);
 
 	//하위 컴포넌트에 전달할 인증 관련 값을 객체로 만들기
 	const value = useMemo<AuthContextValue>(

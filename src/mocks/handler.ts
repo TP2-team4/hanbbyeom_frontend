@@ -2,6 +2,11 @@ import { http, HttpResponse } from "msw";
 
 // 모집글 생성 409 충돌(이미 진행 중인 모집글/신청 있음) 시뮬레이션용 — 새로고침하면 초기화됨
 let hasActiveMatchRequest = false;
+let hasPendingApplication = true;
+let mockRequestStatus:
+	| "SEARCHING"
+	| "PENDING_CONFIRMATION"
+	| "MATCHED" = "PENDING_CONFIRMATION";
 
 export const handlers = [
 	//모집글 작성 - 코스 전체 리스트
@@ -66,6 +71,15 @@ export const handlers = [
 		console.log("클라이언트가 보낸 데이터 : ", body);
 		return HttpResponse.json({
 			accessToken: "mock-access-token",
+		});
+	}),
+
+	// 현재 로그인 사용자 조회
+	http.get("/api/users/me", () => {
+		return HttpResponse.json({
+			id: 1,
+			email: "user@example.com",
+			nickname: "담백한하루",
 		});
 	}),
 
@@ -171,8 +185,16 @@ export const handlers = [
 				pendingApplicantCount: number;
 			}
 		> = {
-			1: { status: "SEARCHING", isOwner: false, pendingApplicantCount: 0 },
-			2: { status: "PENDING_CONFIRMATION", isOwner: true, pendingApplicantCount: 1 },
+			1: {
+				status: "SEARCHING",
+				isOwner: false,
+				pendingApplicantCount: 0,
+			},
+			2: {
+				status: mockRequestStatus,
+				isOwner: true,
+				pendingApplicantCount: hasPendingApplication ? 1 : 0,
+			},
 			3: { status: "MATCHED", isOwner: true, pendingApplicantCount: 0 },
 			4: { status: "CANCELLED", isOwner: true, pendingApplicantCount: 0 },
 			5: { status: "EXPIRED", isOwner: false, pendingApplicantCount: 0 },
@@ -208,6 +230,17 @@ export const handlers = [
 		});
 	}),
 
+	// 모집글 취소
+	http.post("/api/matching/requests/:id/cancel", () => {
+		return new HttpResponse(null, { status: 204 });
+	}),
+
+	// 모집글 일정·대화 수준 수정
+	http.patch("/api/matching/requests/:id", async ({ request }) => {
+		await request.json();
+		return new HttpResponse(null, { status: 204 });
+	}),
+
 	//모집 게시판 - 신청
 	http.post("/api/matching/board/:id/apply", () => {
 		return new HttpResponse(null, {
@@ -218,6 +251,40 @@ export const handlers = [
 
 	//모집 게시판 - 신청 취소
 	http.post("/api/matching/board/:id/apply/cancel", () => {
+		return new HttpResponse(null, { status: 204 });
+	}),
+
+	// 모집글 - 현재 대기 중인 신청 조회
+	http.get("/api/matching/requests/:id/pending-application", ({ params }) => {
+		const recruitmentId = Number(params.id);
+
+		if (recruitmentId !== 2 || !hasPendingApplication) {
+			return new HttpResponse(null, { status: 404 });
+		}
+
+		return HttpResponse.json({
+			activityMatchId: 101,
+			decisionExpiresAt: "2026-09-18T20:00:00+09:00",
+		});
+	}),
+
+	// 모집글 - 신청 수락
+	http.post("/api/matching/matches/:id/accept", ({ params }) => {
+		const activityMatchId = Number(params.id);
+		hasPendingApplication = false;
+		mockRequestStatus = "MATCHED";
+
+		return HttpResponse.json({
+			activityMatchId,
+			meetingCode: "123456",
+			confirmedAt: new Date().toISOString(),
+		});
+	}),
+
+	// 모집글 - 신청 거절
+	http.post("/api/matching/matches/:id/reject", () => {
+		hasPendingApplication = false;
+		mockRequestStatus = "SEARCHING";
 		return new HttpResponse(null, { status: 204 });
 	}),
 ];

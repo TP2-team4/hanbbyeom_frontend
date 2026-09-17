@@ -1,5 +1,9 @@
-import type { ConversationStyle, RecruitmentDetail } from "../model/types";
-import { withUserIdHeader } from "../../../shared/lib/apiHeaders";
+import type {
+	ConversationStyle,
+	MatchRequestStatus,
+	RecruitmentDetail,
+} from "../model/types";
+import { authorizedFetch } from "../../../shared/lib/authorizedFetch";
 import { formatDate, toTimeValue } from "../../../shared/lib/date";
 
 type MatchRequestResponse = {
@@ -12,13 +16,7 @@ type MatchRequestResponse = {
 	meetingPoint: string;
 	scheduledAt: string;
 	talkLevel: ConversationStyle;
-	status:
-		| "SEARCHING"
-		| "PENDING_CONFIRMATION"
-		| "MATCHED"
-		| "CANCELLED"
-		| "EXPIRED"
-		| "CLOSED";
+	status: MatchRequestStatus;
 	isOwner: boolean;
 	pendingApplicantCount: number;
 	author: {
@@ -34,7 +32,9 @@ function formatPace(totalSeconds: number) {
 	return `${minutes}'${seconds}"`;
 }
 
-function toRecruitmentDetail(response: MatchRequestResponse): RecruitmentDetail {
+function toRecruitmentDetail(
+	response: MatchRequestResponse,
+): RecruitmentDetail {
 	return {
 		id: response.id,
 		authorId: response.id,
@@ -42,6 +42,7 @@ function toRecruitmentDetail(response: MatchRequestResponse): RecruitmentDetail 
 		minDistanceKm: response.distanceMinMeters / 1000,
 		maxDistanceKm: response.distanceMaxMeters / 1000,
 		conversationStyle: response.talkLevel,
+		scheduledAt: response.scheduledAt,
 		dateLabel: formatDate(response.scheduledAt),
 		time: toTimeValue(new Date(response.scheduledAt)),
 		pace: `${formatPace(response.paceMinSec)} ~ ${formatPace(response.paceMaxSec)}`,
@@ -52,13 +53,13 @@ function toRecruitmentDetail(response: MatchRequestResponse): RecruitmentDetail 
 		authorNickname: response.author.nickname,
 		authorRating: response.author.rating ?? 0,
 		authorCompletedCount: response.author.completedCount ?? 0,
+		requestStatus: response.status,
+		isOwner: response.isOwner,
 	};
 }
 
 export async function getRecruitmentDetail(id: number) {
-	const response = await fetch(`/api/matching/requests/${id}`, {
-		headers: withUserIdHeader(),
-	});
+	const response = await authorizedFetch(`/api/matching/requests/${id}`);
 
 	if (!response.ok) {
 		return null;

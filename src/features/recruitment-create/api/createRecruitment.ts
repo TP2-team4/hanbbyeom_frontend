@@ -1,5 +1,5 @@
 import type { ConversationStyle } from "../../../entities/recruitment";
-import { withUserIdHeader } from "../../../shared/lib/apiHeaders";
+import { authorizedFetch } from "../../../shared/lib/authorizedFetch";
 
 export type RecruitmentCreateRequest = {
 	courseId: number;
@@ -20,9 +20,9 @@ function toScheduledAt(date: string, time: string) {
 }
 
 export async function createRecruitment(request: RecruitmentCreateRequest) {
-	const response = await fetch("/api/matching/requests", {
+	const response = await authorizedFetch("/api/matching/requests", {
 		method: "POST",
-		headers: withUserIdHeader({ "Content-Type": "application/json" }),
+		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify({
 			courseId: request.courseId,
 			meetingPoint: request.meetingPlace,

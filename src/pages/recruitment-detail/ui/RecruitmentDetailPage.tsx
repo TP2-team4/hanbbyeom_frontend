@@ -128,7 +128,7 @@ export default function RecruitmentDetailPage() {
 					<Button
 						type="button"
 						variant={detail.recruitment.status === "applied" ? "secondary" : "primary"}
-						disabled={isProcessing}
+						isLoading={isProcessing}
 						onClick={() =>
 							setPending(
 								detail.recruitment.status === "applied" ? "cancel" : "apply",
@@ -136,7 +136,7 @@ export default function RecruitmentDetailPage() {
 						}
 						className="h-14 w-full"
 					>
-						{isProcessing ? "처리 중…" : STATUS_LABEL[detail.recruitment.status]}
+						{STATUS_LABEL[detail.recruitment.status]}
 					</Button>
 				</footer>
 			)}

@@ -95,7 +95,7 @@ export function ApplicantList({ recruitmentId }: { recruitmentId: number }) {
 									<Button
 										type="button"
 										variant="destructive"
-										disabled={isProcessing}
+										isLoading={isProcessing}
 										onClick={() =>
 											setPending({
 												type: "reject",
@@ -104,12 +104,12 @@ export function ApplicantList({ recruitmentId }: { recruitmentId: number }) {
 										}
 										className="h-10 px-4 text-sm"
 									>
-										{isProcessing ? "처리 중…" : "거절"}
+										거절
 									</Button>
 									<Button
 										type="button"
 										variant="primary"
-										disabled={isProcessing}
+										isLoading={isProcessing}
 										onClick={() =>
 											setPending({
 												type: "accept",
@@ -118,7 +118,7 @@ export function ApplicantList({ recruitmentId }: { recruitmentId: number }) {
 										}
 										className="h-10 px-4 text-sm"
 									>
-										{isProcessing ? "처리 중…" : "수락"}
+										수락
 									</Button>
 								</div>
 							</div>

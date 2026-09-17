@@ -5,6 +5,8 @@ type ButtonVariant = "primary" | "secondary" | "destructive";
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 	children: ReactNode;
 	variant?: ButtonVariant;
+	isLoading?: boolean;
+	loadingLabel?: string;
 }
 
 const variantStyles: Record<ButtonVariant, string> = {
@@ -22,16 +24,20 @@ export default function Button({
 	variant = "primary",
 	className = "",
 	onClick,
+	isLoading = false,
+	loadingLabel = "처리 중…",
+	disabled,
 	...props
 }: ButtonProps) {
 	return (
 		<button
 			type={type}
 			onClick={onClick}
+			disabled={disabled || isLoading}
 			className={`flex items-center justify-center rounded-md px-6 py-4 text-base font-bold transition-colors disabled:cursor-not-allowed disabled:bg-disabled disabled:text-placeholder ${variantStyles[variant]} ${className}`}
 			{...props}
 		>
-			{children}
+			{isLoading ? loadingLabel : children}
 		</button>
 	);
 }

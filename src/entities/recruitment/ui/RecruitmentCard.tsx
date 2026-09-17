@@ -85,7 +85,7 @@ export function RecruitmentCard({
 							? "secondary"
 							: "primary"
 					}
-					disabled={isProcessing}
+					isLoading={isProcessing}
 					onClick={(event) => {
 						event.stopPropagation();
 						onApply?.(recruitment.id);
@@ -93,7 +93,7 @@ export function RecruitmentCard({
 					onKeyDown={(event) => event.stopPropagation()}
 					className="h-12 shrink-0 rounded-md px-4 text-sm font-bold"
 				>
-					{isProcessing ? "처리 중…" : STATUS_LABEL[recruitment.status]}
+					{STATUS_LABEL[recruitment.status]}
 				</Button>
 			</div>
 		</article>

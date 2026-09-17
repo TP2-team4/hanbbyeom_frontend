@@ -1,5 +1,13 @@
-export type ActivityReviewStatus = "completed" | "required";
 export type TalkLevel = "SILENT" | "LIGHT_CHAT";
+
+export type ActivityHistoryStatus =
+    | "UPCOMING"
+    | "IN_PROGRESS"
+    | "REVIEW_REQUIRED"
+    | "REVIEW_COMPLETED"
+    | "COMPLETED"
+    | "CANCELLED"
+    | "NO_SHOW_REPORTED";
 
 export type ActivityHistory = {
     id: number;
@@ -9,5 +17,5 @@ export type ActivityHistory = {
     distanceKm: number;
     partnerNickname: string;
     partnerTalkLevel: TalkLevel;
-    reviewStatus: ActivityReviewStatus;
+    status: ActivityHistoryStatus;
 };

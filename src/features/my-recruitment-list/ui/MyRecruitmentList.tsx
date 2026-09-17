@@ -1,16 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import {
-	RecruitmentSummaryCard,
-	type ConversationStyle,
-} from "../../../entities/recruitment";
+import { MyRecruitmentCard } from "../../../entities/recruitment";
 import { useMyRecruitments } from "../model/useMyRecruitments";
 import { StatusText } from "../../../shared/ui/status-text";
 import { ErrorText } from "../../../shared/ui/error-text";
-
-const CONVERSATION_STYLE_LABEL: Record<ConversationStyle, string> = {
-	SILENT: "조용히",
-	LIGHT_CHAT: "가벼운 대화",
-};
 
 export function MyRecruitmentList() {
 	const navigate = useNavigate();
@@ -47,16 +39,9 @@ export function MyRecruitmentList() {
 				{!isLoading &&
 					!error &&
 					recruitments.map((r) => (
-						<RecruitmentSummaryCard
+						<MyRecruitmentCard
 							key={r.id}
-							title={`${r.location} · ${r.minDistanceKm}~${r.maxDistanceKm}km`}
-							subtitle={`${r.dateLabel} ${r.time} · ${CONVERSATION_STYLE_LABEL[r.conversationStyle]}`}
-							badgeLabel={
-								r.applicantCount > 0
-									? `신청자 ${r.applicantCount}명`
-									: "대기 중"
-							}
-							badgeTone={r.applicantCount > 0 ? "green" : "gray"}
+							recruitment={r}
 							onClick={() => navigate(`/recruitments/${r.id}/applicants`)}
 						/>
 					))}

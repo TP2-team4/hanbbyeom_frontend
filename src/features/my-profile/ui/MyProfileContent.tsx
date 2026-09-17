@@ -1,13 +1,20 @@
 import { useNavigate } from "react-router-dom";
 import { ActivityHistoryItem } from "../../../entities/activity-history";
+import { MyRecruitmentCard } from "../../../entities/recruitment";
 import { ProfileSummaryCard } from "../../../entities/user-profile";
 import { StatusText } from "../../../shared/ui/status-text";
 import { ErrorText } from "../../../shared/ui/error-text";
 import { useMyPage } from "../model/useMyPage";
+import { useMyRecruitments } from "../../my-recruitment-list";
 
 export function MyProfileContent() {
 	const navigate = useNavigate();
 	const { profile, activityHistory, isLoading, error } = useMyPage();
+	const {
+		recruitments,
+		isLoading: isRecruitmentsLoading,
+		error: recruitmentsError,
+	} = useMyRecruitments(3);
 	const previewActivityHistory = activityHistory.slice(0, 3);
 
 	if (isLoading)
@@ -22,6 +29,55 @@ export function MyProfileContent() {
 	return (
 		<>
 			<ProfileSummaryCard profile={profile} />
+
+			<section className="mt-6" aria-labelledby="my-recruitment-title">
+				<div className="flex items-center justify-between">
+					<h2
+						id="my-recruitment-title"
+						className="text-xl font-bold text-title"
+					>
+						내 모집글
+					</h2>
+					<button
+						type="button"
+						onClick={() => navigate("/recruitments/mine")}
+						className="flex items-center text-sm font-medium text-body"
+					>
+						전체 보기
+						<svg
+							aria-hidden="true"
+							viewBox="0 0 24 24"
+							className="size-4 fill-none stroke-current"
+							strokeWidth="2"
+						>
+							<path d="m9 5 7 7-7 7" />
+						</svg>
+					</button>
+				</div>
+				<div className="mt-3 flex flex-col gap-2">
+					{isRecruitmentsLoading && (
+						<StatusText>내 모집글을 불러오는 중...</StatusText>
+					)}
+					{recruitmentsError && <ErrorText>{recruitmentsError}</ErrorText>}
+					{!isRecruitmentsLoading &&
+						!recruitmentsError &&
+						recruitments.length === 0 && (
+							<StatusText>작성한 모집글이 없어요.</StatusText>
+						)}
+					{!isRecruitmentsLoading &&
+						!recruitmentsError &&
+						recruitments.map((r) => (
+							<MyRecruitmentCard
+								key={r.id}
+								recruitment={r}
+								onClick={() =>
+									navigate(`/recruitments/${r.id}/applicants`)
+								}
+							/>
+						))}
+				</div>
+			</section>
+
 			<section
 				className="mt-6"
 				aria-labelledby="activity-history-title"

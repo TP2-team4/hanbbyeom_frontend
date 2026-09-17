@@ -1,6 +1,6 @@
 export { ActivityHistoryItem } from "./ui/ActivityHistoryItem";
 export type {
 	ActivityHistory,
-	ActivityReviewStatus,
+	ActivityHistoryStatus,
 	TalkLevel,
 } from "./model/types";

@@ -12,6 +12,7 @@ import {
 } from "../../../entities/user-profile";
 import Button from "../../../shared/ui/button";
 import { StatusText } from "../../../shared/ui/status-text";
+import { ErrorText } from "../../../shared/ui/error-text";
 import { useApplication } from "../../../features/recruitment-detail";
 
 type DetailData = {
@@ -102,9 +103,9 @@ export default function RecruitmentDetailPage() {
 					<StatusText>모집글을 불러오는 중...</StatusText>
 				)}
 				{loadError && (
-					<p role="alert" className="py-10 text-center text-sm text-error-text">
+					<ErrorText className="py-10 text-center text-sm">
 						{loadError}
-					</p>
+					</ErrorText>
 				)}
 				{!loadError && (!isValidId || detail === null) && (
 					<StatusText>모집글을 찾을 수 없어요.</StatusText>
@@ -119,11 +120,7 @@ export default function RecruitmentDetailPage() {
 
 			{detail && (
 				<footer className="sticky bottom-0 border-t border-divider bg-surface p-4">
-					{error && (
-						<p role="alert" className="mb-2 text-sm text-error-text">
-							{error}
-						</p>
-					)}
+					{error && <ErrorText className="mb-2 text-sm">{error}</ErrorText>}
 					{feedback && (
 						<p className="mb-2 text-sm text-body">{feedback}</p>
 					)}

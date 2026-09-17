@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { RecruitmentSummaryCard } from "../../../entities/recruitment";
 import { useMyAppliedRecruitment } from "../model/useMyAppliedRecruitment";
+import { StatusText } from "../../../shared/ui/status-text";
+import { ErrorText } from "../../../shared/ui/error-text";
 
 export function AppliedRecruitmentList() {
 	const navigate = useNavigate();
@@ -32,12 +34,8 @@ export function AppliedRecruitmentList() {
 				</button>
 			</div>
 			<div className="flex flex-col gap-2 mt-4">
-				{isLoading && <p>...</p>}
-				{error && (
-					<p role="alert" className="text-sm text-error-text">
-						{error}
-					</p>
-				)}
+				{isLoading && <StatusText>내가 신청한 모집을 불러오는 중...</StatusText>}
+				{error && <ErrorText>{error}</ErrorText>}
 				{!isLoading &&
 					!error &&
 					recruitments.map((r) => (

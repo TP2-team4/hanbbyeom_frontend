@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { Applicant } from "../../../entities/recruitment";
 import Button from "../../../shared/ui/button";
 import { StatusText } from "../../../shared/ui/status-text";
+import { ErrorText } from "../../../shared/ui/error-text";
 import { useApplicants } from "../model/useApplicants";
 import { useNavigate } from "react-router-dom";
 
@@ -48,12 +49,9 @@ export function ApplicantList({ recruitmentId }: { recruitmentId: number }) {
 		<div className="flex flex-col gap-3">
 			{isLoading && <StatusText>신청자 목록을 불러오는 중...</StatusText>}
 			{error && (
-				<p
-					role="alert"
-					className="py-10 text-center text-sm text-error-text"
-				>
+				<ErrorText className="py-10 text-center text-sm">
 					{error}
-				</p>
+				</ErrorText>
 			)}
 			{!isLoading && !error && applicants.length === 0 && (
 				<StatusText>아직 신청자가 없어요.</StatusText>
@@ -127,12 +125,7 @@ export function ApplicantList({ recruitmentId }: { recruitmentId: number }) {
 					);
 				})}
 			{actionError && (
-				<p
-					role="alert"
-					className="text-sm text-error-text"
-				>
-					{actionError}
-				</p>
+				<ErrorText>{actionError}</ErrorText>
 			)}
 
 			{pending && (

@@ -1,6 +1,7 @@
 import { ActivityHistoryItem } from "../../../entities/activity-history";
 import { ProfileSummaryCard } from "../../../entities/user-profile";
 import { StatusText } from "../../../shared/ui/status-text";
+import { ErrorText } from "../../../shared/ui/error-text";
 import { useMyPage } from "../model/useMyPage";
 
 export function MyProfileContent() {
@@ -10,12 +11,9 @@ export function MyProfileContent() {
 		return <StatusText className="py-16">마이페이지를 불러오는 중...</StatusText>;
 	if (error || !profile)
 		return (
-			<p
-				role="alert"
-				className="py-16 text-center text-sm text-error-text"
-			>
+			<ErrorText className="py-16 text-center text-sm">
 				{error ?? "프로필 정보가 없어요."}
-			</p>
+			</ErrorText>
 		);
 
 	return (

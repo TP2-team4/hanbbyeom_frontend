@@ -7,6 +7,7 @@ import {
 } from "../../../entities/recruitment";
 import { ApplicantList } from "../../../features/recruitment-applicants/ui/ApplicantList";
 import { StatusText } from "../../../shared/ui/status-text";
+import { ErrorText } from "../../../shared/ui/error-text";
 
 export default function MyRecruitmentDetailPage() {
 	const navigate = useNavigate();
@@ -66,9 +67,9 @@ export default function MyRecruitmentDetailPage() {
 					<StatusText>모집글을 불러오는 중...</StatusText>
 				)}
 				{loadError && (
-					<p role="alert" className="py-10 text-center text-sm text-error-text">
+					<ErrorText className="py-10 text-center text-sm">
 						{loadError}
-					</p>
+					</ErrorText>
 				)}
 				{!loadError && (!isValidId || detail === null) && (
 					<StatusText>모집글을 찾을 수 없어요.</StatusText>

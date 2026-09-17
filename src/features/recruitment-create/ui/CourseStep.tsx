@@ -5,6 +5,7 @@ import { SelectableCard } from "../../../shared/ui/selectable-card";
 import { useCourses } from "../model/useCourses";
 import Input from "../../../shared/ui/input";
 import { StatusText } from "../../../shared/ui/status-text";
+import { ErrorText } from "../../../shared/ui/error-text";
 import type { RecruitmentCreateForm } from "../model/useRecruitmentCreateForm";
 
 type Props = {
@@ -41,12 +42,9 @@ export function CourseStep({ form }: Props) {
 
 				{isLoading && <StatusText>코스를 불러오는 중...</StatusText>}
 				{error && (
-					<p
-						role="alert"
-						className="py-10 text-center text-sm text-error-text"
-					>
+					<ErrorText className="py-10 text-center text-sm">
 						{error}
-					</p>
+					</ErrorText>
 				)}
 				{!isLoading && !error && (
 					<div className="mt-2 flex flex-col gap-3">

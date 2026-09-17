@@ -1,4 +1,5 @@
 import Input from "../../../shared/ui/input";
+import { ErrorText } from "../../../shared/ui/error-text";
 
 type Props = {
     password: string;
@@ -43,9 +44,7 @@ export function PasswordFields({
                     onBlur={onPasswordBlur}
                 />
                 {passwordError && (
-                    <p role="alert" className="text-xs text-error-text">
-                        {passwordError}
-                    </p>
+                    <ErrorText className="text-xs">{passwordError}</ErrorText>
                 )}
             </div>
             <div className="flex flex-col gap-2">
@@ -82,13 +81,12 @@ export function PasswordFields({
                             비밀번호가 일치해요.
                         </p>
                     ) : (
-                        <p
+                        <ErrorText
                             id="password-confirm-error"
-                            role="alert"
-                            className="text-xs text-error-text"
+                            className="text-xs"
                         >
                             비밀번호가 일치하지 않아요.
-                        </p>
+                        </ErrorText>
                     ))}
             </div>
         </>

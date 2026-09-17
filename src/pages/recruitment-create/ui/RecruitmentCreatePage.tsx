@@ -6,6 +6,7 @@ import {
 	useRecruitmentCreateForm,
 } from "../../../features/recruitment-create";
 import Button from "../../../shared/ui/button";
+import { ErrorText } from "../../../shared/ui/error-text";
 
 export default function RecruitmentCreatePage() {
 	const navigate = useNavigate();
@@ -17,7 +18,6 @@ export default function RecruitmentCreatePage() {
 
 	const handlePrimaryAction = () => {
         if (isLastStep) {
-            //TODO : api 연동 필요 
 			void form.submit();
 			return;
 		}
@@ -83,12 +83,9 @@ export default function RecruitmentCreatePage() {
 
 			<footer className="sticky bottom-0 border-t border-divider bg-surface p-4">
 				{form.submitError && (
-					<p
-						role="alert"
-						className="mb-2 text-xs text-error-text"
-					>
+					<ErrorText className="mb-2 text-xs">
 						{form.submitError}
-					</p>
+					</ErrorText>
 				)}
 				<Button
 					type="button"

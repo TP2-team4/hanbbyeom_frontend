@@ -10,6 +10,7 @@ import { RecruitmentFilterModal } from "./RecruitmentFilterModal";
 import { Dropdown } from "../../../shared/ui/dropdown";
 import Button from "../../../shared/ui/button";
 import { StatusText } from "../../../shared/ui/status-text";
+import { ErrorText } from "../../../shared/ui/error-text";
 
 type SortOption = "LATEST" | "DATE" | "DISTANCE";
 
@@ -121,18 +122,11 @@ export function RecruitmentList() {
 			<div className="flex flex-col gap-3 px-6 pb-10 pt-5">
 				{isLoading && <StatusText>모집글을 불러오는 중...</StatusText>}
 				{error && (
-					<p
-						role="alert"
-						className="py-10 text-center text-sm text-error-text"
-					>
+					<ErrorText className="py-10 text-center text-sm">
 						{error}
-					</p>
+					</ErrorText>
 				)}
-				{actionError && (
-					<p role="alert" className="text-sm text-error-text">
-						{actionError}
-					</p>
-				)}
+				{actionError && <ErrorText>{actionError}</ErrorText>}
 				{!isLoading && !error && filteredRecruitments.length === 0 && (
 					<StatusText>조건에 맞는 모집글이 없어요.</StatusText>
 				)}

@@ -4,6 +4,8 @@ import {
 	type ConversationStyle,
 } from "../../../entities/recruitment";
 import { useMyRecruitments } from "../model/useMyRecruitments";
+import { StatusText } from "../../../shared/ui/status-text";
+import { ErrorText } from "../../../shared/ui/error-text";
 
 const CONVERSATION_STYLE_LABEL: Record<ConversationStyle, string> = {
 	SILENT: "조용히",
@@ -40,12 +42,8 @@ export function MyRecruitmentList() {
 				</button>
 			</div>
 			<div className="flex flex-col gap-2 mt-4">
-				{isLoading && <p>...</p>}
-				{error && (
-					<p role="alert" className="text-sm text-error-text">
-						{error}
-					</p>
-				)}
+				{isLoading && <StatusText>모집 중인 내 글을 불러오는 중...</StatusText>}
+				{error && <ErrorText>{error}</ErrorText>}
 				{!isLoading &&
 					!error &&
 					recruitments.map((r) => (

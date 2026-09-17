@@ -4,6 +4,7 @@ import Button from "../../../shared/ui/button";
 import Input from "../../../shared/ui/input";
 import { useAuth } from "../../../app/provider/AuthProvider";
 import { requestLogin } from "../../../features/login";
+import { ErrorText } from "../../../shared/ui/error-text";
 
 export default function LoginPage() {
     const navigate = useNavigate();
@@ -90,9 +91,9 @@ export default function LoginPage() {
                         </div>
 
                         {error && (
-                            <p role="alert" className="w-full text-sm text-error-text">
+                            <ErrorText className="w-full text-sm">
                                 {error}
-                            </p>
+                            </ErrorText>
                         )}
 
                         <div className="mt-2 flex w-full flex-col gap-3">

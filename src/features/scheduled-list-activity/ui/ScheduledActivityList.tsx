@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { ScheduledActivityCard } from "../../../entities/activity";
 import { useScheduledActivities } from "../model/useScheduledActivities";
+import { StatusText } from "../../../shared/ui/status-text";
+import { ErrorText } from "../../../shared/ui/error-text";
 
 export function ScheduledActivityList() {
 	const navigate = useNavigate();
@@ -32,12 +34,8 @@ export function ScheduledActivityList() {
 				</button>
 			</div>
 			<div className="flex flex-col gap-1 mt-4">
-				{isLoading && <p>...</p>}
-				{error && (
-					<p role="alert" className="text-sm text-error-text">
-						{error}
-					</p>
-				)}
+				{isLoading && <StatusText>예정된 활동을 불러오는 중...</StatusText>}
+				{error && <ErrorText>{error}</ErrorText>}
 				{!isLoading &&
 					!error &&
 					activities.map((a) => (

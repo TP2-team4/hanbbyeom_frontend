@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { usePasswordReset } from "../../../features/password-reset/model/usePasswordReset";
 import Button from "../../../shared/ui/button";
 import Input from "../../../shared/ui/input";
+import { ErrorText } from "../../../shared/ui/error-text";
 import icComplete from "../../../shared/assets/images/ic_complete.png";
 export default function PasswordResetPage() {
     const navigate = useNavigate();
@@ -142,9 +143,9 @@ export default function PasswordResetPage() {
                             </div>
                         )}
                         {form.verificationError && (
-                            <p role="alert" className="text-xs text-error-text">
+                            <ErrorText className="text-xs">
                                 {form.verificationError}
-                            </p>
+                            </ErrorText>
                         )}
                     </div>
                 )}
@@ -228,9 +229,9 @@ export default function PasswordResetPage() {
                             )}
                         </div>
                         {form.submitError && (
-                            <p role="alert" className="text-xs text-error-text">
+                            <ErrorText className="text-xs">
                                 {form.submitError}
-                            </p>
+                            </ErrorText>
                         )}
                         <Button
                             type="submit"

@@ -1,5 +1,6 @@
 import Button from "../../../shared/ui/button";
 import { SelectableCard } from "../../../shared/ui/selectable-card";
+import { ErrorText } from "../../../shared/ui/error-text";
 import { useConversationPreference } from "../model/useConversationPreference";
 import { OPTIONS } from "../model/types";
 
@@ -55,12 +56,9 @@ export function ConversationPreferenceForm({ onSuccess }: Props) {
 				</p>
 
 				{form.submitError && (
-					<p
-						role="alert"
-						className="mt-3 text-xs text-error-text"
-					>
+					<ErrorText className="mt-3 text-xs">
 						{form.submitError}
-					</p>
+					</ErrorText>
 				)}
 			</div>
 

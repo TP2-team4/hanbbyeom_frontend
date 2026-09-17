@@ -1,5 +1,6 @@
 import { ChatRoomItem } from "../../../entities/chat-room";
 import { StatusText } from "../../../shared/ui/status-text";
+import { ErrorText } from "../../../shared/ui/error-text";
 import { useChatRooms } from "../model/useChatRooms";
 
 export function ChatRoomList() {
@@ -11,12 +12,9 @@ export function ChatRoomList() {
 
     if (error) {
         return (
-            <p
-                role="alert"
-                className="self-center text-center text-sm text-error-text"
-            >
+            <ErrorText className="self-center text-center text-sm">
                 {error}
-            </p>
+            </ErrorText>
         );
     }
 

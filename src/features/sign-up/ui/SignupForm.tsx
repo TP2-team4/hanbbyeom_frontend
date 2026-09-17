@@ -1,5 +1,6 @@
 import Button from "../../../shared/ui/button";
 import Input from "../../../shared/ui/input";
+import { ErrorText } from "../../../shared/ui/error-text";
 import { useSignupForm } from "../model/useSignupForm";
 import { EmailVerificationField } from "./EmailVerificationField";
 import { PasswordFields } from "./PasswordFields";
@@ -55,9 +56,9 @@ export function SignupForm({ onSuccess }: Props) {
                     required
                 />
                 {form.nicknameError && (
-                    <p role="alert" className="text-xs text-error-text">
+                    <ErrorText className="text-xs">
                         {form.nicknameError}
-                    </p>
+                    </ErrorText>
                 )}
             </div>
 
@@ -73,9 +74,9 @@ export function SignupForm({ onSuccess }: Props) {
 
             <footer className="-mx-4 mt-2 border-t border-divider p-4">
                 {form.submitError && (
-                    <p role="alert" className="mb-2 text-xs text-error-text">
+                    <ErrorText className="mb-2 text-xs">
                         {form.submitError}
-                    </p>
+                    </ErrorText>
                 )}
                 <Button
                     type="submit"

@@ -1,5 +1,6 @@
 import Button from "../../../shared/ui/button";
 import Input from "../../../shared/ui/input";
+import { ErrorText } from "../../../shared/ui/error-text";
 import type { EmailVerificationStatus } from "../model/types";
 
 type Props = {
@@ -82,9 +83,7 @@ export function EmailVerificationField({
                 </Button>
             </div>
             {emailError && (
-                <p role="alert" className="text-xs text-error-text">
-                    {emailError}
-                </p>
+                <ErrorText className="text-xs">{emailError}</ErrorText>
             )}
 
             {showsCode && (
@@ -154,14 +153,14 @@ export function EmailVerificationField({
                 <p className="text-xs text-body">이메일 인증이 완료됐어요.</p>
             )}
             {visibleVerificationError && (
-                <p role="alert" className="text-xs text-error-text">
+                <ErrorText className="text-xs">
                     {visibleVerificationError}
-                </p>
+                </ErrorText>
             )}
             {status === "error" && !visibleVerificationError && (
-                <p role="alert" className="text-xs text-error-text">
+                <ErrorText className="text-xs">
                     인증번호 요청에 실패했어요. 다시 시도해 주세요.
-                </p>
+                </ErrorText>
             )}
         </div>
     );

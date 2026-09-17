@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { ScheduledActivityCard } from "../../../entities/activity";
 import { useScheduledActivities } from "../../../features/scheduled-list-activity";
 import { StatusText } from "../../../shared/ui/status-text";
+import { ErrorText } from "../../../shared/ui/error-text";
 
 export default function ActivityPage() {
 	const navigate = useNavigate();
@@ -33,12 +34,9 @@ export default function ActivityPage() {
 			<section className="flex flex-col gap-2 px-6 py-6">
 				{isLoading && <StatusText>예정된 활동을 불러오는 중...</StatusText>}
 				{error && (
-					<p
-						role="alert"
-						className="py-10 text-center text-sm text-error-text"
-					>
+					<ErrorText className="py-10 text-center text-sm">
 						{error}
-					</p>
+					</ErrorText>
 				)}
 				{!isLoading && !error && activities.length === 0 && (
 					<StatusText>예정된 활동이 없어요.</StatusText>

@@ -8,6 +8,7 @@ import { useMyPage } from "../model/useMyPage";
 export function MyProfileContent() {
 	const navigate = useNavigate();
 	const { profile, activityHistory, isLoading, error } = useMyPage();
+	const previewActivityHistory = activityHistory.slice(0, 3);
 
 	if (isLoading)
 		return <StatusText className="py-16">마이페이지를 불러오는 중...</StatusText>;
@@ -25,15 +26,32 @@ export function MyProfileContent() {
 				className="mt-6"
 				aria-labelledby="activity-history-title"
 			>
-				<h2
-					id="activity-history-title"
-					className="text-xl font-bold text-title"
-				>
-					활동 이력
-				</h2>
-				{activityHistory.length > 0 ? (
+				<div className="flex items-center justify-between">
+					<h2
+						id="activity-history-title"
+						className="text-xl font-bold text-title"
+					>
+						활동 이력
+					</h2>
+					<button
+						type="button"
+						onClick={() => navigate("/my-page/activity-history")}
+						className="flex items-center text-sm font-medium text-body"
+					>
+						전체 보기
+						<svg
+							aria-hidden="true"
+							viewBox="0 0 24 24"
+							className="size-4 fill-none stroke-current"
+							strokeWidth="2"
+						>
+							<path d="m9 5 7 7-7 7" />
+						</svg>
+					</button>
+				</div>
+				{previewActivityHistory.length > 0 ? (
 					<ul className="mt-3 overflow-hidden rounded-lg border border-border bg-surface">
-						{activityHistory.map((activity) => (
+						{previewActivityHistory.map((activity) => (
 							<ActivityHistoryItem
 								key={activity.id}
 								activity={activity}

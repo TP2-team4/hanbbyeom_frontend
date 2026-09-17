@@ -2,10 +2,9 @@ import type { UserProfile } from "../model/types";
 
 type Props = {
     profile: UserProfile;
-    onEdit?: () => void;
 };
 
-export function ProfileSummaryCard({ profile, onEdit }: Props) {
+export function ProfileSummaryCard({ profile }: Props) {
     return (
         <section className="rounded-lg border border-border bg-surface p-6" aria-labelledby="profile-nickname">
             <div className="flex items-center gap-4">
@@ -18,7 +17,6 @@ export function ProfileSummaryCard({ profile, onEdit }: Props) {
                         선호 대화 수준 · {profile.conversationPreference === "SILENT" ? "조용히" : "가벼운 대화"}
                     </p>
                 </div>
-                <button type="button" onClick={onEdit} className="shrink-0 px-2 py-2 text-sm font-medium text-body">수정</button>
             </div>
 
             <dl className="mt-6 grid grid-cols-3 gap-2">

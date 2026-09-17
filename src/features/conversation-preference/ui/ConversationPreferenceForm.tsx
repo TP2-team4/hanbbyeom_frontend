@@ -2,14 +2,20 @@ import Button from "../../../shared/ui/button";
 import { SelectableCard } from "../../../shared/ui/selectable-card";
 import { ErrorText } from "../../../shared/ui/error-text";
 import { useConversationPreference } from "../model/useConversationPreference";
-import { OPTIONS } from "../model/types";
+import { OPTIONS, type ConversationPreference } from "../model/types";
 
 type Props = {
-	onSuccess: () => void;
+	onSuccess: (preference: ConversationPreference) => void;
+	initialPreference?: ConversationPreference;
+	submitLabel?: string;
 };
 
-export function ConversationPreferenceForm({ onSuccess }: Props) {
-	const form = useConversationPreference({ onSuccess });
+export function ConversationPreferenceForm({
+	onSuccess,
+	initialPreference,
+	submitLabel = "시작하기",
+}: Props) {
+	const form = useConversationPreference({ onSuccess, initialPreference });
 
 	const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -68,7 +74,7 @@ export function ConversationPreferenceForm({ onSuccess }: Props) {
 					className="h-14 w-full"
 					disabled={form.isSubmitting}
 				>
-					{form.isSubmitting ? "저장 중..." : "시작하기"}
+					{form.isSubmitting ? "저장 중..." : submitLabel}
 				</Button>
 			</footer>
 		</form>

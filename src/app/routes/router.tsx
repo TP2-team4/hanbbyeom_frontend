@@ -20,6 +20,11 @@ import ApplicantProfilePage from "../../pages/applicant-profile/ui/ApplicantProf
 import ChatRoomDetailPage from "../../pages/chat-room-detail/ui/ChatRoomDetailPage";
 import ActivityCancelPage from "../../pages/activity-cancel/ui/ActivityCancelPage";
 import ActivityReviewPage from "../../pages/activity-review/ui/ActivityReviewPage";
+import MyRecruitmentListPage from "../../pages/my-recruitment-list/ui/MyRecruitmentListPage";
+import ActivityHistoryPage from "../../pages/activity-history/ui/ActivityHistoryPage";
+import SettingsPage from "../../pages/settings/ui/SettingsPage";
+import NicknameEditPage from "../../pages/settings/ui/NicknameEditPage";
+import ConversationPreferenceEditPage from "../../pages/settings/ui/ConversationPreferenceEditPage";
 
 export function AppRouter() {
 	return (
@@ -103,6 +108,26 @@ export function AppRouter() {
 				<Route
 					path="/activities/:activityMatchId/review"
 					element={<ActivityReviewPage />}
+				/>
+				<Route
+					path="/recruitments/mine"
+					element={<MyRecruitmentListPage />}
+				/>
+				<Route
+					path="/my-page/activity-history"
+					element={<ActivityHistoryPage />}
+				/>
+				<Route
+					path="/my-page/settings"
+					element={<SettingsPage />}
+				/>
+				<Route
+					path="/my-page/settings/nickname"
+					element={<NicknameEditPage />}
+				/>
+				<Route
+					path="/my-page/settings/conversation-preference"
+					element={<ConversationPreferenceEditPage />}
 				/>
 			</Route>
 

@@ -2,7 +2,7 @@ import type { MyRecruitmentSummary } from "../../../entities/recruitment";
 import { useAsync } from "../../../shared/lib/useAsync";
 import { getMyRecruitments } from "../api/getMyRecruitments";
 
-export function useMyRecruitments(limit: number) {
+export function useMyRecruitments(limit?: number) {
 	const { data, isLoading, error } = useAsync(
 		() => getMyRecruitments(limit),
 		[] as MyRecruitmentSummary[],

@@ -3,11 +3,16 @@ import type { UserProfile } from "../../../entities/user-profile";
 
 const MOCK_PROFILE: UserProfile = {
     nickname: "담백한하루",
+    email: "user@hanbbyeom.com",
     conversationPreference: "SILENT",
     averageRating: 4.9,
     completedActivityCount: 12,
     noShowReportCount: 0,
 };
+
+export function updateMockProfile(patch: Partial<UserProfile>) {
+    Object.assign(MOCK_PROFILE, patch);
+}
 
 const MOCK_ACTIVITY_HISTORY: ActivityHistory[] = [
     { id: 1, activityMatchId: 101, title: "Silent Run · 뚝섬", dateLabel: "9월 5일", distanceKm: 8, partnerNickname: "새벽공기", partnerTalkLevel: "SILENT", reviewStatus: "completed" },

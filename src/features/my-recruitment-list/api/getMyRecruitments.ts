@@ -33,8 +33,10 @@ const MOCK_MY_RECRUITMENTS: MyRecruitmentSummary[] = [
 	},
 ];
 
-export async function getMyRecruitments(limit: number) {
+export async function getMyRecruitments(limit?: number) {
 	// TODO: 내가 작성한 모집글 조회 API 연동 필요
 	await new Promise((resolve) => setTimeout(resolve, 300));
-	return MOCK_MY_RECRUITMENTS.slice(0, limit);
+	return limit === undefined
+		? MOCK_MY_RECRUITMENTS
+		: MOCK_MY_RECRUITMENTS.slice(0, limit);
 }

@@ -1,5 +1,6 @@
 export type UserProfile = {
     nickname: string;
+    email: string;
     conversationPreference: "SILENT" | "LIGHT_CHAT";
     averageRating: number;
     completedActivityCount: number;

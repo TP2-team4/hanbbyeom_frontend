@@ -3,12 +3,16 @@ import { saveConversationPreference } from "../api/saveConversationPreference";
 import type { ConversationPreference } from "./types";
 
 type Options = {
-    onSuccess: () => void;
+    onSuccess: (preference: ConversationPreference) => void;
+    initialPreference?: ConversationPreference;
 };
 
-export function useConversationPreference({ onSuccess }: Options) {
+export function useConversationPreference({
+    onSuccess,
+    initialPreference,
+}: Options) {
     const [selectedPreference, setSelectedPreference] =
-        useState<ConversationPreference>("SILENT");
+        useState<ConversationPreference>(initialPreference ?? "SILENT");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -19,7 +23,7 @@ export function useConversationPreference({ onSuccess }: Options) {
 
         try {
             await saveConversationPreference(selectedPreference);
-            onSuccess();
+            onSuccess(selectedPreference);
         } catch {
             setSubmitError("대화 수준 저장에 실패했어요. 다시 시도해 주세요.");
         } finally {

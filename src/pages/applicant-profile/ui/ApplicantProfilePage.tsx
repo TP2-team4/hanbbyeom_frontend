@@ -4,6 +4,7 @@ import {
 	getRecruitmentApplicantProfile,
 	type RecruitmentAuthorProfile,
 } from "../../../entities/user-profile";
+import { StatusText } from "../../../shared/ui/status-text";
 
 export default function ApplicantProfilePage() {
 	const navigate = useNavigate();
@@ -57,9 +58,7 @@ export default function ApplicantProfilePage() {
 
 			<section className="flex-1 space-y-5 px-6 py-6" aria-live="polite">
 				{isValidId && !loadError && profile === undefined && (
-					<p className="py-10 text-center text-sm text-body">
-						정보를 불러오는 중...
-					</p>
+					<StatusText>정보를 불러오는 중...</StatusText>
 				)}
 				{loadError && (
 					<p role="alert" className="py-10 text-center text-sm text-error-text">
@@ -67,9 +66,7 @@ export default function ApplicantProfilePage() {
 					</p>
 				)}
 				{!loadError && (!isValidId || profile === null) && (
-					<p className="py-10 text-center text-sm text-body">
-						정보를 찾을 수 없어요.
-					</p>
+					<StatusText>정보를 찾을 수 없어요.</StatusText>
 				)}
 				{isValidId && profile && (
 					<section

@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { SelectableCard } from "../../../shared/ui/selectable-card";
 import { useCourses } from "../model/useCourses";
 import Input from "../../../shared/ui/input";
+import { StatusText } from "../../../shared/ui/status-text";
 import type { RecruitmentCreateForm } from "../model/useRecruitmentCreateForm";
 
 type Props = {
@@ -38,11 +39,7 @@ export function CourseStep({ form }: Props) {
 					코스
 				</h3>
 
-				{isLoading && (
-					<p className="py-10 text-center text-sm text-body">
-						코스를 불러오는 중...
-					</p>
-				)}
+				{isLoading && <StatusText>코스를 불러오는 중...</StatusText>}
 				{error && (
 					<p
 						role="alert"

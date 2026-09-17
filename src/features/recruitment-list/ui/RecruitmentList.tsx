@@ -9,6 +9,7 @@ import { EMPTY_FILTERS, type RecruitmentFilters } from "../model/filterTypes";
 import { RecruitmentFilterModal } from "./RecruitmentFilterModal";
 import { Dropdown } from "../../../shared/ui/dropdown";
 import Button from "../../../shared/ui/button";
+import { StatusText } from "../../../shared/ui/status-text";
 
 type SortOption = "LATEST" | "DATE" | "DISTANCE";
 
@@ -118,11 +119,7 @@ export function RecruitmentList() {
 			)}
 
 			<div className="flex flex-col gap-3 px-6 pb-10 pt-5">
-				{isLoading && (
-					<p className="py-10 text-center text-sm text-body">
-						모집글을 불러오는 중...
-					</p>
-				)}
+				{isLoading && <StatusText>모집글을 불러오는 중...</StatusText>}
 				{error && (
 					<p
 						role="alert"
@@ -137,9 +134,7 @@ export function RecruitmentList() {
 					</p>
 				)}
 				{!isLoading && !error && filteredRecruitments.length === 0 && (
-					<p className="py-10 text-center text-sm text-body">
-						조건에 맞는 모집글이 없어요.
-					</p>
+					<StatusText>조건에 맞는 모집글이 없어요.</StatusText>
 				)}
 				{filteredRecruitments.map((recruitment) => (
 					<RecruitmentCard

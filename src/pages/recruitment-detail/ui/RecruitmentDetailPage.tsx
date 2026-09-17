@@ -11,6 +11,7 @@ import {
 	type RecruitmentAuthorProfile,
 } from "../../../entities/user-profile";
 import Button from "../../../shared/ui/button";
+import { StatusText } from "../../../shared/ui/status-text";
 import { useApplication } from "../../../features/recruitment-detail";
 
 type DetailData = {
@@ -98,9 +99,7 @@ export default function RecruitmentDetailPage() {
 				aria-live="polite"
 			>
 				{isValidId && !loadError && detail === undefined && (
-					<p className="py-10 text-center text-sm text-body">
-						모집글을 불러오는 중...
-					</p>
+					<StatusText>모집글을 불러오는 중...</StatusText>
 				)}
 				{loadError && (
 					<p role="alert" className="py-10 text-center text-sm text-error-text">
@@ -108,9 +107,7 @@ export default function RecruitmentDetailPage() {
 					</p>
 				)}
 				{!loadError && (!isValidId || detail === null) && (
-					<p className="py-10 text-center text-sm text-body">
-						모집글을 찾을 수 없어요.
-					</p>
+					<StatusText>모집글을 찾을 수 없어요.</StatusText>
 				)}
 				{isValidId && detail && (
 					<>

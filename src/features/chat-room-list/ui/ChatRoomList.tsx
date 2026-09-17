@@ -1,15 +1,12 @@
 import { ChatRoomItem } from "../../../entities/chat-room";
+import { StatusText } from "../../../shared/ui/status-text";
 import { useChatRooms } from "../model/useChatRooms";
 
 export function ChatRoomList() {
     const { chatRooms, isLoading, error } = useChatRooms();
 
     if (isLoading) {
-        return (
-            <p className="self-center text-center text-sm text-body">
-                채팅방을 불러오는 중...
-            </p>
-        );
+        return <StatusText className="self-center">채팅방을 불러오는 중...</StatusText>;
     }
 
     if (error) {

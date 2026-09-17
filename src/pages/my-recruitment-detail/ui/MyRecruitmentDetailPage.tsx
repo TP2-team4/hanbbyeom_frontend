@@ -6,6 +6,7 @@ import {
 	type RecruitmentDetail,
 } from "../../../entities/recruitment";
 import { ApplicantList } from "../../../features/recruitment-applicants/ui/ApplicantList";
+import { StatusText } from "../../../shared/ui/status-text";
 
 export default function MyRecruitmentDetailPage() {
 	const navigate = useNavigate();
@@ -62,9 +63,7 @@ export default function MyRecruitmentDetailPage() {
 				aria-live="polite"
 			>
 				{isValidId && !loadError && detail === undefined && (
-					<p className="py-10 text-center text-sm text-body">
-						모집글을 불러오는 중...
-					</p>
+					<StatusText>모집글을 불러오는 중...</StatusText>
 				)}
 				{loadError && (
 					<p role="alert" className="py-10 text-center text-sm text-error-text">
@@ -72,9 +71,7 @@ export default function MyRecruitmentDetailPage() {
 					</p>
 				)}
 				{!loadError && (!isValidId || detail === null) && (
-					<p className="py-10 text-center text-sm text-body">
-						모집글을 찾을 수 없어요.
-					</p>
+					<StatusText>모집글을 찾을 수 없어요.</StatusText>
 				)}
 				{isValidId && detail && (
 					<>

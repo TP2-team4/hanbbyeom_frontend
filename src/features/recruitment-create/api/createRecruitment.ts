@@ -36,6 +36,9 @@ export async function createRecruitment(request: RecruitmentCreateRequest) {
 	});
 
 	if (!response.ok) {
-		throw new Error("모집글 작성에 실패했습니다.");
+		const body: { message?: string } | null = await response
+			.json()
+			.catch(() => null);
+		throw new Error(body?.message ?? "모집글 작성에 실패했습니다.");
 	}
 }

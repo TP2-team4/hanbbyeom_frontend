@@ -1,5 +1,8 @@
 import { http, HttpResponse } from "msw";
 
+// 모집글 생성 409 충돌(이미 진행 중인 모집글/신청 있음) 시뮬레이션용 — 새로고침하면 초기화됨
+let hasActiveMatchRequest = false;
+
 export const handlers = [
 	//모집글 작성 - 코스 전체 리스트
 	http.get("/api/run/courses", () => {
@@ -134,9 +137,11 @@ export const handlers = [
 	}),
 
 	//모집글 상세 조회
+	// 실제 백엔드 status는 SEARCHING|PENDING_CONFIRMATION|MATCHED|CANCELLED|EXPIRED|CLOSED 6종 —
+	// id별로 다른 상태를 내려주도록 매핑해서 mock으로도 전 상태를 재현 가능하게 함
 	http.get("/api/matching/requests/:id", ({ params }) => {
-		return HttpResponse.json({
-			id: Number(params.id),
+		const id = Number(params.id);
+		const base = {
 			courseName: "뚝섬 한강공원",
 			distanceMinMeters: 5000,
 			distanceMaxMeters: 12000,
@@ -144,17 +149,59 @@ export const handlers = [
 			paceMaxSec: 400,
 			meetingPoint: "뚝섬유원지역 3번 출구",
 			scheduledAt: "2026-09-12T07:00:00+09:00",
-			talkLevel: "SILENT",
-			status: "SEARCHING",
-			isOwner: false,
-			pendingApplicantCount: 3,
+			talkLevel: "SILENT" as const,
+			author: {
+				nickname: "조용한러너",
+				rating: 4.8,
+				completedCount: 31,
+			},
+		};
+
+		const BY_ID: Record<
+			number,
+			{
+				status:
+					| "SEARCHING"
+					| "PENDING_CONFIRMATION"
+					| "MATCHED"
+					| "CANCELLED"
+					| "EXPIRED"
+					| "CLOSED";
+				isOwner: boolean;
+				pendingApplicantCount: number;
+			}
+		> = {
+			1: { status: "SEARCHING", isOwner: false, pendingApplicantCount: 0 },
+			2: { status: "PENDING_CONFIRMATION", isOwner: true, pendingApplicantCount: 1 },
+			3: { status: "MATCHED", isOwner: true, pendingApplicantCount: 0 },
+			4: { status: "CANCELLED", isOwner: true, pendingApplicantCount: 0 },
+			5: { status: "EXPIRED", isOwner: false, pendingApplicantCount: 0 },
+			6: { status: "CLOSED", isOwner: true, pendingApplicantCount: 0 },
+		};
+
+		const variant = BY_ID[id] ?? BY_ID[1];
+
+		return HttpResponse.json({
+			id,
+			...base,
+			...variant,
 		});
 	}),
 
 	//모집글 생성
+	// 실제 백엔드는 이미 진행 중인 모집글/신청이 있으면 409로 거부함
 	http.post("/api/matching/requests", async ({ request }) => {
 		const body = await request.json();
 		console.log("클라이언트가 보낸 데이터 : ", body);
+
+		if (hasActiveMatchRequest) {
+			return HttpResponse.json(
+				{ message: "이미 진행 중인 모집글 또는 신청이 있어요." },
+				{ status: 409 },
+			);
+		}
+		hasActiveMatchRequest = true;
+
 		return new HttpResponse(null, {
 			status: 201,
 			headers: { Location: "/api/matching/requests/1" },

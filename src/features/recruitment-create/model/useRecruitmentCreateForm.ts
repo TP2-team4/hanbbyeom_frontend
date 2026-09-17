@@ -4,24 +4,36 @@ import { createRecruitment } from "../api/createRecruitment";
 
 const TOTAL_STEPS = 3;
 
+// 백엔드 MatchRequestCommandService.MIN_LEAD_HOURS와 동일한 값
+// (활동 시작 시각은 지금부터 최소 이만큼 이후여야 함)
+const MIN_LEAD_HOURS = 3;
+
 type Options = {
 	onSuccess: () => void;
 };
 
+// 최소 리드타임을 넘기는 가장 이른 시각으로 기본값을 잡음 (30분 단위로 올림)
+function getDefaultScheduledAt() {
+	const target = new Date(Date.now() + MIN_LEAD_HOURS * 60 * 60 * 1000);
+	if (target.getMinutes() > 30) {
+		target.setHours(target.getHours() + 1, 0, 0, 0);
+	} else if (target.getMinutes() > 0) {
+		target.setMinutes(30, 0, 0);
+	}
+	return target;
+}
+
 function getDefaultDate() {
-	const now = new Date();
-	const year = now.getFullYear();
-	const month = String(now.getMonth() + 1).padStart(2, "0");
-	const day = String(now.getDate()).padStart(2, "0");
+	const target = getDefaultScheduledAt();
+	const year = target.getFullYear();
+	const month = String(target.getMonth() + 1).padStart(2, "0");
+	const day = String(target.getDate()).padStart(2, "0");
 	return `${year}-${month}-${day}`;
 }
 
 function getDefaultTime() {
-	const now = new Date();
-	const roundedMinutes = now.getMinutes() < 30 ? 30 : 0;
-	const hours =
-		now.getMinutes() < 30 ? now.getHours() : (now.getHours() + 1) % 24;
-	return `${String(hours).padStart(2, "0")}:${String(roundedMinutes).padStart(2, "0")}`;
+	const target = getDefaultScheduledAt();
+	return `${String(target.getHours()).padStart(2, "0")}:${String(target.getMinutes()).padStart(2, "0")}`;
 }
 
 function parseScheduledAt(date: string, time: string) {
@@ -74,11 +86,14 @@ export function useRecruitmentCreateForm({ onSuccess }: Options) {
 			return;
 		}
 
-		if (step === 2 && parseScheduledAt(date, time).getTime() < Date.now()) {
-			setSubmitError(
-				"선택한 날짜·시간이 이미 지났어요. 다시 선택해 주세요.",
-			);
-			return;
+		if (step === 2) {
+			const minAllowed = Date.now() + MIN_LEAD_HOURS * 60 * 60 * 1000;
+			if (parseScheduledAt(date, time).getTime() < minAllowed) {
+				setSubmitError(
+					`활동 시작 시각은 지금부터 최소 ${MIN_LEAD_HOURS}시간 이후여야 해요.`,
+				);
+				return;
+			}
 		}
 		setSubmitError(null);
 		setStep((prev) => Math.min(prev + 1, TOTAL_STEPS));
@@ -112,8 +127,12 @@ export function useRecruitmentCreateForm({ onSuccess }: Options) {
 				conversationStyle,
 			});
 			onSuccess();
-		} catch {
-			setSubmitError("모집글 작성에 실패했어요. 다시 시도해 주세요.");
+		} catch (error) {
+			setSubmitError(
+				error instanceof Error
+					? error.message
+					: "모집글 작성에 실패했어요. 다시 시도해 주세요.",
+			);
 		} finally {
 			setIsSubmitting(false);
 		}

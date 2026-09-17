@@ -21,6 +21,11 @@ type MatchRequestResponse = {
 		| "CLOSED";
 	isOwner: boolean;
 	pendingApplicantCount: number;
+	author: {
+		nickname: string;
+		rating: number | null;
+		completedCount: number | null;
+	};
 };
 
 function formatPace(totalSeconds: number) {
@@ -44,6 +49,9 @@ function toRecruitmentDetail(response: MatchRequestResponse): RecruitmentDetail 
 		// TODO: 이 응답엔 "내가 이미 신청했는지" 필드가 없어 SEARCHING(모집중)만 open, 나머지는 전부 applied로 뭉뚱그림 (백엔드 API 갭)
 		status: response.status === "SEARCHING" ? "open" : "applied",
 		applicantCount: response.pendingApplicantCount,
+		authorNickname: response.author.nickname,
+		authorRating: response.author.rating ?? 0,
+		authorCompletedCount: response.author.completedCount ?? 0,
 	};
 }
 

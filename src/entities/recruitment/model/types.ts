@@ -60,6 +60,9 @@ export type RecruitmentDetail = {
 	meetingPlace: string;
 	status: RecruitmentStatus;
 	applicantCount: number;
+	authorNickname: string;
+	authorRating: number;
+	authorCompletedCount: number;
 };
 
 export type Applicant = {

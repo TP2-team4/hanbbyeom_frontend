@@ -4,7 +4,13 @@ export type SignupRequest = {
 	password: string;
 };
 
-export async function signup(request: SignupRequest) {
+export type SignupResponse = {
+	id: number;
+	email: string;
+	nickname: string;
+};
+
+export async function signup(request: SignupRequest): Promise<SignupResponse> {
 	const response = await fetch("/api/auth/signup", {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },

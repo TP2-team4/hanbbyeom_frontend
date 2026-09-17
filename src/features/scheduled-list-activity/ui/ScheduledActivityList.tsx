@@ -9,7 +9,10 @@ export function ScheduledActivityList() {
 	const { activities, isLoading, error } = useScheduledActivities(1); // 홈화면에는 하나만 표시
 
 	return (
-		<section className="mt-8" aria-labelledby="scheduled-activity-title">
+		<section
+			className="mt-8"
+			aria-labelledby="scheduled-activity-title"
+		>
 			<div className="flex items-center justify-between">
 				<h2
 					id="scheduled-activity-title"
@@ -34,8 +37,13 @@ export function ScheduledActivityList() {
 				</button>
 			</div>
 			<div className="flex flex-col gap-1 mt-4">
-				{isLoading && <StatusText>예정된 활동을 불러오는 중...</StatusText>}
+				{isLoading && (
+					<StatusText>예정된 활동을 불러오는 중...</StatusText>
+				)}
 				{error && <ErrorText>{error}</ErrorText>}
+				{!isLoading && !error && activities.length === 0 && (
+					<StatusText>예정된 활동이 없어요.</StatusText>
+				)}
 				{!isLoading &&
 					!error &&
 					activities.map((a) => (

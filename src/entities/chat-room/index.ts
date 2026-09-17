@@ -1,2 +1,9 @@
 export { ChatRoomItem } from "./ui/ChatRoomItem";
-export type { ChatRoom, ChatRoomStatus } from "./model/types";
+export { ChatMessageBubble } from "./ui/ChatMessageBubble";
+export type {
+	ChatRoom,
+	ChatRoomStatus,
+	ChatMessage,
+	ChatPreset,
+	PresetCode,
+} from "./model/types";

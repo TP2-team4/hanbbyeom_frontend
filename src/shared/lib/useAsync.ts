@@ -14,6 +14,8 @@ export function useAsync<T>(
 		let isActive = true;
 
 		const load = async () => {
+			setIsLoading(true);
+			setError(null);
 			try {
 				const response = await fetchFn();
 				if (isActive) setData(response);

@@ -1,9 +1,11 @@
+import { useNavigate } from "react-router-dom";
 import { ChatRoomItem } from "../../../entities/chat-room";
 import { StatusText } from "../../../shared/ui/status-text";
 import { ErrorText } from "../../../shared/ui/error-text";
 import { useChatRooms } from "../model/useChatRooms";
 
 export function ChatRoomList() {
+    const navigate = useNavigate();
     const { chatRooms, isLoading, error } = useChatRooms();
 
     if (isLoading) {
@@ -46,7 +48,13 @@ export function ChatRoomList() {
     return (
         <div className="border-t border-divider bg-surface">
             {chatRooms.map((chatRoom) => (
-                <ChatRoomItem key={chatRoom.id} chatRoom={chatRoom} />
+	                <ChatRoomItem
+	                    key={chatRoom.activityMatchId}
+	                    chatRoom={chatRoom}
+	                    onClick={(activityMatchId) =>
+	                        navigate(`/chats/${activityMatchId}`)
+	                    }
+                />
             ))}
         </div>
     );

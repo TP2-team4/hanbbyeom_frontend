@@ -17,6 +17,8 @@ import { ProtectedRoute } from "./ProtectedRoute";
 import { PublicOnlyRoute } from "./PublicOnlyRoute";
 import MyRecruitmentDetailPage from "../../pages/my-recruitment-detail/ui/MyRecruitmentDetailPage";
 import ApplicantProfilePage from "../../pages/applicant-profile/ui/ApplicantProfilePage";
+import ChatRoomDetailPage from "../../pages/chat-room-detail/ui/ChatRoomDetailPage";
+import ActivityCancelPage from "../../pages/activity-cancel/ui/ActivityCancelPage";
 
 export function AppRouter() {
 	return (
@@ -88,6 +90,14 @@ export function AppRouter() {
 				<Route
 					path="/matches/:activityMatchId/applicant-profile"
 					element={<ApplicantProfilePage />}
+				/>
+				<Route
+					path="/chats/:activityMatchId"
+					element={<ChatRoomDetailPage />}
+				/>
+				<Route
+					path="/activities/:activityMatchId/cancel"
+					element={<ActivityCancelPage />}
 				/>
 			</Route>
 

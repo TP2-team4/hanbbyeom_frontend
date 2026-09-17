@@ -1,8 +1,8 @@
 import type { ChatRoom, ChatRoomStatus } from "../model/types";
 
 type Props = {
-    chatRoom: ChatRoom;
-    onClick?: (id: number) => void;
+	    chatRoom: ChatRoom;
+	    onClick?: (activityMatchId: number) => void;
 };
 
 const STATUS_LABEL: Record<ChatRoomStatus, string> = {
@@ -15,7 +15,7 @@ export function ChatRoomItem({ chatRoom, onClick }: Props) {
     return (
         <button
             type="button"
-            onClick={() => onClick?.(chatRoom.id)}
+	            onClick={() => onClick?.(chatRoom.activityMatchId)}
             className="flex w-full items-center gap-4 border-b border-divider px-5 py-5 text-left"
         >
             <span

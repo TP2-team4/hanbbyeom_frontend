@@ -2,7 +2,7 @@ import type { ChatRoom } from "../../../entities/chat-room";
 
 const MOCK_CHAT_ROOMS: ChatRoom[] = [
     {
-        id: 1,
+	        activityMatchId: 1,
         participantNickname: "조용한러너",
         lastMessage: "5분 늦어요",
         activitySummary: "9월 12일 07:00 · 뚝섬 8km",
@@ -10,7 +10,7 @@ const MOCK_CHAT_ROOMS: ChatRoom[] = [
         hasUnreadMessage: true,
     },
     {
-        id: 2,
+	        activityMatchId: 2,
         participantNickname: "오늘만러너",
         lastMessage: "출발 지점에 도착했어요",
         activitySummary: "9월 13일 09:00 · 뚝섬 9km",
@@ -18,7 +18,7 @@ const MOCK_CHAT_ROOMS: ChatRoom[] = [
         hasUnreadMessage: true,
     },
     {
-        id: 3,
+	        activityMatchId: 3,
         participantNickname: "새벽공기",
         lastMessage: "도착했어요",
         activitySummary: "9월 5일 · 대화방 닫힘",

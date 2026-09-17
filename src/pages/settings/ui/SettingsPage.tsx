@@ -52,7 +52,6 @@ export default function SettingsPage() {
 	const { logout, triggerSessionExpired } = useAuth();
 	const { profile, isLoading, error } = useMyPage();
 	const [isTryLogout, setIsTryLogout] = useState(false);
-	const [withdrawalStatus, setWithdrawalStatus] = useState(false);
 
 	const handleLogout = () => {
 		logout();

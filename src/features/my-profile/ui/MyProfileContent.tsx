@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { ActivityHistoryItem } from "../../../entities/activity-history";
 import { ProfileSummaryCard } from "../../../entities/user-profile";
 import { StatusText } from "../../../shared/ui/status-text";
@@ -5,6 +6,7 @@ import { ErrorText } from "../../../shared/ui/error-text";
 import { useMyPage } from "../model/useMyPage";
 
 export function MyProfileContent() {
+	const navigate = useNavigate();
 	const { profile, activityHistory, isLoading, error } = useMyPage();
 
 	if (isLoading)
@@ -35,6 +37,9 @@ export function MyProfileContent() {
 							<ActivityHistoryItem
 								key={activity.id}
 								activity={activity}
+								onReview={(item) =>
+									navigate(`/activities/${item.activityMatchId}/review`)
+								}
 							/>
 						))}
 					</ul>

@@ -2,7 +2,7 @@ import type { ActivityHistory } from "../model/types";
 
 type Props = {
 	activity: ActivityHistory;
-	onReview?: (id: number) => void;
+	onReview?: (activity: ActivityHistory) => void;
 };
 
 export function ActivityHistoryItem({ activity, onReview }: Props) {
@@ -22,7 +22,7 @@ export function ActivityHistoryItem({ activity, onReview }: Props) {
 			{reviewRequired && (
 				<button
 					type="button"
-					onClick={() => onReview?.(activity.id)}
+					onClick={() => onReview?.(activity)}
 					className="shrink-0 rounded-full bg-secondary-100 px-4 py-2 text-sm font-bold text-secondary-400"
 				>
 					후기

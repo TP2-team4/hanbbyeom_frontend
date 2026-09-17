@@ -19,6 +19,7 @@ import MyRecruitmentDetailPage from "../../pages/my-recruitment-detail/ui/MyRecr
 import ApplicantProfilePage from "../../pages/applicant-profile/ui/ApplicantProfilePage";
 import ChatRoomDetailPage from "../../pages/chat-room-detail/ui/ChatRoomDetailPage";
 import ActivityCancelPage from "../../pages/activity-cancel/ui/ActivityCancelPage";
+import ActivityReviewPage from "../../pages/activity-review/ui/ActivityReviewPage";
 
 export function AppRouter() {
 	return (
@@ -98,6 +99,10 @@ export function AppRouter() {
 				<Route
 					path="/activities/:activityMatchId/cancel"
 					element={<ActivityCancelPage />}
+				/>
+				<Route
+					path="/activities/:activityMatchId/review"
+					element={<ActivityReviewPage />}
 				/>
 			</Route>
 

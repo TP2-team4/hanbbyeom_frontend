@@ -10,9 +10,9 @@ const MOCK_PROFILE: UserProfile = {
 };
 
 const MOCK_ACTIVITY_HISTORY: ActivityHistory[] = [
-    { id: 1, title: "Silent Run · 뚝섬", dateLabel: "9월 5일", distanceKm: 8, reviewStatus: "completed" },
-    { id: 2, title: "Silent Run · 여의도", dateLabel: "8월 28일", distanceKm: 10, reviewStatus: "required" },
-    { id: 3, title: "Silent Run · 반포", dateLabel: "8월 21일", distanceKm: 5, reviewStatus: "completed" },
+    { id: 1, activityMatchId: 101, title: "Silent Run · 뚝섬", dateLabel: "9월 5일", distanceKm: 8, partnerNickname: "새벽공기", partnerTalkLevel: "SILENT", reviewStatus: "completed" },
+    { id: 2, activityMatchId: 102, title: "Silent Run · 여의도", dateLabel: "8월 28일", distanceKm: 10, partnerNickname: "조용한러너", partnerTalkLevel: "SILENT", reviewStatus: "required" },
+    { id: 3, activityMatchId: 103, title: "Silent Run · 반포", dateLabel: "8월 21일", distanceKm: 5, partnerNickname: "오늘만러너", partnerTalkLevel: "LIGHT_CHAT", reviewStatus: "completed" },
 ];
 
 export async function getMyPage() {

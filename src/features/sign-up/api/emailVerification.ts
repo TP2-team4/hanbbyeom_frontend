@@ -1,14 +1,11 @@
 import { API_BASE_URL } from "../../../shared/lib/apiConfig";
 
-export const TEMP_VERIFICATION_CODE = "123456";
-
 // 인증 번호 유효시간 및 재전송 제한 추가
 export const VERIFICATION_CODE_EXPIRY_SECONDS = 5 * 60;
 export const VERIFICATION_RESEND_COOLDOWN_SECONDS = 60;
 export const MAX_VERIFICATION_ATTEMPTS = 5;
 
 type VerificationSession = {
-	code: string;
 	expiresAt: number;
 	resendAvailableAt: number;
 	failedAttempts: number;
@@ -48,7 +45,6 @@ export async function requestEmailVerification(email: string) {
 
 	// 재전송 시 기존 인증 번호 및 시도 횟수 초기화
 	verificationSessions.set(email, {
-		code: TEMP_VERIFICATION_CODE,
 		expiresAt,
 		resendAvailableAt,
 		failedAttempts: 0,

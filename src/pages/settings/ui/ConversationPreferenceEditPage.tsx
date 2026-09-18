@@ -10,7 +10,7 @@ export default function ConversationPreferenceEditPage() {
 
 	return (
 		<main className="mx-auto min-h-full w-full max-w-[430px] bg-secondary-50">
-			<section className="min-h-full bg-surface">
+			<section className="min-h-full bg-primary-50">
 				<header className="flex h-16 items-center gap-2 px-4">
 					<button
 						type="button"
@@ -29,7 +29,9 @@ export default function ConversationPreferenceEditPage() {
 							<path d="m15 18-6-6 6-6" />
 						</svg>
 					</button>
-					<h1 className="text-lg font-bold text-title">선호 대화 수준</h1>
+					<h1 className="text-lg font-bold text-title ">
+						선호 대화 수준
+					</h1>
 				</header>
 
 				{isLoading && (
@@ -47,7 +49,9 @@ export default function ConversationPreferenceEditPage() {
 						initialPreference={profile.conversationPreference}
 						submitLabel="저장"
 						onSuccess={(preference) => {
-							updateMockProfile({ conversationPreference: preference });
+							updateMockProfile({
+								conversationPreference: preference,
+							});
 							navigate(-1);
 						}}
 					/>

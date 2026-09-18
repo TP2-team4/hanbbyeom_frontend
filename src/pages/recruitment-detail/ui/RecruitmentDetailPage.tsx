@@ -49,9 +49,13 @@ export default function RecruitmentDetailPage() {
 				}
 
 				const author = await getRecruitmentAuthorProfile(id);
-				if (isActive) setDetail(author ? { recruitment, author } : null);
+				if (isActive)
+					setDetail(author ? { recruitment, author } : null);
 			} catch {
-				if (isActive) setLoadError("정보를 불러오지 못했어요. 다시 시도해 주세요.");
+				if (isActive)
+					setLoadError(
+						"정보를 불러오지 못했어요. 다시 시도해 주세요.",
+					);
 			}
 		};
 
@@ -67,7 +71,13 @@ export default function RecruitmentDetailPage() {
 		if (newStatus) {
 			setDetail((current) =>
 				current
-					? { ...current, recruitment: { ...current.recruitment, status: newStatus } }
+					? {
+							...current,
+							recruitment: {
+								...current.recruitment,
+								status: newStatus,
+							},
+						}
 					: current,
 			);
 		}
@@ -75,7 +85,7 @@ export default function RecruitmentDetailPage() {
 
 	return (
 		<main className="mx-auto flex min-h-full w-full max-w-[430px] flex-col bg-primary-50">
-			<header className="flex h-20 items-center gap-2 bg-surface px-6">
+			<header className="flex h-20 items-center gap-2 bg-primary-50 px-6">
 				<button
 					type="button"
 					aria-label="뒤로 가기"

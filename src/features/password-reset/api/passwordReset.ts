@@ -1,7 +1,5 @@
 import { API_BASE_URL } from "../../../shared/lib/apiConfig";
 
-export const TEMP_PASSWORD_RESET_CODE = "123456";
-
 export const VERIFICATION_CODE_EXPIRY_SECONDS = 5 * 60;
 export const VERIFICATION_RESEND_COOLDOWN_SECONDS = 60;
 export const MAX_VERIFICATION_ATTEMPTS = 5;

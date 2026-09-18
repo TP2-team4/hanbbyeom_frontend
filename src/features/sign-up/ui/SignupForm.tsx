@@ -89,8 +89,6 @@ export function SignupForm({ onSuccess }: Props) {
                 verificationCode={form.verificationCode} // 인증번호 입력창에 보여줄 현재 값 (6자리 숫자)
                 verificationError={form.verificationError} // 인증번호 관련 에러 문구 (만료/불일치/횟수초과 등)
                 verificationExpirySeconds={form.verificationExpirySeconds} // 인증번호 만료까지 남은 초 (카운트다운 표시용)
-                resendCooldownSeconds={form.resendCooldownSeconds} // 재전송 버튼 다시 누를 수 있을 때까지 남은 초
-                temporaryVerificationCode={form.temporaryVerificationCode} // 개발용 임시 인증번호(테스트 편의용, 실서비스 땐 제거 대상)
                 onEmailChange={form.changeEmail} // 이메일 입력값 바뀔 때 호출 (기존 인증 상태 초기화까지 같이 함)
                 onEmailBlur={form.touchEmail} // 이메일 입력창에서 포커스 벗어날 때 호출 (그때부터 에러 문구 노출 시작)
                 onVerificationCodeChange={form.changeVerificationCode} // 인증번호 입력값 바뀔 때 호출

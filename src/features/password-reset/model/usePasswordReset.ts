@@ -3,7 +3,6 @@ import { isValidEmail, isValidPassword } from "../../../shared/lib/validation";
 import {
     requestPasswordResetCode,
     resetPassword,
-    TEMP_PASSWORD_RESET_CODE,
     verifyPasswordResetCode,
 } from "../api/passwordReset";
 
@@ -102,7 +101,6 @@ export function usePasswordReset() {
         canResetPassword,
         isSubmitting,
         submitError,
-        temporaryVerificationCode: TEMP_PASSWORD_RESET_CODE,
         changeEmail,
         changeVerificationCode,
         setPassword,

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import {
     EmailVerificationError,
     requestEmailVerification,
-    TEMP_VERIFICATION_CODE,
     verifyEmail,
 } from "../api/emailVerification";
 import { signup } from "../api/signup";
@@ -218,7 +217,6 @@ export function useSignupForm({ onSuccess }: UseSignupFormOptions) {
         isFormValid,
         isSubmitting,
         submitError,
-        temporaryVerificationCode: TEMP_VERIFICATION_CODE,
         selectTalkLevel: setDefaultTalkLevel,
         changeEmail,
         changeVerificationCode,

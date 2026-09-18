@@ -50,7 +50,7 @@ export function ScheduledActivityList() {
 						<ScheduledActivityCard
 							key={a.id}
 							activity={a}
-							onClick={() => navigate(`/activities/${a.id}`)}
+								onClick={() => navigate(`/chats/${a.id}`)}
 						/>
 					))}
 			</div>

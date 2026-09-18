@@ -35,7 +35,9 @@ export function RecruitmentList() {
 	const [sortOption, setSortOption] = useState<SortOption>("LATEST");
 	const [isFilterOpen, setIsFilterOpen] = useState(false);
 	const [pendingId, setPendingId] = useState<number | null>(null);
-	const pendingRecruitment = recruitments.find((item) => item.id === pendingId);
+	const pendingRecruitment = recruitments.find(
+		(item) => item.id === pendingId,
+	);
 
 	const filteredRecruitments = useMemo(() => {
 		return sortRecruitments(
@@ -119,7 +121,7 @@ export function RecruitmentList() {
 				</p>
 			)}
 
-			<div className="flex flex-col gap-3 px-6 pb-10 pt-5">
+			<div className="flex flex-col gap-3 px-6 pb-32 pt-5">
 				{isLoading && <StatusText>모집글을 불러오는 중...</StatusText>}
 				{error && (
 					<ErrorText className="py-10 text-center text-sm">
@@ -168,10 +170,14 @@ export function RecruitmentList() {
 							: "작성자가 수락하면 활동이 최종 확정돼요."
 					}
 					cancelLabel={
-						pendingRecruitment.status === "applied" ? "계속 기다리기" : "취소"
+						pendingRecruitment.status === "applied"
+							? "계속 기다리기"
+							: "취소"
 					}
 					confirmLabel={
-						pendingRecruitment.status === "applied" ? "신청 취소" : "신청"
+						pendingRecruitment.status === "applied"
+							? "신청 취소"
+							: "신청"
 					}
 					onCancel={() => setPendingId(null)}
 					onConfirm={async () => {

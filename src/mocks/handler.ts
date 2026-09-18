@@ -3,10 +3,8 @@ import { http, HttpResponse } from "msw";
 // 모집글 생성 409 충돌(이미 진행 중인 모집글/신청 있음) 시뮬레이션용 — 새로고침하면 초기화됨
 let hasActiveMatchRequest = false;
 let hasPendingApplication = true;
-let mockRequestStatus:
-	| "SEARCHING"
-	| "PENDING_CONFIRMATION"
-	| "MATCHED" = "PENDING_CONFIRMATION";
+let mockRequestStatus: "SEARCHING" | "PENDING_CONFIRMATION" | "MATCHED" =
+	"PENDING_CONFIRMATION";
 
 export const handlers = [
 	//모집글 작성 - 코스 전체 리스트
@@ -86,6 +84,47 @@ export const handlers = [
 	//모집 게시판 - 목록 조회
 	http.get("*/api/matching/board", () => {
 		return HttpResponse.json([
+			{
+				id: 1,
+				courseName: "뚝섬 한강공원",
+				distanceMinMeters: 6000,
+				distanceMaxMeters: 8000,
+				talkLevel: "SILENT",
+				scheduledAt: "2026-09-12T07:00:00+09:00",
+				paceMinSec: 360,
+				paceMaxSec: 400,
+				author: {
+					nickname: "조용한러너",
+					rating: 4.8,
+					completedCount: 31,
+				},
+			},
+			{
+				id: 2,
+				courseName: "여의도 한강공원",
+				distanceMinMeters: 8000,
+				distanceMaxMeters: 10000,
+				talkLevel: "LIGHT_CHAT",
+				scheduledAt: "2026-09-13T06:30:00+09:00",
+				paceMinSec: 340,
+				paceMaxSec: 370,
+				author: {
+					nickname: "새벽공기",
+					rating: 4.6,
+					completedCount: 12,
+				},
+			},
+			{
+				id: 3,
+				courseName: "반포 한강공원",
+				distanceMinMeters: 3000,
+				distanceMaxMeters: 5000,
+				talkLevel: "SILENT",
+				scheduledAt: "2026-09-14T20:00:00+09:00",
+				paceMinSec: 390,
+				paceMaxSec: 420,
+				author: { nickname: "밤산책", rating: 4.9, completedCount: 8 },
+			},
 			{
 				id: 1,
 				courseName: "뚝섬 한강공원",
@@ -255,18 +294,21 @@ export const handlers = [
 	}),
 
 	// 모집글 - 현재 대기 중인 신청 조회
-	http.get("*/api/matching/requests/:id/pending-application", ({ params }) => {
-		const recruitmentId = Number(params.id);
+	http.get(
+		"*/api/matching/requests/:id/pending-application",
+		({ params }) => {
+			const recruitmentId = Number(params.id);
 
-		if (recruitmentId !== 2 || !hasPendingApplication) {
-			return new HttpResponse(null, { status: 404 });
-		}
+			if (recruitmentId !== 2 || !hasPendingApplication) {
+				return new HttpResponse(null, { status: 404 });
+			}
 
-		return HttpResponse.json({
-			activityMatchId: 101,
-			decisionExpiresAt: "2026-09-18T20:00:00+09:00",
-		});
-	}),
+			return HttpResponse.json({
+				activityMatchId: 101,
+				decisionExpiresAt: "2026-09-18T20:00:00+09:00",
+			});
+		},
+	),
 
 	// 모집글 - 신청 수락
 	http.post("*/api/matching/matches/:id/accept", ({ params }) => {

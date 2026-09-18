@@ -4,6 +4,7 @@ export type SignupRequest = {
 	email: string;
 	nickname: string;
 	password: string;
+	defaultTalkLevel: "SILENT" | "LIGHT_CHAT";
 };
 
 export type SignupResponse = {

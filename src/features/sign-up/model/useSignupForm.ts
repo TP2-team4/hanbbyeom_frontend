@@ -6,7 +6,7 @@ import {
     verifyEmail,
 } from "../api/emailVerification";
 import { signup } from "../api/signup";
-import { requestLogin } from "../../login/api/login";
+import type { ConversationPreference } from "../../conversation-preference/model/types";
 import type { EmailVerificationStatus } from "./types";
 import {
     isValidEmail,
@@ -16,10 +16,15 @@ import {
     NICKNAME_MIN_LENGTH,
 } from "../../../shared/lib/validation";
 
-type UseSignupFormOptions = { onSuccess: (accessToken: string) => void };
+type SignupStep = "form" | "talkLevel";
+
+type UseSignupFormOptions = { onSuccess: () => void };
 
 // 회원가입 폼의 입력값, 유효성 검사, 이메일 인증 및 제출 상태를 관리하는 훅
 export function useSignupForm({ onSuccess }: UseSignupFormOptions) {
+    const [step, setStep] = useState<SignupStep>("form");
+    const [defaultTalkLevel, setDefaultTalkLevel] =
+        useState<ConversationPreference>("SILENT");
     const [email, setEmail] = useState(""); //email input
     const [emailVerificationStatus, setEmailVerificationStatus] =
         useState<EmailVerificationStatus>("idle"); //email input state
@@ -162,17 +167,26 @@ export function useSignupForm({ onSuccess }: UseSignupFormOptions) {
         }
     };
 
-    // 유효한 회원가입 정보를 API에 전달하고 성공 시 onSuccess를 실행하는 함수
+    // 기본 정보 입력이 끝나면 대화 수준 선택 단계로 넘어가는 함수 (아직 회원가입 API 호출 전)
+    const goToTalkLevelStep = () => {
+        if (!isFormValid) return;
+        setStep("talkLevel");
+    };
+
+    // 대화 수준 선택 단계에서 기본 정보 입력 단계로 되돌아가는 함수
+    const goBackToForm = () => {
+        setStep("form");
+    };
+
+    // 대화 수준까지 선택된 상태에서 회원가입 API를 호출하고 성공 시 onSuccess를 실행하는 함수
     const submit = async () => {
         if (!isFormValid || isSubmitting) return;
         setIsSubmitting(true);
         setSubmitError(null);
 
         try {
-            // 회원가입 응답엔 토큰이 없어서(백엔드가 계정 생성만 처리), 가입 직후 로그인 API를 한 번 더 호출해 토큰을 받음
-            await signup({ email, nickname, password });
-            const loginResponse = await requestLogin({ email, password });
-            onSuccess(loginResponse.accessToken);
+            await signup({ email, nickname, password, defaultTalkLevel });
+            onSuccess();
         } catch {
             setSubmitError("회원가입에 실패했어요. 다시 시도해 주세요.");
         } finally {
@@ -181,6 +195,8 @@ export function useSignupForm({ onSuccess }: UseSignupFormOptions) {
     };
 
     return {
+        step,
+        defaultTalkLevel,
         email,
         emailIsValid,
         emailError,
@@ -199,6 +215,7 @@ export function useSignupForm({ onSuccess }: UseSignupFormOptions) {
         isSubmitting,
         submitError,
         temporaryVerificationCode: TEMP_VERIFICATION_CODE,
+        selectTalkLevel: setDefaultTalkLevel,
         changeEmail,
         changeVerificationCode,
         setNickname,
@@ -209,6 +226,8 @@ export function useSignupForm({ onSuccess }: UseSignupFormOptions) {
         touchEmail,
         touchPassword,
         touchNickname,
+        goToTalkLevelStep,
+        goBackToForm,
         submit,
     };
 }

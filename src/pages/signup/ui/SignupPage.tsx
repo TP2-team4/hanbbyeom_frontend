@@ -1,15 +1,18 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../../app/provider/AuthProvider";
 import { SignupForm } from "../../../features/sign-up";
+import { ConfirmModal } from "../../../shared/ui/confirm-modal";
 
 export default function SignupPage() {
     const navigate = useNavigate();
-    const { login, startOnboarding } = useAuth();
+    const [showLoginModal, setShowLoginModal] = useState(false);
 
-    const handleSignupSuccess = (accessToken: string) => {
-        login(accessToken);
-        startOnboarding();
-        navigate("/onboarding/conversation-preference", { replace: true });
+    const handleSignupSuccess = () => {
+        setShowLoginModal(true);
+    };
+
+    const handleGoToLogin = () => {
+        navigate("/user/login", { replace: true });
     };
 
     return (
@@ -36,6 +39,16 @@ export default function SignupPage() {
                 </header>
                 <SignupForm onSuccess={handleSignupSuccess} />
             </section>
+            {showLoginModal && (
+                <ConfirmModal
+                    title="회원가입이 완료됐어요"
+                    description="로그인 화면으로 이동해서 로그인해주세요"
+                    cancelLabel="확인"
+                    confirmLabel="로그인하기"
+                    onCancel={handleGoToLogin}
+                    onConfirm={handleGoToLogin}
+                />
+            )}
         </main>
     );
 }

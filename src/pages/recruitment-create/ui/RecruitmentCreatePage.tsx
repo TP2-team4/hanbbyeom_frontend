@@ -17,11 +17,20 @@ export default function RecruitmentCreatePage() {
 	const isLastStep = step === totalSteps;
 
 	const handlePrimaryAction = () => {
-        if (isLastStep) {
+		if (isLastStep) {
 			void form.submit();
 			return;
 		}
 		goNext();
+	};
+
+	const handleBack = () => {
+		if (step === 1) {
+			navigate(-1);
+			return;
+		} else {
+			form.goPrev();
+		}
 	};
 
 	return (
@@ -33,7 +42,9 @@ export default function RecruitmentCreatePage() {
 							type="button"
 							aria-label="뒤로 가기"
 							className="grid size-10 place-items-center text-title"
-							onClick={() => navigate(-1)}
+							onClick={() => {
+								handleBack();
+							}}
 						>
 							<svg
 								aria-hidden="true"
@@ -103,4 +114,7 @@ export default function RecruitmentCreatePage() {
 			</footer>
 		</main>
 	);
+}
+function goPrev() {
+	throw new Error("Function not implemented.");
 }

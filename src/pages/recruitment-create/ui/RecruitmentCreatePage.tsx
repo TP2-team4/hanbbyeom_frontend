@@ -115,6 +115,3 @@ export default function RecruitmentCreatePage() {
 		</main>
 	);
 }
-function goPrev() {
-	throw new Error("Function not implemented.");
-}

@@ -114,24 +114,35 @@ export default function RecruitmentDetailPage() {
 				{isValidId && detail && (
 					<>
 						<RecruitmentInfoCard recruitment={detail.recruitment} />
-						<RecruitmentAuthorCard profile={detail.author} />
+						<RecruitmentAuthorCard
+							nickname={detail.recruitment.authorNickname}
+							profile={detail.author}
+						/>
 					</>
 				)}
 			</section>
 
 			{detail && (
 				<footer className="sticky bottom-0 border-t border-divider bg-surface p-4">
-					{error && <ErrorText className="mb-2 text-sm">{error}</ErrorText>}
+					{error && (
+						<ErrorText className="mb-2 text-sm">{error}</ErrorText>
+					)}
 					{feedback && (
 						<p className="mb-2 text-sm text-body">{feedback}</p>
 					)}
 					<Button
 						type="button"
-						variant={detail.recruitment.status === "applied" ? "secondary" : "primary"}
+						variant={
+							detail.recruitment.status === "applied"
+								? "secondary"
+								: "primary"
+						}
 						isLoading={isProcessing}
 						onClick={() =>
 							setPending(
-								detail.recruitment.status === "applied" ? "cancel" : "apply",
+								detail.recruitment.status === "applied"
+									? "cancel"
+									: "apply",
 							)
 						}
 						className="h-14 w-full"

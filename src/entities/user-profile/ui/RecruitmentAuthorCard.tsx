@@ -1,11 +1,12 @@
 import type { RecruitmentAuthorProfile } from "../model/types";
 
 type Props = {
+	nickname: string;
 	profile: RecruitmentAuthorProfile;
 	onViewProfile?: () => void;
 };
 
-export function RecruitmentAuthorCard({ profile, onViewProfile }: Props) {
+export function RecruitmentAuthorCard({ nickname, profile, onViewProfile }: Props) {
 	return (
 		<section
 			className="rounded-2xl border border-border bg-surface p-6"
@@ -33,7 +34,7 @@ export function RecruitmentAuthorCard({ profile, onViewProfile }: Props) {
 						id="author-heading"
 						className="text-xl font-bold text-title"
 					>
-						작성자 신뢰 정보
+						{nickname}
 					</h2>
 					<p className="mt-1 text-sm text-body">
 						{profile.averageRating !== null ? (

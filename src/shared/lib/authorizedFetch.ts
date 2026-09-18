@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "./apiConfig";
 import { withUserIdHeader } from "./apiHeaders";
 import { notifySessionExpired } from "./sessionExpiry";
 
@@ -7,7 +8,7 @@ export async function authorizedFetch(
 	input: string,
 	init: RequestInit = {},
 ): Promise<Response> {
-	const response = await fetch(input, {
+	const response = await fetch(`${API_BASE_URL}${input}`, {
 		...init,
 		headers: withUserIdHeader(init.headers),
 	});

@@ -1,3 +1,5 @@
+import { API_BASE_URL } from "../../../shared/lib/apiConfig";
+
 export const TEMP_PASSWORD_RESET_CODE = "123456";
 
 export const VERIFICATION_CODE_EXPIRY_SECONDS = 5 * 60;
@@ -22,7 +24,7 @@ export async function requestPasswordResetCode(email: string) {
 		throw new PasswordResetError("1분 후 다시 요청해주세요.");
 	}
 
-	const response = await fetch("/api/auth/email-verifications", {
+	const response = await fetch(`${API_BASE_URL}/api/auth/email-verifications`, {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify({ email, purpose: "PASSWORD_RESET" }),
@@ -58,11 +60,14 @@ export async function verifyPasswordResetCode(email: string, code: string) {
 		);
 	}
 
-	const response = await fetch("/api/auth/email-verifications/confirm", {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify({ email, purpose: "PASSWORD_RESET", code }),
-	});
+	const response = await fetch(
+		`${API_BASE_URL}/api/auth/email-verifications/confirm`,
+		{
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ email, purpose: "PASSWORD_RESET", code }),
+		},
+	);
 
 	if (!response.ok) {
 		session.failedAttempts += 1;

@@ -1,3 +1,5 @@
+import { API_BASE_URL } from "../../../shared/lib/apiConfig";
+
 export type SignupRequest = {
 	email: string;
 	nickname: string;
@@ -11,7 +13,7 @@ export type SignupResponse = {
 };
 
 export async function signup(request: SignupRequest): Promise<SignupResponse> {
-	const response = await fetch("/api/auth/signup", {
+	const response = await fetch(`${API_BASE_URL}/api/auth/signup`, {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify(request),

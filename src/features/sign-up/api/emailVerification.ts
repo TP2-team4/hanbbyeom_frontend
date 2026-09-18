@@ -1,3 +1,5 @@
+import { API_BASE_URL } from "../../../shared/lib/apiConfig";
+
 export const TEMP_VERIFICATION_CODE = "123456";
 
 // 인증 번호 유효시간 및 재전송 제한 추가
@@ -19,7 +21,7 @@ export class EmailVerificationError extends Error {}
 
 // 인증 번호 요청 및 재전송 상태 검증 추가
 export async function requestEmailVerification(email: string) {
-	const response = await fetch("/api/auth/email-verifications", {
+	const response = await fetch(`${API_BASE_URL}/api/auth/email-verifications`, {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify({ email, purpose: "SIGNUP" }),
@@ -77,11 +79,14 @@ export async function verifyEmail(email: string, code: string) {
 	}
 
 	// 코드가 실제로 맞는지는 서버만 알 수 있으니 서버에 확인 요청
-	const response = await fetch("/api/auth/email-verifications/confirm", {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify({ email, purpose: "SIGNUP", code }),
-	});
+	const response = await fetch(
+		`${API_BASE_URL}/api/auth/email-verifications/confirm`,
+		{
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ email, purpose: "SIGNUP", code }),
+		},
+	);
 
 	if (!response.ok) {
 		session.failedAttempts += 1;

@@ -10,7 +10,7 @@ let mockRequestStatus:
 
 export const handlers = [
 	//모집글 작성 - 코스 전체 리스트
-	http.get("/api/run/courses", () => {
+	http.get("*/api/run/courses", () => {
 		return HttpResponse.json([
 			{
 				id: 1,
@@ -41,21 +41,21 @@ export const handlers = [
 	}),
 
 	//회원가입 - 이메일 인증 요청
-	http.post("/api/auth/email-verifications", async ({ request }) => {
+	http.post("*/api/auth/email-verifications", async ({ request }) => {
 		const body = await request.json();
 		console.log("클라이언트가 보낸 데이터 : ", body);
 		return new HttpResponse(null, { status: 200 });
 	}),
 
 	//회원가입 - 이메일 인증번호 확인
-	http.post("/api/auth/email-verifications/confirm", async ({ request }) => {
+	http.post("*/api/auth/email-verifications/confirm", async ({ request }) => {
 		const body = await request.json();
 		console.log("클라이언트가 보낸 데이터 : ", body);
 		return new HttpResponse(null, { status: 200 });
 	}),
 
 	//회원 가입 - 회원 가입 요청
-	http.post("/api/auth/signup", async ({ request }) => {
+	http.post("*/api/auth/signup", async ({ request }) => {
 		const body = await request.json();
 		console.log("클라이언트가 보낸 데이터 : ", body);
 		return HttpResponse.json({
@@ -66,7 +66,7 @@ export const handlers = [
 	}),
 
 	//로그인
-	http.post("/api/auth/login", async ({ request }) => {
+	http.post("*/api/auth/login", async ({ request }) => {
 		const body = await request.json();
 		console.log("클라이언트가 보낸 데이터 : ", body);
 		return HttpResponse.json({
@@ -75,7 +75,7 @@ export const handlers = [
 	}),
 
 	// 현재 로그인 사용자 조회
-	http.get("/api/users/me", () => {
+	http.get("*/api/users/me", () => {
 		return HttpResponse.json({
 			id: 1,
 			email: "user@example.com",
@@ -84,7 +84,7 @@ export const handlers = [
 	}),
 
 	//모집 게시판 - 목록 조회
-	http.get("/api/matching/board", () => {
+	http.get("*/api/matching/board", () => {
 		return HttpResponse.json([
 			{
 				id: 1,
@@ -131,7 +131,7 @@ export const handlers = [
 	}),
 
 	//모집 게시판 - 호스트 신뢰 프로필 조회
-	http.get("/api/matching/board/:id/host-profile", () => {
+	http.get("*/api/matching/board/:id/host-profile", () => {
 		return HttpResponse.json({
 			averageRating: 4.8,
 			reviewCount: 10,
@@ -141,7 +141,7 @@ export const handlers = [
 	}),
 
 	//모집 게시판 - 지원자 신뢰 프로필 조회
-	http.get("/api/matching/matches/:id/applicant-profile", () => {
+	http.get("*/api/matching/matches/:id/applicant-profile", () => {
 		return HttpResponse.json({
 			averageRating: 4.8,
 			reviewCount: 10,
@@ -153,7 +153,7 @@ export const handlers = [
 	//모집글 상세 조회
 	// 실제 백엔드 status는 SEARCHING|PENDING_CONFIRMATION|MATCHED|CANCELLED|EXPIRED|CLOSED 6종 —
 	// id별로 다른 상태를 내려주도록 매핑해서 mock으로도 전 상태를 재현 가능하게 함
-	http.get("/api/matching/requests/:id", ({ params }) => {
+	http.get("*/api/matching/requests/:id", ({ params }) => {
 		const id = Number(params.id);
 		const base = {
 			courseName: "뚝섬 한강공원",
@@ -212,7 +212,7 @@ export const handlers = [
 
 	//모집글 생성
 	// 실제 백엔드는 이미 진행 중인 모집글/신청이 있으면 409로 거부함
-	http.post("/api/matching/requests", async ({ request }) => {
+	http.post("*/api/matching/requests", async ({ request }) => {
 		const body = await request.json();
 		console.log("클라이언트가 보낸 데이터 : ", body);
 
@@ -231,18 +231,18 @@ export const handlers = [
 	}),
 
 	// 모집글 취소
-	http.post("/api/matching/requests/:id/cancel", () => {
+	http.post("*/api/matching/requests/:id/cancel", () => {
 		return new HttpResponse(null, { status: 204 });
 	}),
 
 	// 모집글 일정·대화 수준 수정
-	http.patch("/api/matching/requests/:id", async ({ request }) => {
+	http.patch("*/api/matching/requests/:id", async ({ request }) => {
 		await request.json();
 		return new HttpResponse(null, { status: 204 });
 	}),
 
 	//모집 게시판 - 신청
-	http.post("/api/matching/board/:id/apply", () => {
+	http.post("*/api/matching/board/:id/apply", () => {
 		return new HttpResponse(null, {
 			status: 201,
 			headers: { Location: "/api/matching/matches/1" },
@@ -250,12 +250,12 @@ export const handlers = [
 	}),
 
 	//모집 게시판 - 신청 취소
-	http.post("/api/matching/board/:id/apply/cancel", () => {
+	http.post("*/api/matching/board/:id/apply/cancel", () => {
 		return new HttpResponse(null, { status: 204 });
 	}),
 
 	// 모집글 - 현재 대기 중인 신청 조회
-	http.get("/api/matching/requests/:id/pending-application", ({ params }) => {
+	http.get("*/api/matching/requests/:id/pending-application", ({ params }) => {
 		const recruitmentId = Number(params.id);
 
 		if (recruitmentId !== 2 || !hasPendingApplication) {
@@ -269,7 +269,7 @@ export const handlers = [
 	}),
 
 	// 모집글 - 신청 수락
-	http.post("/api/matching/matches/:id/accept", ({ params }) => {
+	http.post("*/api/matching/matches/:id/accept", ({ params }) => {
 		const activityMatchId = Number(params.id);
 		hasPendingApplication = false;
 		mockRequestStatus = "MATCHED";
@@ -282,7 +282,7 @@ export const handlers = [
 	}),
 
 	// 모집글 - 신청 거절
-	http.post("/api/matching/matches/:id/reject", () => {
+	http.post("*/api/matching/matches/:id/reject", () => {
 		hasPendingApplication = false;
 		mockRequestStatus = "SEARCHING";
 		return new HttpResponse(null, { status: 204 });

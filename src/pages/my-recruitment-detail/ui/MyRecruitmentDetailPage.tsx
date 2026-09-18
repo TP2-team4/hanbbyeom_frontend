@@ -8,10 +8,7 @@ import {
 import { ApplicantList } from "../../../features/recruitment-applicants/ui/ApplicantList";
 import { StatusText } from "../../../shared/ui/status-text";
 import { ErrorText } from "../../../shared/ui/error-text";
-import {
-	RecruitmentEditForm,
-	useCancelRecruitment,
-} from "../../../features/recruitment-detail";
+import { useCancelRecruitment } from "../../../features/recruitment-detail";
 import Button from "../../../shared/ui/button";
 import { ConfirmModal } from "../../../shared/ui/confirm-modal";
 
@@ -23,7 +20,6 @@ export default function MyRecruitmentDetailPage() {
 	const id = Number(recruitmentId);
 	const isValidId = Number.isInteger(id);
 	const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
-	const [isEditing, setIsEditing] = useState(false);
 
 	const {
 		cancel,
@@ -118,26 +114,15 @@ export default function MyRecruitmentDetailPage() {
 					<>
 						<RecruitmentInfoCard recruitment={detail} />
 
-						{detail.requestStatus === "SEARCHING" && isEditing && (
-							<RecruitmentEditForm
-								recruitment={detail}
-								onCancel={() => setIsEditing(false)}
-								onSaved={(patch) => {
-									setDetail((current) =>
-										current ? { ...current, ...patch } : current,
-									);
-									setIsEditing(false);
-								}}
-							/>
-						)}
-
-						{detail.requestStatus === "SEARCHING" && !isEditing && (
+						{detail.requestStatus === "SEARCHING" && (
 							<div>
 								<div className="flex gap-2">
 									<Button
 										type="button"
 										variant="secondary"
-										onClick={() => setIsEditing(true)}
+										onClick={() =>
+											navigate(`/recruitments/${id}/edit`)
+										}
 										className="h-12 flex-1"
 									>
 										모집 수정
@@ -162,9 +147,7 @@ export default function MyRecruitmentDetailPage() {
 						)}
 
 						{(detail.requestStatus === "SEARCHING" ||
-							detail.requestStatus ===
-								"PENDING_CONFIRMATION") &&
-							!isEditing && (
+							detail.requestStatus === "PENDING_CONFIRMATION") && (
 							<ApplicantList recruitmentId={id} />
 						)}
 

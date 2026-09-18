@@ -1,5 +1,9 @@
 import { useState } from "react";
-import type { ConversationStyle } from "../../../entities/recruitment";
+import {
+	updateRecruitment,
+	updateRunCondition,
+	type ConversationStyle,
+} from "../../../entities/recruitment";
 import { createRecruitment } from "../api/createRecruitment";
 
 const TOTAL_STEPS = 3;
@@ -8,8 +12,25 @@ const TOTAL_STEPS = 3;
 // (활동 시작 시각은 지금부터 최소 이만큼 이후여야 함)
 const MIN_LEAD_HOURS = 3;
 
+export type RecruitmentInitialValues = {
+	courseId: number;
+	courseName: string;
+	meetingPlace: string;
+	date: string;
+	time: string;
+	minDistanceKm: number;
+	maxDistanceKm: number;
+	minPaceSeconds: number;
+	maxPaceSeconds: number;
+	conversationStyle: ConversationStyle;
+	conversationStyleLabel: string;
+};
+
 type Options = {
 	onSuccess: (recruitment: CreatedRecruitment) => void;
+	// 수정 모드로 쓸 때만 전달 — 있으면 작성 대신 기존 모집글을 수정함
+	editingRecruitmentId?: number;
+	initialValues?: RecruitmentInitialValues;
 };
 
 export type CreatedRecruitment = {
@@ -53,13 +74,23 @@ function parseScheduledAt(date: string, time: string) {
 	return new Date(year, month - 1, day, hours, minutes);
 }
 
-export function useRecruitmentCreateForm({ onSuccess }: Options) {
+export function useRecruitmentCreateForm({
+	onSuccess,
+	editingRecruitmentId,
+	initialValues,
+}: Options) {
 	const [step, setStep] = useState(1);
 
 	// 1단계: 코스
-	const [selectedCourseId, setSelectedCourseId] = useState<number>(1);
-	const [selectedCourseName, setSelectedCourseName] = useState("");
-	const [meetingPlace, setMeetingPlace] = useState("");
+	const [selectedCourseId, setSelectedCourseId] = useState<number>(
+		initialValues?.courseId ?? 1,
+	);
+	const [selectedCourseName, setSelectedCourseName] = useState(
+		initialValues?.courseName ?? "",
+	);
+	const [meetingPlace, setMeetingPlace] = useState(
+		initialValues?.meetingPlace ?? "",
+	);
 
 	const selectCourse = (id: number, name: string) => {
 		setSelectedCourseId(id);
@@ -67,18 +98,27 @@ export function useRecruitmentCreateForm({ onSuccess }: Options) {
 	};
 
 	// 2단계: 날짜, 시간, 거리 범위, 페이스 범위
-	const [date, setDate] = useState(getDefaultDate);
-	const [time, setTime] = useState(getDefaultTime);
-	const [minDistanceKm, setMinDistanceKm] = useState(1);
-	const [maxDistanceKm, setMaxDistanceKm] = useState(20);
-	const [minPaceSeconds, setMinPaceSeconds] = useState(300);
-	const [maxPaceSeconds, setMaxPaceSeconds] = useState(450);
+	const [date, setDate] = useState(initialValues?.date ?? getDefaultDate);
+	const [time, setTime] = useState(initialValues?.time ?? getDefaultTime);
+	const [minDistanceKm, setMinDistanceKm] = useState(
+		initialValues?.minDistanceKm ?? 1,
+	);
+	const [maxDistanceKm, setMaxDistanceKm] = useState(
+		initialValues?.maxDistanceKm ?? 20,
+	);
+	const [minPaceSeconds, setMinPaceSeconds] = useState(
+		initialValues?.minPaceSeconds ?? 300,
+	);
+	const [maxPaceSeconds, setMaxPaceSeconds] = useState(
+		initialValues?.maxPaceSeconds ?? 450,
+	);
 
 	// 3단계: 대화 선호도
 	const [conversationStyle, setConversationStyle] =
-		useState<ConversationStyle>("SILENT");
-	const [conversationStyleLabel, setConversationStyleLabel] =
-		useState("조용히");
+		useState<ConversationStyle>(initialValues?.conversationStyle ?? "SILENT");
+	const [conversationStyleLabel, setConversationStyleLabel] = useState(
+		initialValues?.conversationStyleLabel ?? "조용히",
+	);
 
 	const selectConversationStyle = (
 		value: ConversationStyle,
@@ -126,17 +166,38 @@ export function useRecruitmentCreateForm({ onSuccess }: Options) {
 		setSubmitError(null);
 
 		try {
-			const id = await createRecruitment({
-				courseId: selectedCourseId,
-				meetingPlace,
-				date,
-				time,
-				minDistanceKm,
-				maxDistanceKm,
-				minPaceSeconds,
-				maxPaceSeconds,
-				conversationStyle,
-			});
+			let id: number | null;
+
+			if (editingRecruitmentId !== undefined) {
+				await Promise.all([
+					updateRunCondition(editingRecruitmentId, {
+						courseId: selectedCourseId,
+						meetingPoint: meetingPlace,
+						distanceMinMeters: Math.round(minDistanceKm * 1000),
+						distanceMaxMeters: Math.round(maxDistanceKm * 1000),
+						paceMinSec: minPaceSeconds,
+						paceMaxSec: maxPaceSeconds,
+					}),
+					updateRecruitment(editingRecruitmentId, {
+						scheduledAt: parseScheduledAt(date, time).toISOString(),
+						talkLevel: conversationStyle,
+					}),
+				]);
+				id = editingRecruitmentId;
+			} else {
+				id = await createRecruitment({
+					courseId: selectedCourseId,
+					meetingPlace,
+					date,
+					time,
+					minDistanceKm,
+					maxDistanceKm,
+					minPaceSeconds,
+					maxPaceSeconds,
+					conversationStyle,
+				});
+			}
+
 			onSuccess({
 				id,
 				courseName: selectedCourseName,
@@ -151,7 +212,9 @@ export function useRecruitmentCreateForm({ onSuccess }: Options) {
 			setSubmitError(
 				error instanceof Error
 					? error.message
-					: "모집글 작성에 실패했어요. 다시 시도해 주세요.",
+					: editingRecruitmentId !== undefined
+						? "모집글 수정에 실패했어요. 다시 시도해 주세요."
+						: "모집글 작성에 실패했어요. 다시 시도해 주세요.",
 			);
 		} finally {
 			setIsSubmitting(false);

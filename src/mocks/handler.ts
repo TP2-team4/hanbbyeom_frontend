@@ -281,6 +281,26 @@ export const handlers = [
 		return new HttpResponse(null, { status: 204 });
 	}),
 
+	// 러닝 조건 조회 (코스·만나는 곳·거리·페이스)
+	http.get("*/api/run/conditions/:id", ({ params }) => {
+		return HttpResponse.json({
+			matchRequestId: Number(params.id),
+			courseId: 1,
+			courseName: "뚝섬 한강공원",
+			meetingPoint: "뚝섬유원지역 3번 출구",
+			distanceMinMeters: 5000,
+			distanceMaxMeters: 12000,
+			paceMinSec: 360,
+			paceMaxSec: 400,
+		});
+	}),
+
+	// 러닝 조건 수정 (코스·만나는 곳·거리·페이스)
+	http.patch("*/api/run/conditions/:id", async ({ request }) => {
+		await request.json();
+		return new HttpResponse(null, { status: 204 });
+	}),
+
 	//모집 게시판 - 신청
 	http.post("*/api/matching/board/:id/apply", () => {
 		return new HttpResponse(null, {

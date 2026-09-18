@@ -26,6 +26,7 @@ import SettingsPage from "../../pages/settings/ui/SettingsPage";
 import NicknameEditPage from "../../pages/settings/ui/NicknameEditPage";
 import ConversationPreferenceEditPage from "../../pages/settings/ui/ConversationPreferenceEditPage";
 import RecruitmentCreateSuccessPage from "../../pages/recruitment-create/ui/RecruitmentCreateSuccessPage";
+import RecruitmentEditPage from "../../pages/recruitment-edit/ui/RecruitmentEditPage";
 
 export function AppRouter() {
 	return (
@@ -97,6 +98,10 @@ export function AppRouter() {
 				<Route
 					path="/recruitments/:recruitmentId/applicants"
 					element={<MyRecruitmentDetailPage />}
+				/>
+				<Route
+					path="/recruitments/:recruitmentId/edit"
+					element={<RecruitmentEditPage />}
 				/>
 				<Route
 					path="/matches/:activityMatchId/applicant-profile"

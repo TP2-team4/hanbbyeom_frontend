@@ -78,7 +78,7 @@ const MOCK_MY_RECRUITMENTS: MyRecruitmentSummary[] = [
 		dateLabel: "8월 17일 (일)",
 		time: "06:00",
 		applicantCount: 0,
-		status: "CANCELLED",
+		status: "RECRUITING",
 	},
 ];
 

@@ -9,7 +9,7 @@ export default function NicknameEditPage() {
 
 	return (
 		<main className="mx-auto flex h-dvh w-full max-w-[430px] flex-col bg-primary-50">
-			<header className="flex h-20 shrink-0 items-center gap-2 bg-surface px-6">
+			<header className="flex h-20 shrink-0 items-center gap-2 bg-primary-50 px-6">
 				<button
 					type="button"
 					aria-label="뒤로 가기"
@@ -36,7 +36,9 @@ export default function NicknameEditPage() {
 				</StatusText>
 			)}
 			{error && (
-				<ErrorText className="py-16 text-center text-sm">{error}</ErrorText>
+				<ErrorText className="py-16 text-center text-sm">
+					{error}
+				</ErrorText>
 			)}
 			{profile && (
 				<NicknameEditForm

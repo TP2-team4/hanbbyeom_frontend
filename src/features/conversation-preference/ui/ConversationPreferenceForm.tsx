@@ -24,7 +24,7 @@ export function ConversationPreferenceForm({
 
 	return (
 		<form
-			className="flex min-h-[calc(100dvh-4rem)] flex-col"
+			className="flex min-h-[calc(100dvh-4rem)] flex-col bg-primary-50"
 			onSubmit={handleSubmit}
 		>
 			<div className="flex-1 px-6 pb-8 pt-12">
@@ -68,7 +68,7 @@ export function ConversationPreferenceForm({
 				)}
 			</div>
 
-			<footer className="border-t border-divider bg-surface p-4">
+			<footer className="border-t border-divider bg-primary-50 p-4">
 				<Button
 					type="submit"
 					className="h-14 w-full"

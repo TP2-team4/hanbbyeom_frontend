@@ -47,7 +47,7 @@ export default function ActivityPage() {
 						<ScheduledActivityCard
 							key={activity.id}
 							activity={activity}
-							onClick={() => navigate(`/activities/${activity.id}`)}
+								onClick={() => navigate(`/chats/${activity.id}`)}
 						/>
 					))}
 			</section>

@@ -1,5 +1,6 @@
 import type { ConversationStyle } from "../../../entities/recruitment";
 import { authorizedFetch } from "../../../shared/lib/authorizedFetch";
+import { extractErrorMessage } from "../../../shared/lib/apiError";
 
 export type RecruitmentCreateRequest = {
 	courseId: number;
@@ -36,9 +37,8 @@ export async function createRecruitment(request: RecruitmentCreateRequest) {
 	});
 
 	if (!response.ok) {
-		const body: { message?: string } | null = await response
-			.json()
-			.catch(() => null);
-		throw new Error(body?.message ?? "모집글 작성에 실패했습니다.");
+		throw new Error(
+			await extractErrorMessage(response, "모집글 작성에 실패했습니다."),
+		);
 	}
 }

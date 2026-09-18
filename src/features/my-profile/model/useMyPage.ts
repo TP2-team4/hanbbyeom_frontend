@@ -18,8 +18,14 @@ export function useMyPage() {
                     setProfile(response.profile);
                     setActivityHistory(response.activityHistory);
                 }
-            } catch {
-                if (isActive) setError("마이페이지를 불러오지 못했어요.");
+            } catch (error) {
+                if (isActive) {
+                    setError(
+                        error instanceof Error
+                            ? error.message
+                            : "마이페이지를 불러오지 못했어요.",
+                    );
+                }
             } finally {
                 if (isActive) setIsLoading(false);
             }

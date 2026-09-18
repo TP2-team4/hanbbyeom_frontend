@@ -1,4 +1,5 @@
 import { API_BASE_URL } from "../../../shared/lib/apiConfig";
+import { extractErrorMessage } from "../../../shared/lib/apiError";
 
 export type SignupRequest = {
 	email: string;
@@ -21,7 +22,7 @@ export async function signup(request: SignupRequest): Promise<SignupResponse> {
 	});
 
 	if (!response.ok) {
-		throw new Error("회원가입에 실패했어요.");
+		throw new Error(await extractErrorMessage(response, "회원가입에 실패했어요."));
 	}
 
 	return response.json(); 

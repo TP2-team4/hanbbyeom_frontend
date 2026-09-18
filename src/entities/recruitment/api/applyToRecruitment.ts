@@ -1,4 +1,5 @@
 import { authorizedFetch } from "../../../shared/lib/authorizedFetch";
+import { extractErrorMessage } from "../../../shared/lib/apiError";
 
 export async function applyToRecruitment(recruitmentId: number) {
 	const response = await authorizedFetch(
@@ -11,6 +12,8 @@ export async function applyToRecruitment(recruitmentId: number) {
 	);
 
 	if (!response.ok) {
-		throw new Error("모집 신청에 실패했습니다.");
+		throw new Error(
+			await extractErrorMessage(response, "모집 신청에 실패했습니다."),
+		);
 	}
 }

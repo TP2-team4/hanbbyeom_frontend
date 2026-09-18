@@ -27,8 +27,12 @@ export default function LoginPage() {
             });
             login(response.accessToken);
             navigate("/home", { replace: true });
-        } catch {
-            setError("이메일 또는 비밀번호가 일치하지 않아요.");
+        } catch (error) {
+            setError(
+                error instanceof Error
+                    ? error.message
+                    : "이메일 또는 비밀번호가 일치하지 않아요.",
+            );
         } finally {
             setIsSubmitting(false);
         }

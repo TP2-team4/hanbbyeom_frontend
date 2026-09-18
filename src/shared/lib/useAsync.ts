@@ -19,8 +19,14 @@ export function useAsync<T>(
 			try {
 				const response = await fetchFn();
 				if (isActive) setData(response);
-			} catch {
-				if (isActive) setError(errorMessage);
+			} catch (caughtError) {
+				if (isActive) {
+					setError(
+						caughtError instanceof Error
+							? caughtError.message
+							: errorMessage,
+					);
+				}
 			} finally {
 				if (isActive) setIsLoading(false);
 			}

@@ -12,8 +12,12 @@ export function useCancelRecruitment(recruitmentId: number) {
 		try {
 			await cancelRecruitment(recruitmentId);
 			return true;
-		} catch {
-			setError("모집을 취소하지 못했어요. 다시 시도해 주세요.");
+		} catch (error) {
+			setError(
+				error instanceof Error
+					? error.message
+					: "모집을 취소하지 못했어요. 다시 시도해 주세요.",
+			);
 			return false;
 		} finally {
 			setIsProcessing(false);

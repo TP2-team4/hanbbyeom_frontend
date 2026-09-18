@@ -1,4 +1,5 @@
 import { authorizedFetch } from "../../../shared/lib/authorizedFetch";
+import { extractErrorMessage } from "../../../shared/lib/apiError";
 import type { ConversationStyle } from "../model/types";
 
 export type UpdateRecruitmentRequest = {
@@ -22,10 +23,8 @@ export async function updateRecruitment(
 	);
 
 	if (!response.ok) {
-		const body: { message?: string } | null = await response
-			.json()
-			.catch(() => null);
-
-		throw new Error(body?.message ?? "모집글 수정에 실패했습니다.");
+		throw new Error(
+			await extractErrorMessage(response, "모집글 수정에 실패했습니다."),
+		);
 	}
 }

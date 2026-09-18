@@ -187,8 +187,12 @@ export function useSignupForm({ onSuccess }: UseSignupFormOptions) {
         try {
             await signup({ email, nickname, password, defaultTalkLevel });
             onSuccess();
-        } catch {
-            setSubmitError("회원가입에 실패했어요. 다시 시도해 주세요.");
+        } catch (error) {
+            setSubmitError(
+                error instanceof Error
+                    ? error.message
+                    : "회원가입에 실패했어요. 다시 시도해 주세요.",
+            );
         } finally {
             setIsSubmitting(false);
         }

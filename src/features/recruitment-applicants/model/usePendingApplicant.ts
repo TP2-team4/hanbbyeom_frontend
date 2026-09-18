@@ -58,8 +58,12 @@ export function usePendingApplicant(recruitmentId: number) {
 				pendingApplicant.activityMatchId,
 			);
 			setConfirmedMatch(result);
-		} catch {
-			setActionError("수락하지 못했어요. 다시 시도해 주세요.");
+		} catch (error) {
+			setActionError(
+				error instanceof Error
+					? error.message
+					: "수락하지 못했어요. 다시 시도해 주세요.",
+			);
 		} finally {
 			setIsProcessing(false);
 		}
@@ -74,8 +78,12 @@ export function usePendingApplicant(recruitmentId: number) {
 		try {
 			await rejectApplicant(pendingApplicant.activityMatchId);
 			setPendingApplicant(null);
-		} catch {
-			setActionError("거절하지 못했어요. 다시 시도해 주세요.");
+		} catch (error) {
+			setActionError(
+				error instanceof Error
+					? error.message
+					: "거절하지 못했어요. 다시 시도해 주세요.",
+			);
 		} finally {
 			setIsProcessing(false);
 		}

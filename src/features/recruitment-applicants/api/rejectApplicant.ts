@@ -1,4 +1,5 @@
 import { authorizedFetch } from "../../../shared/lib/authorizedFetch";
+import { extractErrorMessage } from "../../../shared/lib/apiError";
 
 export async function rejectApplicant(activityMatchId: number) {
 	const response = await authorizedFetch(
@@ -7,6 +8,8 @@ export async function rejectApplicant(activityMatchId: number) {
 	);
 
 	if (!response.ok) {
-		throw new Error("신청자 거절에 실패했습니다.");
+		throw new Error(
+			await extractErrorMessage(response, "신청자 거절에 실패했습니다."),
+		);
 	}
 }

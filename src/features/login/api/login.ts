@@ -1,4 +1,5 @@
 import { API_BASE_URL } from "../../../shared/lib/apiConfig";
+import { extractErrorMessage } from "../../../shared/lib/apiError";
 
 export type LoginRequest = {
 	email: string;
@@ -13,7 +14,9 @@ export async function requestLogin(request: LoginRequest) {
 	});
 
 	if (!response.ok) {
-		throw new Error("이메일 또는 비밀번호가 일치하지 않아요.");
+		throw new Error(
+			await extractErrorMessage(response, "이메일 또는 비밀번호가 일치하지 않아요."),
+		);
 	}
 
 	return response.json() as Promise<{ accessToken: string }>;

@@ -38,11 +38,13 @@ export function useRecruitments() {
 					};
 				}),
 			);
-		} catch {
+		} catch (error) {
 			setActionError(
-				target.status === "applied"
-					? "신청을 취소하지 못했어요. 다시 시도해 주세요."
-					: "신청하지 못했어요. 다시 시도해 주세요.",
+				error instanceof Error
+					? error.message
+					: target.status === "applied"
+						? "신청을 취소하지 못했어요. 다시 시도해 주세요."
+						: "신청하지 못했어요. 다시 시도해 주세요.",
 			);
 		} finally {
 			setProcessingId(null);

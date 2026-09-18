@@ -1,4 +1,5 @@
 import { authorizedFetch } from "../../../shared/lib/authorizedFetch";
+import { extractErrorMessage } from "../../../shared/lib/apiError";
 
 export type PendingApplication = {
 	activityMatchId: number;
@@ -17,7 +18,9 @@ export async function getPendingApplication(
 	}
 
 	if (!response.ok) {
-		throw new Error("대기 중인 신청을 불러오지 못했습니다.");
+		throw new Error(
+			await extractErrorMessage(response, "대기 중인 신청을 불러오지 못했습니다."),
+		);
 	}
 
 	return response.json() as Promise<PendingApplication>;

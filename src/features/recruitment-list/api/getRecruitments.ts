@@ -1,5 +1,6 @@
 import type { ConversationStyle, Recruitment } from "../../../entities/recruitment";
 import { authorizedFetch } from "../../../shared/lib/authorizedFetch";
+import { extractErrorMessage } from "../../../shared/lib/apiError";
 import { formatDate, toTimeValue } from "../../../shared/lib/date";
 
 type BoardItemResponse = {
@@ -49,7 +50,9 @@ export async function getRecruitments() {
 	const response = await authorizedFetch("/api/matching/board");
 
 	if (!response.ok) {
-		throw new Error("모집글을 불러오지 못했습니다.");
+		throw new Error(
+			await extractErrorMessage(response, "모집글을 불러오지 못했습니다."),
+		);
 	}
 
 	const body: BoardItemResponse[] = await response.json();

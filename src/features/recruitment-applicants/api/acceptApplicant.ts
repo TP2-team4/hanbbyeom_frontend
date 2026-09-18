@@ -1,4 +1,5 @@
 import { authorizedFetch } from "../../../shared/lib/authorizedFetch";
+import { extractErrorMessage } from "../../../shared/lib/apiError";
 
 export type AcceptApplicantResponse = {
 	activityMatchId: number;
@@ -13,7 +14,9 @@ export async function acceptApplicant(activityMatchId: number) {
 	);
 
 	if (!response.ok) {
-		throw new Error("신청자 수락에 실패했습니다.");
+		throw new Error(
+			await extractErrorMessage(response, "신청자 수락에 실패했습니다."),
+		);
 	}
 
 	return response.json() as Promise<AcceptApplicantResponse>;

@@ -35,7 +35,7 @@ export default function RecruitmentCreatePage() {
 
 	return (
 		<main className="mx-auto flex min-h-full w-full max-w-[430px] flex-col bg-primary-50">
-			<div className="sticky top-0 z-20 bg-surface">
+			<div className="sticky top-0 z-20 bg-primary-50">
 				<header className="flex h-20 items-center justify-between px-6">
 					<div className="flex items-center gap-2">
 						<button
@@ -92,7 +92,7 @@ export default function RecruitmentCreatePage() {
 				</section>
 			</div>
 
-			<footer className="sticky bottom-0 border-t border-divider bg-surface p-4">
+			<footer className="sticky bottom-0 border-t border-divider bg-primary-50 p-4">
 				{form.submitError && (
 					<ErrorText className="mb-2 text-xs">
 						{form.submitError}

@@ -1,9 +1,9 @@
-import type { ChatPreset, PresetCode } from "../../../entities/chat-room";
+import type { ChatPreset } from "../../../entities/chat-room";
 
 type Props = {
 	presets: ChatPreset[];
 	disabled?: boolean;
-	onSelect: (code: PresetCode) => void;
+	onSelect: (preset: ChatPreset) => void;
 };
 
 export function ChatPresetList({ presets, disabled = false, onSelect }: Props) {
@@ -17,7 +17,7 @@ export function ChatPresetList({ presets, disabled = false, onSelect }: Props) {
 						key={preset.code}
 						type="button"
 						disabled={disabled}
-						onClick={() => onSelect(preset.code)}
+						onClick={() => onSelect(preset)}
 						className={`shrink-0 rounded-full border px-4 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50 ${
 							preset.code === "CANNOT_PARTICIPATE"
 								? "border-error-accent bg-error-bg text-error-text"

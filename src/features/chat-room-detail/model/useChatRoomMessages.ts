@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { ChatMessage, PresetCode } from "../../../entities/chat-room";
+import type { ChatMessage } from "../../../entities/chat-room";
 import { useAsync } from "../../../shared/lib/useAsync";
 import { getChatRoomMessages } from "../api/getChatRoomMessages";
 import { sendChatMessage } from "../api/sendChatMessage";
@@ -55,34 +55,6 @@ export function useChatRoomMessages(activityMatchId: number | null) {
 		}
 	};
 
-	const sendPresetMessage = async (
-		presetCode: PresetCode,
-	): Promise<boolean> => {
-		if (activityMatchId === null || isSending) {
-			return false;
-		}
-
-		setIsSending(true);
-		setSendError(null);
-
-		try {
-			const message = await sendChatMessage(activityMatchId, {
-				messageType: "PRESET",
-				presetCode,
-			});
-
-			appendMessage(message);
-
-			return true;
-		} catch {
-			setSendError("빠른 메시지를 보내지 못했어요. 다시 시도해 주세요.");
-
-			return false;
-		} finally {
-			setIsSending(false);
-		}
-	};
-
 	return {
 		messages: data,
 		isLoading,
@@ -90,6 +62,5 @@ export function useChatRoomMessages(activityMatchId: number | null) {
 		isSending,
 		sendError,
 		sendMessage,
-		sendPresetMessage,
 	};
 }

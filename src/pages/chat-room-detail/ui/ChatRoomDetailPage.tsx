@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ChatMessageBubble, type PresetCode } from "../../../entities/chat-room";
+import {
+	ChatMessageBubble,
+	type ChatPreset,
+} from "../../../entities/chat-room";
 import { useChatRooms } from "../../../features/chat-room-list";
 import {
 	ChatMessageComposer,
@@ -30,15 +33,8 @@ export default function ChatRoomDetailPage() {
 	const resolvedMatchId =
 		isValidId && !isChatRoomLoading && chatRoom ? id : null;
 
-	const {
-		messages,
-		isLoading,
-		error,
-		isSending,
-		sendError,
-		sendMessage,
-		sendPresetMessage,
-	} = useChatRoomMessages(resolvedMatchId);
+	const { messages, isLoading, error, isSending, sendError, sendMessage } =
+		useChatRoomMessages(resolvedMatchId);
 	const {
 		presets,
 		isLoading: isPresetLoading,
@@ -66,7 +62,8 @@ export default function ChatRoomDetailPage() {
 	const handleMessageScroll = () => {
 		const element = messageListRef.current;
 		if (!element) return;
-		const remaining = element.scrollHeight - element.scrollTop - element.clientHeight;
+		const remaining =
+			element.scrollHeight - element.scrollTop - element.clientHeight;
 		isNearBottom.current = remaining < 80;
 	};
 
@@ -78,12 +75,12 @@ export default function ChatRoomDetailPage() {
 
 	const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 
-	const handlePresetSelect = (code: PresetCode) => {
-		if (code === "CANNOT_PARTICIPATE") {
+	const handlePresetSelect = (preset: ChatPreset) => {
+		if (preset.code === "CANNOT_PARTICIPATE") {
 			setShowCancelConfirm(true);
 			return;
 		}
-		void sendPresetMessage(code);
+		void sendMessage(preset.content);
 	};
 
 	return (
@@ -113,42 +110,44 @@ export default function ChatRoomDetailPage() {
 
 			<section
 				ref={messageListRef}
-					onScroll={handleMessageScroll}
-					className="flex-1 space-y-3 overflow-y-auto px-4 py-4"
-				>
-					{isRoomNotFound && (
-						<StatusText>채팅방을 찾을 수 없어요.</StatusText>
+				onScroll={handleMessageScroll}
+				className="flex-1 space-y-3 overflow-y-auto px-4 py-4"
+			>
+				{isRoomNotFound && (
+					<StatusText>채팅방을 찾을 수 없어요.</StatusText>
+				)}
+				{chatRoomError && (
+					<ErrorText className="text-center text-sm">
+						{chatRoomError}
+					</ErrorText>
+				)}
+				{isChatRoomLoading && (
+					<StatusText>채팅방을 불러오는 중...</StatusText>
+				)}
+				{resolvedMatchId !== null && isLoading && (
+					<StatusText>메시지를 불러오는 중...</StatusText>
+				)}
+				{resolvedMatchId !== null && error && (
+					<ErrorText className="text-center text-sm">
+						{error}
+					</ErrorText>
+				)}
+				{resolvedMatchId !== null &&
+					!isLoading &&
+					!error &&
+					messages.length === 0 && (
+						<StatusText>아직 주고받은 메시지가 없어요.</StatusText>
 					)}
-					{chatRoomError && (
-						<ErrorText className="text-center text-sm">
-							{chatRoomError}
-						</ErrorText>
-					)}
-					{isChatRoomLoading && (
-						<StatusText>채팅방을 불러오는 중...</StatusText>
-					)}
-					{resolvedMatchId !== null && isLoading && (
-						<StatusText>메시지를 불러오는 중...</StatusText>
-					)}
-					{resolvedMatchId !== null && error && (
-						<ErrorText className="text-center text-sm">{error}</ErrorText>
-					)}
-					{resolvedMatchId !== null &&
-						!isLoading &&
-						!error &&
-						messages.length === 0 && (
-							<StatusText>아직 주고받은 메시지가 없어요.</StatusText>
-						)}
-					{resolvedMatchId !== null &&
-						!isLoading &&
-						!error &&
-						messages.map((message) => (
-							<ChatMessageBubble
-								key={message.id}
-								message={message}
-								currentUserId={MOCK_CURRENT_USER_ID}
-							/>
-						))}
+				{resolvedMatchId !== null &&
+					!isLoading &&
+					!error &&
+					messages.map((message) => (
+						<ChatMessageBubble
+							key={message.id}
+							message={message}
+							currentUserId={MOCK_CURRENT_USER_ID}
+						/>
+					))}
 				<div ref={bottomRef} />
 			</section>
 
@@ -165,9 +164,14 @@ export default function ChatRoomDetailPage() {
 						onSelect={handlePresetSelect}
 					/>
 					{sendError && (
-						<ErrorText className="px-4 pb-2 text-sm">{sendError}</ErrorText>
+						<ErrorText className="px-4 pb-2 text-sm">
+							{sendError}
+						</ErrorText>
 					)}
-					<ChatMessageComposer isSending={isSending} onSend={sendMessage} />
+					<ChatMessageComposer
+						isSending={isSending}
+						onSend={sendMessage}
+					/>
 				</>
 			)}
 			{chatRoom?.status === "completed" && (
@@ -184,7 +188,9 @@ export default function ChatRoomDetailPage() {
 					confirmLabel="취소하기"
 					confirmVariant="destructive"
 					onCancel={() => setShowCancelConfirm(false)}
-					onConfirm={() => navigate(`/activities/${resolvedMatchId}/cancel`)}
+					onConfirm={() =>
+						navigate(`/activities/${resolvedMatchId}/cancel`)
+					}
 				/>
 			)}
 		</main>

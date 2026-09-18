@@ -3,6 +3,7 @@ export { ChatMessageBubble } from "./ui/ChatMessageBubble";
 export type {
 	ChatRoom,
 	ChatRoomStatus,
+	ChatMatchSummary,
 	ChatMessage,
 	ChatPreset,
 	PresetCode,

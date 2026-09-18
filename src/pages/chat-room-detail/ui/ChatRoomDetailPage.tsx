@@ -7,7 +7,9 @@ import {
 import { useChatRooms } from "../../../features/chat-room-list";
 import {
 	ChatMessageComposer,
+	ChatMatchSummaryCard,
 	ChatPresetList,
+	useChatMatchSummary,
 	useChatPresets,
 	useChatRoomMessages,
 } from "../../../features/chat-room-detail";
@@ -40,6 +42,11 @@ export default function ChatRoomDetailPage() {
 		isLoading: isPresetLoading,
 		error: presetError,
 	} = useChatPresets();
+	const {
+		matchSummary,
+		isLoading: isMatchSummaryLoading,
+		error: matchSummaryError,
+	} = useChatMatchSummary(resolvedMatchId);
 
 	const bottomRef = useRef<HTMLDivElement>(null);
 	const messageListRef = useRef<HTMLElement>(null);
@@ -70,7 +77,7 @@ export default function ChatRoomDetailPage() {
 	const isRoomNotFound =
 		!isChatRoomLoading && !chatRoomError && (!isValidId || !chatRoom);
 	const canSendMessage = Boolean(
-		chatRoom && chatRoom.status !== "completed" && resolvedMatchId !== null,
+		matchSummary?.messageSendable && resolvedMatchId !== null,
 	);
 
 	const [showCancelConfirm, setShowCancelConfirm] = useState(false);
@@ -106,12 +113,23 @@ export default function ChatRoomDetailPage() {
 				<h1 className="text-2xl font-bold text-title">
 					{chatRoom?.participantNickname ?? "채팅"}
 				</h1>
-			</header>
+				</header>
+				{resolvedMatchId !== null && isMatchSummaryLoading && (
+					<StatusText className="shrink-0 py-4">
+						활동 정보를 불러오는 중...
+					</StatusText>
+				)}
+				{resolvedMatchId !== null && matchSummaryError && (
+					<ErrorText className="shrink-0 px-4 pb-3 text-center text-sm">
+						{matchSummaryError}
+					</ErrorText>
+				)}
+				{matchSummary && <ChatMatchSummaryCard match={matchSummary} />}
 
-			<section
+				<section
 				ref={messageListRef}
 				onScroll={handleMessageScroll}
-				className="flex-1 space-y-3 overflow-y-auto px-4 py-4"
+				className="scrollbar-hidden flex-1 space-y-3 overflow-y-auto px-4 py-4"
 			>
 				{isRoomNotFound && (
 					<StatusText>채팅방을 찾을 수 없어요.</StatusText>
@@ -174,7 +192,7 @@ export default function ChatRoomDetailPage() {
 					/>
 				</>
 			)}
-			{chatRoom?.status === "completed" && (
+				{matchSummary && !matchSummary.messageSendable && (
 				<StatusText className="shrink-0 border-t border-divider bg-surface px-4 py-5">
 					종료된 채팅방이에요.
 				</StatusText>

@@ -9,6 +9,17 @@ export type ChatRoom = {
 	hasUnreadMessage: boolean;
 };
 
+export type ChatMatchSummary = {
+	activityMatchId: number;
+	courseName: string;
+	location: string;
+	scheduledAt: string;
+	scheduledEndAt: string;
+	status: string;
+	counterpartUserId: number;
+	messageSendable: boolean;
+};
+
 export type ChatMessage = {
 	id: number;
 	activityMatchId: number;

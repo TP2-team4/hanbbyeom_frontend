@@ -11,7 +11,7 @@ export function ChatPresetList({ presets, disabled = false, onSelect }: Props) {
 
 	return (
 		<div>
-			<div className="flex gap-2 overflow-x-auto pb-1">
+			<div className="flex gap-2 overflow-x-auto pb-1 ">
 				{presets.map((preset) => (
 					<button
 						key={preset.code}

@@ -32,8 +32,8 @@ export function useChatRoomMessages(activityMatchId: number | null) {
 	const sendMessage = async (content: string): Promise<boolean> => {
 		const trimmed = content.trim();
 		if (!trimmed || activityMatchId === null) return false;
-		if (trimmed.length > 300) {
-			setSendError("메시지는 300자까지 입력할 수 있어요.");
+		if (trimmed.length > 100) {
+			setSendError("메시지는 100자까지 입력할 수 있어요.");
 			return false;
 		}
 

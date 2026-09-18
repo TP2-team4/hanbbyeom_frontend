@@ -20,8 +20,8 @@ export function ChatMessageBubble({ message, currentUserId }: Props) {
 				<p
 					className={`whitespace-pre-wrap rounded-2xl px-4 py-3 text-sm ${
 						isMine
-							? "rounded-br-sm bg-primary-400 text-white"
-							: "rounded-bl-sm bg-surface text-title"
+							? "rounded-br-sm bg-primary-400 text-secondary-600"
+							: "rounded-bl-sm bg-secondary-200 text-title"
 					}`}
 				>
 					{message.content}
@@ -29,7 +29,7 @@ export function ChatMessageBubble({ message, currentUserId }: Props) {
 				<span
 					className={`text-xs text-body ${isMine ? "text-right" : "text-left"}`}
 				>
-						{timeFormatter.format(new Date(message.createdAt))}
+					{timeFormatter.format(new Date(message.createdAt))}
 				</span>
 			</div>
 		</div>

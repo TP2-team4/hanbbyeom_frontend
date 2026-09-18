@@ -26,7 +26,7 @@ export function ChatMessageComposer({ isSending, onSend }: Props) {
 				value={content}
 				onChange={(event) => setContent(event.target.value)}
 					placeholder="메시지를 입력하세요"
-					maxLength={300}
+					maxLength={100}
 				disabled={isSending}
 				className="flex-1"
 			/>

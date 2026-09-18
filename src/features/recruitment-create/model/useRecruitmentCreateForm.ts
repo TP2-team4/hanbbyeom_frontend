@@ -9,7 +9,18 @@ const TOTAL_STEPS = 3;
 const MIN_LEAD_HOURS = 3;
 
 type Options = {
-	onSuccess: () => void;
+	onSuccess: (recruitment: CreatedRecruitment) => void;
+};
+
+export type CreatedRecruitment = {
+	id: number | null;
+	courseName: string;
+	meetingPlace: string;
+	date: string;
+	time: string;
+	minDistanceKm: number;
+	maxDistanceKm: number;
+	conversationStyleLabel: string;
 };
 
 // 최소 리드타임을 넘기는 가장 이른 시각으로 기본값을 잡음 (30분 단위로 올림)
@@ -115,7 +126,7 @@ export function useRecruitmentCreateForm({ onSuccess }: Options) {
 		setSubmitError(null);
 
 		try {
-			await createRecruitment({
+			const id = await createRecruitment({
 				courseId: selectedCourseId,
 				meetingPlace,
 				date,
@@ -126,7 +137,16 @@ export function useRecruitmentCreateForm({ onSuccess }: Options) {
 				maxPaceSeconds,
 				conversationStyle,
 			});
-			onSuccess();
+			onSuccess({
+				id,
+				courseName: selectedCourseName,
+				meetingPlace,
+				date,
+				time,
+				minDistanceKm,
+				maxDistanceKm,
+				conversationStyleLabel,
+			});
 		} catch (error) {
 			setSubmitError(
 				error instanceof Error

@@ -11,7 +11,11 @@ import { ErrorText } from "../../../shared/ui/error-text";
 export default function RecruitmentCreatePage() {
 	const navigate = useNavigate();
 	const form = useRecruitmentCreateForm({
-		onSuccess: () => navigate("/recruitments", { replace: true }),
+		onSuccess: (recruitment) =>
+			navigate("/recruitments/new/success", {
+				replace: true,
+				state: recruitment,
+			}),
 	});
 	const { step, totalSteps, goNext } = form;
 	const isLastStep = step === totalSteps;

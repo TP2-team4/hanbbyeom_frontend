@@ -238,6 +238,7 @@ export const handlers = [
 			4: { status: "CANCELLED", isOwner: true, pendingApplicantCount: 0 },
 			5: { status: "EXPIRED", isOwner: false, pendingApplicantCount: 0 },
 			6: { status: "CLOSED", isOwner: true, pendingApplicantCount: 0 },
+			7: { status: "SEARCHING", isOwner: true, pendingApplicantCount: 0 },
 		};
 
 		const variant = BY_ID[id] ?? BY_ID[1];
@@ -265,7 +266,7 @@ export const handlers = [
 
 		return new HttpResponse(null, {
 			status: 201,
-			headers: { Location: "/api/matching/requests/1" },
+			headers: { Location: "/api/matching/requests/7" },
 		});
 	}),
 

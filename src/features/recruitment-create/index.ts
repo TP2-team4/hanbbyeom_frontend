@@ -4,6 +4,7 @@ export { useCourses } from "./model/useCourses";
 export {
 	useRecruitmentCreateForm,
 	type RecruitmentCreateForm,
+	type CreatedRecruitment,
 } from "./model/useRecruitmentCreateForm";
 export { formatPace } from "./model/format";
 export { CourseStep } from "./ui/CourseStep";

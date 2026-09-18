@@ -20,7 +20,9 @@ function toScheduledAt(date: string, time: string) {
 	return new Date(year, month - 1, day, hours, minutes).toISOString();
 }
 
-export async function createRecruitment(request: RecruitmentCreateRequest) {
+export async function createRecruitment(
+	request: RecruitmentCreateRequest,
+): Promise<number | null> {
 	const response = await authorizedFetch("/api/matching/requests", {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
@@ -41,4 +43,8 @@ export async function createRecruitment(request: RecruitmentCreateRequest) {
 			await extractErrorMessage(response, "모집글 작성에 실패했습니다."),
 		);
 	}
+
+	const location = response.headers.get("Location");
+	const id = location?.match(/\/(\d+)\/?$/)?.[1];
+	return id ? Number(id) : null;
 }

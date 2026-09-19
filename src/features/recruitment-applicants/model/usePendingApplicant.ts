@@ -20,6 +20,7 @@ export function usePendingApplicant(recruitmentId: number) {
 		setData: setPendingApplicant,
 		isLoading,
 		error,
+		refetch,
 	} = useAsync<PendingApplicant | null>(
 		async () => {
 			const application = await getPendingApplication(recruitmentId);
@@ -93,6 +94,7 @@ export function usePendingApplicant(recruitmentId: number) {
 		pendingApplicant,
 		isLoading,
 		error,
+		refetch,
 		isProcessing,
 		actionError,
 		confirmedMatch,

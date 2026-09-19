@@ -3,7 +3,7 @@ import { useAsync } from "../../../shared/lib/useAsync";
 import { getScheduledActivities } from "../api/getScheduledActivities";
 
 export function useScheduledActivities(limit?: number) {
-	const { data, isLoading, error } = useAsync(
+	const { data, isLoading, error, refetch } = useAsync(
 		() => getScheduledActivities(limit),
 		[] as ScheduledActivity[],
 		[limit],
@@ -14,5 +14,6 @@ export function useScheduledActivities(limit?: number) {
 		activities: data,
 		isLoading,
 		error,
+		refetch,
 	};
 }

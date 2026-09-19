@@ -13,6 +13,7 @@ export function useRecruitments() {
 		setData: setRecruitments,
 		isLoading,
 		error,
+		refetch,
 	} = useAsync(getRecruitments, [] as Recruitment[], [], "모집글을 불러오지 못했어요.");
 	const [processingId, setProcessingId] = useState<number | null>(null);
 	const [actionError, setActionError] = useState<string | null>(null);
@@ -51,5 +52,13 @@ export function useRecruitments() {
 		}
 	};
 
-	return { recruitments, isLoading, error, processingId, actionError, apply };
+	return {
+		recruitments,
+		isLoading,
+		error,
+		refetch,
+		processingId,
+		actionError,
+		apply,
+	};
 }

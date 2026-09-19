@@ -3,7 +3,7 @@ import { useAsync } from "../../../shared/lib/useAsync";
 import { getChatPresets } from "../api/getChatPresets";
 
 export function useChatPresets() {
-	const { data, isLoading, error } = useAsync(
+	const { data, isLoading, error, refetch } = useAsync(
 		getChatPresets,
 		[] as ChatPreset[],
 		[],
@@ -14,5 +14,6 @@ export function useChatPresets() {
 		presets: data,
 		isLoading,
 		error,
+		refetch,
 	};
 }

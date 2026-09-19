@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useAsync } from "../../../shared/lib/useAsync";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
 	getRecruitmentDetail,
@@ -29,41 +30,23 @@ const STATUS_LABEL = {
 export default function RecruitmentDetailPage() {
 	const navigate = useNavigate();
 	const { recruitmentId } = useParams();
-	const [detail, setDetail] = useState<DetailData | null>();
-	const [loadError, setLoadError] = useState<string | null>(null);
 	const [pending, setPending] = useState<"apply" | "cancel" | null>(null);
 	const id = Number(recruitmentId);
 	const isValidId = Number.isInteger(id);
 	const { apply, cancel, isProcessing, error, feedback } = useApplication(id);
 
-	useEffect(() => {
-		if (!isValidId) return;
-		let isActive = true;
-
-		const loadDetail = async () => {
-			try {
-				const recruitment = await getRecruitmentDetail(id);
-				if (!recruitment) {
-					if (isActive) setDetail(null);
-					return;
-				}
-
-				const author = await getRecruitmentAuthorProfile(id);
-				if (isActive)
-					setDetail(author ? { recruitment, author } : null);
-			} catch {
-				if (isActive)
-					setLoadError(
-						"정보를 불러오지 못했어요. 다시 시도해 주세요.",
-					);
-			}
-		};
-
-		void loadDetail();
-		return () => {
-			isActive = false;
-		};
-	}, [id, isValidId]);
+	const { data: detail, setData: setDetail, isLoading, error: loadError } = useAsync<DetailData | null>(
+		async () => {
+			if (!isValidId) return null;
+			const recruitment = await getRecruitmentDetail(id);
+			if (!recruitment) return null;
+			const author = await getRecruitmentAuthorProfile(id);
+			return author ? { recruitment, author } : null;
+		},
+		null,
+		[id, isValidId],
+		"정보를 불러오지 못했어요. 다시 시도해 주세요.",
+	);
 
 	const handleConfirm = async () => {
 		const newStatus = pending === "apply" ? await apply() : await cancel();
@@ -110,7 +93,7 @@ export default function RecruitmentDetailPage() {
 				className="flex-1 space-y-5 px-6 py-6"
 				aria-live="polite"
 			>
-				{isValidId && !loadError && detail === undefined && (
+				{isValidId && !loadError && isLoading && (
 					<StatusText>모집글을 불러오는 중...</StatusText>
 				)}
 				{loadError && (
@@ -118,10 +101,10 @@ export default function RecruitmentDetailPage() {
 						{loadError}
 					</ErrorText>
 				)}
-				{!loadError && (!isValidId || detail === null) && (
+				{!loadError && (!isValidId || (!isLoading && detail === null)) && (
 					<StatusText>모집글을 찾을 수 없어요.</StatusText>
 				)}
-				{isValidId && detail && (
+				{isValidId && !isLoading && !loadError && detail && (
 					<>
 						<RecruitmentInfoCard recruitment={detail.recruitment} />
 						<RecruitmentAuthorCard
@@ -132,7 +115,7 @@ export default function RecruitmentDetailPage() {
 				)}
 			</section>
 
-			{detail && (
+			{isValidId && !isLoading && !loadError && detail && (
 				<footer className="sticky bottom-0 border-t border-divider bg-surface p-4">
 					{error && (
 						<ErrorText className="mb-2 text-sm">{error}</ErrorText>

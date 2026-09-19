@@ -5,7 +5,7 @@ import { getChatRoomMessages } from "../api/getChatRoomMessages";
 import { sendChatMessage } from "../api/sendChatMessage";
 
 export function useChatRoomMessages(activityMatchId: number | null) {
-	const { data, setData, isLoading, error } = useAsync(
+	const { data, setData, isLoading, error, refetch } = useAsync(
 		() =>
 			activityMatchId === null
 				? Promise.resolve([])
@@ -59,6 +59,7 @@ export function useChatRoomMessages(activityMatchId: number | null) {
 		messages: data,
 		isLoading,
 		error,
+		refetch,
 		isSending,
 		sendError,
 		sendMessage,

@@ -3,10 +3,11 @@ import { ScheduledActivityCard } from "../../../entities/activity";
 import { useScheduledActivities } from "../../../features/scheduled-list-activity";
 import { StatusText } from "../../../shared/ui/status-text";
 import { ErrorText } from "../../../shared/ui/error-text";
+import { RetryButton } from "../../../shared/ui/retry-button";
 
 export default function ActivityPage() {
 	const navigate = useNavigate();
-	const { activities, isLoading, error } = useScheduledActivities();
+	const { activities, isLoading, error, refetch } = useScheduledActivities();
 
 	return (
 		<main className="mx-auto flex min-h-full w-full max-w-[430px] flex-col bg-primary-50">
@@ -34,9 +35,12 @@ export default function ActivityPage() {
 			<section className="flex flex-col gap-2 px-6 py-6">
 				{isLoading && <StatusText>예정된 활동을 불러오는 중...</StatusText>}
 				{error && (
-					<ErrorText className="py-10 text-center text-sm">
-						{error}
-					</ErrorText>
+					<div className="flex flex-col items-center gap-3 py-10">
+						<ErrorText className="text-center text-sm">
+							{error}
+						</ErrorText>
+						<RetryButton onClick={refetch} />
+					</div>
 				)}
 				{!isLoading && !error && activities.length === 0 && (
 					<StatusText>예정된 활동이 없어요.</StatusText>

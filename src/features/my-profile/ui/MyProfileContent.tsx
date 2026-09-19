@@ -4,6 +4,7 @@ import { MyRecruitmentCard } from "../../../entities/recruitment";
 import { ProfileSummaryCard } from "../../../entities/user-profile";
 import { StatusText } from "../../../shared/ui/status-text";
 import { ErrorText } from "../../../shared/ui/error-text";
+import { RetryButton } from "../../../shared/ui/retry-button";
 import { useMyPage } from "../model/useMyPage";
 import { useMyRecruitments } from "../../my-recruitment-list";
 
@@ -14,6 +15,7 @@ export function MyProfileContent() {
 		recruitments,
 		isLoading: isRecruitmentsLoading,
 		error: recruitmentsError,
+		refetch: refetchRecruitments,
 	} = useMyRecruitments(3);
 	const previewActivityHistory = activityHistory.slice(0, 3);
 
@@ -58,7 +60,15 @@ export function MyProfileContent() {
 					{isRecruitmentsLoading && (
 						<StatusText>내 모집글을 불러오는 중...</StatusText>
 					)}
-					{recruitmentsError && <ErrorText>{recruitmentsError}</ErrorText>}
+					{recruitmentsError && (
+						<div className="flex items-center gap-2">
+							<ErrorText>{recruitmentsError}</ErrorText>
+							<RetryButton
+								onClick={refetchRecruitments}
+								className="shrink-0 px-3 py-1"
+							/>
+						</div>
+					)}
 					{!isRecruitmentsLoading &&
 						!recruitmentsError &&
 						recruitments.length === 0 && (

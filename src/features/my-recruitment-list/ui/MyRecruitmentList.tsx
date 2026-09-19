@@ -3,10 +3,11 @@ import { MyRecruitmentCard } from "../../../entities/recruitment";
 import { useMyRecruitments } from "../model/useMyRecruitments";
 import { StatusText } from "../../../shared/ui/status-text";
 import { ErrorText } from "../../../shared/ui/error-text";
+import { RetryButton } from "../../../shared/ui/retry-button";
 
 export function MyRecruitmentList() {
 	const navigate = useNavigate();
-	const { recruitments, isLoading, error } = useMyRecruitments(3);
+	const { recruitments, isLoading, error, refetch } = useMyRecruitments(3);
 
 	return (
 		<section className="mt-8" aria-labelledby="my-recruitment-title">
@@ -35,7 +36,15 @@ export function MyRecruitmentList() {
 			</div>
 			<div className="flex flex-col gap-2 mt-4">
 				{isLoading && <StatusText>모집 중인 내 글을 불러오는 중...</StatusText>}
-				{error && <ErrorText>{error}</ErrorText>}
+				{error && (
+					<div className="flex items-center gap-2">
+						<ErrorText>{error}</ErrorText>
+						<RetryButton
+							onClick={refetch}
+							className="shrink-0 px-3 py-1"
+						/>
+					</div>
+				)}
 				{!isLoading &&
 					!error &&
 					recruitments.map((r) => (

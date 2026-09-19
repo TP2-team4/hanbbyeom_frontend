@@ -9,6 +9,8 @@ let mockRequestStatus: "SEARCHING" | "PENDING_CONFIRMATION" | "MATCHED" =
 export const handlers = [
 	//모집글 작성 - 코스 전체 리스트
 	http.get("*/api/run/courses", () => {
+
+		// 정상 응답: 기존 코스 목데이터
 		return HttpResponse.json([
 			{
 				id: 1,
@@ -36,6 +38,18 @@ export const handlers = [
 				routeDescription: "구로~금천 한강 대비 한적",
 			},
 		]);
+
+		// 서버 오류 응답 (현재 활성화)
+		// return HttpResponse.json(
+		// 	{ message: "코스 목록을 불러오지 못했어요." },
+		// 	{ status: 500 },
+		// );
+
+		// JSON 파싱 실패 응답
+		// return new HttpResponse("{broken json", {
+		// 	status: 200,
+		// 	headers: { "Content-Type": "application/json" },
+		// });
 	}),
 
 	//회원가입 - 이메일 인증 요청

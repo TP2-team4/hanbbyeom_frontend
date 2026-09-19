@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useAsync } from "../../../shared/lib/useAsync";
 import { useNavigate, useParams } from "react-router-dom";
 import {
 	CourseStep,
@@ -23,26 +23,16 @@ export default function RecruitmentEditPage() {
 	const id = Number(recruitmentId);
 	const isValidId = Number.isInteger(id);
 
-	const [initialValues, setInitialValues] = useState<
-		RecruitmentInitialValues | undefined
-	>(undefined);
-	const [loadError, setLoadError] = useState<string | null>(null);
-
-	// 이전에 작성했던 값(코스·거리·페이스·일정·대화 수준)을 불러와 작성 마법사에 미리 채워 넣음
-	useEffect(() => {
-		if (!isValidId) return;
-		let isActive = true;
-
-		const load = async () => {
+	const { data: initialValues, isLoading, error: loadError } = useAsync<RecruitmentInitialValues | undefined>(
+		async () => {
+			if (!isValidId) return undefined;
 			const [detail, condition] = await Promise.all([
 				getRecruitmentDetail(id),
 				getRunCondition(id),
 			]);
-			if (!isActive) return;
 
 			if (!detail || !detail.isOwner || !condition) {
-				setLoadError("모집글 정보를 불러오지 못했어요.");
-				return;
+				throw new Error("모집글 정보를 불러오지 못했어요.");
 			}
 
 			const scheduledDate = new Date(detail.scheduledAt);
@@ -50,7 +40,7 @@ export default function RecruitmentEditPage() {
 				(option) => option.value === detail.conversationStyle,
 			);
 
-			setInitialValues({
+			return {
 				courseId: condition.courseId,
 				courseName: condition.courseName,
 				meetingPlace: detail.meetingPlace,
@@ -62,14 +52,12 @@ export default function RecruitmentEditPage() {
 				maxPaceSeconds: condition.paceMaxSec,
 				conversationStyle: detail.conversationStyle,
 				conversationStyleLabel: talkLevelOption?.label ?? "조용히",
-			});
-		};
-
-		void load();
-		return () => {
-			isActive = false;
-		};
-	}, [id, isValidId]);
+			};
+		},
+		undefined,
+		[id, isValidId],
+		"모집글 정보를 불러오지 못했어요.",
+	);
 
 	if (!isValidId || loadError) {
 		return (
@@ -89,7 +77,7 @@ export default function RecruitmentEditPage() {
 		);
 	}
 
-	if (!initialValues) {
+	if (isLoading || !initialValues) {
 		return (
 			<main className="mx-auto flex min-h-full w-full max-w-[430px] flex-col items-center justify-center bg-primary-50">
 				<StatusText>불러오는 중...</StatusText>
@@ -99,6 +87,7 @@ export default function RecruitmentEditPage() {
 
 	return (
 		<RecruitmentEditWizard
+			key={id}
 			recruitmentId={id}
 			initialValues={initialValues}
 		/>

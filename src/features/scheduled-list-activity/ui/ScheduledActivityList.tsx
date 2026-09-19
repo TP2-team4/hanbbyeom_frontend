@@ -3,10 +3,11 @@ import { ScheduledActivityCard } from "../../../entities/activity";
 import { useScheduledActivities } from "../model/useScheduledActivities";
 import { StatusText } from "../../../shared/ui/status-text";
 import { ErrorText } from "../../../shared/ui/error-text";
+import { RetryButton } from "../../../shared/ui/retry-button";
 
 export function ScheduledActivityList() {
 	const navigate = useNavigate();
-	const { activities, isLoading, error } = useScheduledActivities(1); // 홈화면에는 하나만 표시
+	const { activities, isLoading, error, refetch } = useScheduledActivities(1); // 홈화면에는 하나만 표시
 
 	return (
 		<section
@@ -40,7 +41,15 @@ export function ScheduledActivityList() {
 				{isLoading && (
 					<StatusText>예정된 활동을 불러오는 중...</StatusText>
 				)}
-				{error && <ErrorText>{error}</ErrorText>}
+				{error && (
+					<div className="flex items-center gap-2">
+						<ErrorText>{error}</ErrorText>
+						<RetryButton
+							onClick={refetch}
+							className="shrink-0 px-3 py-1"
+						/>
+					</div>
+				)}
 				{!isLoading && !error && activities.length === 0 && (
 					<StatusText>예정된 활동이 없어요.</StatusText>
 				)}

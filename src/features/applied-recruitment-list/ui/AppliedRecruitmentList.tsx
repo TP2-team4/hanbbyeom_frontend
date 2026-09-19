@@ -3,10 +3,12 @@ import { RecruitmentSummaryCard } from "../../../entities/recruitment";
 import { useMyAppliedRecruitment } from "../model/useMyAppliedRecruitment";
 import { StatusText } from "../../../shared/ui/status-text";
 import { ErrorText } from "../../../shared/ui/error-text";
+import { RetryButton } from "../../../shared/ui/retry-button";
 
 export function AppliedRecruitmentList() {
 	const navigate = useNavigate();
-	const { recruitments, isLoading, error } = useMyAppliedRecruitment(3);
+	const { recruitments, isLoading, error, refetch } =
+		useMyAppliedRecruitment(3);
 
 	return (
 		<section className="mt-8" aria-labelledby="applied-recruitment-title">
@@ -35,7 +37,15 @@ export function AppliedRecruitmentList() {
 			</div>
 			<div className="flex flex-col gap-2 mt-4">
 				{isLoading && <StatusText>내가 신청한 모집을 불러오는 중...</StatusText>}
-				{error && <ErrorText>{error}</ErrorText>}
+				{error && (
+					<div className="flex items-center gap-2">
+						<ErrorText>{error}</ErrorText>
+						<RetryButton
+							onClick={refetch}
+							className="shrink-0 px-3 py-1"
+						/>
+					</div>
+				)}
 				{!isLoading &&
 					!error &&
 					recruitments.map((r) => (

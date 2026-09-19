@@ -1,47 +1,59 @@
-// api/getScheduledActivities.ts
 import type { ScheduledActivity } from "../../../entities/activity";
+import { authorizedFetch } from "../../../shared/lib/authorizedFetch";
+import { extractErrorMessage } from "../../../shared/lib/apiError";
+import { toTimeValue } from "../../../shared/lib/date";
 
-const MOCK_ACTIVITIES: ScheduledActivity[] = [
-	{
-		id: 1,
-		month: 9,
-		day: 12,
-		title: "Silent Run · 뚝섬",
-		time: "금 07:00",
-		distance: "5~12km",
-		conversationStyle: "조용한러너",
-	},
-	{
-		id: 2,
-		month: 9,
-		day: 14,
-		title: "Light Chat Run · 반포",
-		time: "일 08:00",
-		distance: "3~6km",
-		conversationStyle: "가벼운 대화",
-	},
-	{
-		id: 3,
-		month: 9,
-		day: 18,
-		title: "Silent Run · 여의도",
-		time: "화 19:30",
-		distance: "6~10km",
-		conversationStyle: "조용한러너",
-	},
-	{
-		id: 4,
-		month: 9,
-		day: 20,
-		title: "Silent Run · 잠실",
-		time: "목 07:00",
-		distance: "5~8km",
-		conversationStyle: "조용한러너",
-	},
-];
+type ChatListItemResponse = {
+	activityMatchId: number;
+	counterpartUserId: number;
+	status: string;
+	courseName: string;
+	location: string;
+	scheduledAt: string;
+	scheduledEndAt: string;
+	lastMessage: string | null;
+	lastMessageAt: string | null;
+};
 
-export async function getScheduledActivities(limit?: number) {
-	// TODO: 예정된 활동 조회 API 연동 필요
-	await new Promise((resolve) => setTimeout(resolve, 300));
-	return limit === undefined ? MOCK_ACTIVITIES : MOCK_ACTIVITIES.slice(0, limit);
+export async function getScheduledActivities(
+	limit?: number,
+): Promise<ScheduledActivity[]> {
+	const response = await authorizedFetch("/api/chats");
+
+	if (!response.ok) {
+		throw new Error(
+			await extractErrorMessage(
+				response,
+				"예정된 활동을 불러오지 못했습니다.",
+			),
+		);
+	}
+
+	const body: ChatListItemResponse[] = await response.json();
+	const now = Date.now();
+
+	const upcoming = body
+		.filter(
+			(room) =>
+				room.status === "CONFIRMED" &&
+				new Date(room.scheduledEndAt).getTime() >= now,
+		)
+		.sort(
+			(a, b) =>
+				new Date(a.scheduledAt).getTime() -
+				new Date(b.scheduledAt).getTime(),
+		)
+		.map((room): ScheduledActivity => {
+			const date = new Date(room.scheduledAt);
+			return {
+				id: room.activityMatchId,
+				month: date.getMonth() + 1,
+				day: date.getDate(),
+				title: room.courseName,
+				time: toTimeValue(date),
+				location: room.location,
+			};
+		});
+
+	return limit === undefined ? upcoming : upcoming.slice(0, limit);
 }

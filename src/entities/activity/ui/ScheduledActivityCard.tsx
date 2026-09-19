@@ -23,8 +23,7 @@ export function ScheduledActivityCard({ activity, onClick }: Props) {
                     {activity.title}
                 </strong>
                 <span className="mt-1 block truncate text-sm text-body">
-                    {activity.time} · {activity.distance} ·{" "}
-                    {activity.conversationStyle}
+                    {activity.time} · {activity.location}
                 </span>
             </span>
             <svg

@@ -4,6 +4,5 @@ export type ScheduledActivity = {
 	day: number;
 	title: string;
 	time: string;
-	distance: string;
-	conversationStyle: string;
+	location: string;
 };

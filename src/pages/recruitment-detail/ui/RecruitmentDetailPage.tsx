@@ -110,6 +110,9 @@ export default function RecruitmentDetailPage() {
 						<RecruitmentAuthorCard
 							nickname={detail.recruitment.authorNickname}
 							profile={detail.author}
+							onViewProfile={() =>
+								navigate(`/recruitments/${id}/author-profile`)
+							}
 						/>
 					</>
 				)}

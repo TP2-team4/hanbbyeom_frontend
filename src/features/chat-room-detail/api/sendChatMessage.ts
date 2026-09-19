@@ -1,4 +1,5 @@
 import type { ChatMessage } from "../../../entities/chat-room";
+import { authorizedFetch } from "../../../shared/lib/authorizedFetch";
 
 export type SendChatMessageRequest = {
 	messageType: "TEXT";
@@ -9,16 +10,18 @@ export async function sendChatMessage(
 	activityMatchId: number,
 	request: SendChatMessageRequest,
 ): Promise<ChatMessage> {
-	// TODO: POST /api/matching/matches/{matchId}/messages 연동
-	await new Promise((resolve) => setTimeout(resolve, 200));
+	const response = await authorizedFetch(
+		`/api/matching/matches/${activityMatchId}/messages`,
+		{
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ content: request.content }),
+		},
+	);
 
-	return {
-		id: Date.now(),
-		activityMatchId,
-		senderId: 1, // TODO: 실제 로그인 사용자 ID로 교체
-		messageType: "TEXT",
-		presetCode: null,
-		content: request.content,
-		createdAt: new Date().toISOString(),
-	};
+	if (!response.ok) {
+		throw new Error("메시지를 보내지 못했습니다.");
+	}
+
+	return response.json() as Promise<ChatMessage>;
 }

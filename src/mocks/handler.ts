@@ -487,6 +487,7 @@ export const handlers = [
 			: new HttpResponse(null, { status: 404 });
 	}),
 
+	//채팅방 목록 조회
 	http.get(
 		"*/api/matching/matches/:activityMatchId/messages",
 		({ params }) => {
@@ -508,6 +509,27 @@ export const handlers = [
 				],
 			};
 			return HttpResponse.json(messages[id] ?? []);
+		},
+	),
+
+	//채팅전송 구현
+	http.post(
+		"*/api/matching/matches/:activityMatchId/messages",
+		async ({ params, request }) => {
+			const activityMatchId = Number(params.activityMatchId);
+			const body = (await request.json()) as { content: string };
+			return HttpResponse.json(
+				{
+					id: Date.now(),
+					activityMatchId,
+					senderId: 1,
+					messageType: "TEXT",
+					presetCode: null,
+					content: body.content,
+					createdAt: new Date().toISOString(),
+				},
+				{ status: 201 },
+			);
 		},
 	),
 ];

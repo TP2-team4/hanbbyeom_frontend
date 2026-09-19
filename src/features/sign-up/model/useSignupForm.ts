@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import {
     EmailVerificationError,
     requestEmailVerification,
     verifyEmail,
 } from "../api/emailVerification";
-import { signup } from "../api/signup";
-import type { ConversationPreference } from "../../conversation-preference/model/types";
-import type { EmailVerificationStatus } from "./types";
+import {signup} from "../api/signup";
+import type {ConversationPreference} from "../../conversation-preference/model/types";
+import type {EmailVerificationStatus} from "./types";
 import {
+    isPasswordTooManyBytes,
     isValidEmail,
     isValidNickname,
     isValidPassword,
@@ -20,7 +21,7 @@ type SignupStep = "form" | "talkLevel";
 type UseSignupFormOptions = { onSuccess: () => void };
 
 // 회원가입 폼의 입력값, 유효성 검사, 이메일 인증 및 제출 상태를 관리하는 훅
-export function useSignupForm({ onSuccess }: UseSignupFormOptions) {
+export function useSignupForm({onSuccess}: UseSignupFormOptions) {
     const [step, setStep] = useState<SignupStep>("form");
     const [defaultTalkLevel, setDefaultTalkLevel] =
         useState<ConversationPreference>("SILENT");
@@ -78,27 +79,29 @@ export function useSignupForm({ onSuccess }: UseSignupFormOptions) {
     const emailError = !emailTouched
         ? null
         : email.trim().length === 0
-          ? "이메일을 입력해주세요."
-          : !emailIsValid
-            ? "올바른 이메일 형식으로 입력해주세요."
-            : null;
+            ? "이메일을 입력해주세요."
+            : !emailIsValid
+                ? "올바른 이메일 형식으로 입력해주세요."
+                : null;
 
     const passwordError = !passwordTouched
         ? null
         : password.length === 0
-          ? "비밀번호를 입력해주세요."
-          : !isValidPassword(password)
-            ? "비밀번호는 8자 이상 입력해주세요."
-            : null;
+            ? "비밀번호를 입력해주세요."
+            : isPasswordTooManyBytes(password)
+                ? "비밀번호가 너무 길어요. 조금 더 짧게 입력해주세요."
+                : !isValidPassword(password)
+                    ? "비밀번호는 8자 이상 입력해주세요."
+                    : null;
 
     const nicknameError =
         nicknameTouched && nickname.trim().length === 0
             ? "닉네임을 입력해주세요."
             : nicknameTouched && nickname.trim().length < NICKNAME_MIN_LENGTH
-              ? "닉네임은 2자 이상 입력해주세요."
-              : nickname.length >= NICKNAME_MAX_LENGTH
-                ? "닉네임은 최대 16자까지 입력할 수 있어요."
-                : null;
+                ? "닉네임은 2자 이상 입력해주세요."
+                : nickname.length >= NICKNAME_MAX_LENGTH
+                    ? "닉네임은 최대 16자까지 입력할 수 있어요."
+                    : null;
 
     // 이메일 값을 변경하고 기존에 진행한 이메일 인증 상태를 초기화하는 함수
     const changeEmail = (value: string) => {
@@ -141,7 +144,7 @@ export function useSignupForm({ onSuccess }: UseSignupFormOptions) {
             setVerificationError(getVerificationErrorMessage(error));
             setEmailVerificationStatus(
                 emailVerificationStatus === "sent" ||
-                    emailVerificationStatus === "verified"
+                emailVerificationStatus === "verified"
                     ? emailVerificationStatus
                     : "error",
             );
@@ -184,7 +187,7 @@ export function useSignupForm({ onSuccess }: UseSignupFormOptions) {
         setSubmitError(null);
 
         try {
-            await signup({ email, nickname, password, defaultTalkLevel });
+            await signup({email, nickname, password, defaultTalkLevel});
             onSuccess();
         } catch (error) {
             setSubmitError(

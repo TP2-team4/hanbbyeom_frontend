@@ -605,4 +605,25 @@ export const handlers = [
 			return new HttpResponse(null, { status: 204 });
 		},
 	),
+
+	http.post(
+		"*/api/matching/matches/:activityMatchId/no-show-report",
+		async ({ request }) => {
+			const body = await request.json();
+			console.log("노쇼 신고:", body);
+			return new HttpResponse(null, { status: 204 });
+		},
+	),
+
+	// 후기/신고 제출 가능 여부 조회
+	http.get(
+		"*/api/matching/matches/:activityMatchId/feedback-status",
+		() => {
+			return HttpResponse.json({
+				canSubmit: true,
+				alreadySubmitted: false,
+				submittedType: null,
+			});
+		},
+	),
 ];

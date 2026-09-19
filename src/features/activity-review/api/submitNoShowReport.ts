@@ -1,3 +1,5 @@
+import { authorizedFetch } from "../../../shared/lib/authorizedFetch";
+import { extractErrorMessage } from "../../../shared/lib/apiError";
 import type { NoShowReasonCode } from "../model/types";
 
 export type SubmitNoShowReportRequest = {
@@ -9,7 +11,21 @@ export type SubmitNoShowReportRequest = {
 export async function submitNoShowReport(
 	request: SubmitNoShowReportRequest,
 ): Promise<void> {
-	// TODO: 노쇼 신고 API가 개발되면 실제 요청으로 교체
-	await new Promise((resolve) => setTimeout(resolve, 400));
-	console.log("노쇼 신고:", request);
+	const response = await authorizedFetch(
+		`/api/matching/matches/${request.activityMatchId}/no-show-report`,
+		{
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				reason: request.reasonCode,
+				detail: request.detail || null,
+			}),
+		},
+	);
+
+	if (!response.ok) {
+		throw new Error(
+			await extractErrorMessage(response, "신고를 접수하지 못했습니다."),
+		);
+	}
 }

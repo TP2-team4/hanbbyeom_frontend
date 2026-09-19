@@ -32,10 +32,16 @@ export type MyRecruitmentSummary = {
 	status: MyRecruitmentStatus;
 };
 
-export type AppliedRecruitmentStatus = "WAITING" | "ACCEPTED";
+export type AppliedRecruitmentStatus =
+	| "PENDING"
+	| "ACCEPTED"
+	| "REJECTED"
+	| "CANCELLED";
 
 export type AppliedRecruitmentSummary = {
 	id: number;
+	activityMatchId: number;
+	hostMatchRequestId: number;
 	location: string;
 	minDistanceKm: number;
 	maxDistanceKm: number;

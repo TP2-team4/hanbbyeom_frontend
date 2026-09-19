@@ -415,4 +415,24 @@ export const handlers = [
 		);*/
 	}),
 
+	// 내 신청 내역 조회
+	http.get("*/api/matching/board/applications", () => {
+		return HttpResponse.json([
+			{
+				activityMatchId: 12,
+				hostMatchRequestId: 35,
+				status: "PENDING",
+				courseName: "뚝섬 한강공원",
+				distanceMinMeters: 3000,
+				distanceMaxMeters: 5000,
+				scheduledAt: "2026-09-20T09:00:00Z",
+				talkLevel: "LIGHT_CHAT",
+				host: {
+					nickname: "러닝메이트",
+					rating: 4.5,
+					completedCount: 8,
+				},
+			},
+		]);
+	}),
 ];

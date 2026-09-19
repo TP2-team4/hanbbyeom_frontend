@@ -7,7 +7,7 @@ import { authorizedFetch } from "../../../shared/lib/authorizedFetch";
 import { extractErrorMessage } from "../../../shared/lib/apiError";
 import { formatDate, toTimeValue } from "../../../shared/lib/date";
 
-type MyRecruitmentResponse = {
+export type MyRecruitmentResponse = {
 	id: number;
 	courseName: string;
 	distanceMinMeters: number;
@@ -17,7 +17,7 @@ type MyRecruitmentResponse = {
 	status: MatchRequestStatus;
 };
 
-function toMyRecruitment(
+export function toMyRecruitment(
 	item: MyRecruitmentResponse,
 ): MyRecruitmentSummary {
 	return {
@@ -114,10 +114,7 @@ function toMyRecruitment(
 	},
 ];*/
 
-export async function getMyRecruitments(
-	limit?: number,
-	onlyRecruiting = false,
-) {
+export async function getMyRecruitments(limit?: number) {
 	const response = await authorizedFetch("/api/matching/requests");
 
 	if (!response.ok) {
@@ -132,15 +129,7 @@ export async function getMyRecruitments(
 	const body: MyRecruitmentResponse[] = await response.json();
 	const recruitments = body.map(toMyRecruitment);
 
-	const filtered = onlyRecruiting
-		? recruitments.filter(
-			(item) =>
-				item.status === "SEARCHING" ||
-				item.status === "PENDING_CONFIRMATION",
-		)
-		: recruitments;
-
 	return limit === undefined
-		? filtered
-		: filtered.slice(0, limit);
+		? recruitments
+		: recruitments.slice(0, limit);
 }

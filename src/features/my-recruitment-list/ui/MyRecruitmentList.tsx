@@ -1,13 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { MyRecruitmentCard } from "../../../entities/recruitment";
-import { useMyRecruitments } from "../model/useMyRecruitments";
+import { useActiveRecruitment } from "../model/useActiveRecruitment";
 import { StatusText } from "../../../shared/ui/status-text";
 import { ErrorText } from "../../../shared/ui/error-text";
 import { RetryButton } from "../../../shared/ui/retry-button";
 
 export function MyRecruitmentList() {
 	const navigate = useNavigate();
-	const { recruitments, isLoading, error, refetch } = useMyRecruitments(3 , true);
+	const { recruitment, isLoading, error, refetch } = useActiveRecruitment();
 
 	return (
 		<section className="mt-8" aria-labelledby="my-recruitment-title">
@@ -45,15 +45,17 @@ export function MyRecruitmentList() {
 						/>
 					</div>
 				)}
-				{!isLoading &&
-					!error &&
-					recruitments.map((r) => (
-						<MyRecruitmentCard
-							key={r.id}
-							recruitment={r}
-							onClick={() => navigate(`/recruitments/${r.id}/applicants`)}
-						/>
-					))}
+				{!isLoading && !error && !recruitment && (
+					<StatusText>모집 중인 글이 없어요.</StatusText>
+				)}
+				{!isLoading && !error && recruitment && (
+					<MyRecruitmentCard
+						recruitment={recruitment}
+						onClick={() =>
+							navigate(`/recruitments/${recruitment.id}/applicants`)
+						}
+					/>
+				)}
 			</div>
 		</section>
 	);

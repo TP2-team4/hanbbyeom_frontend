@@ -95,6 +95,13 @@ export const handlers = [
 		});
 	}),
 
+	// 기본 대화 수준 변경
+	http.patch("*/api/users/me/preferences", async ({ request }) => {
+		const body = await request.json();
+		console.log("클라이언트가 보낸 데이터 : ", body);
+		return new HttpResponse(null, { status: 204 });
+	}),
+
 	//모집 게시판 - 목록 조회
 	http.get("*/api/matching/board", () => {
 		return HttpResponse.json([
@@ -286,7 +293,24 @@ export const handlers = [
 
 	// 모집글 취소
 	http.post("*/api/matching/requests/:id/cancel", () => {
+		hasActiveMatchRequest = false;
 		return new HttpResponse(null, { status: 204 });
+	}),
+
+	// 내 활성 모집글 1건 조회
+	http.get("*/api/matching/requests/me", () => {
+		if (!hasActiveMatchRequest) {
+			return new HttpResponse(null, { status: 404 });
+		}
+		return HttpResponse.json({
+			id: 7,
+			courseName: "뚝섬 한강공원",
+			distanceMinMeters: 5000,
+			distanceMaxMeters: 12000,
+			scheduledAt: "2026-09-23T07:00:00+09:00",
+			talkLevel: "SILENT",
+			status: "SEARCHING",
+		});
 	}),
 
 	// 모집글 일정·대화 수준 수정

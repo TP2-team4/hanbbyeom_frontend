@@ -17,7 +17,7 @@ export function AppHeader() {
 				/>
 				한뼘
 			</h1>
-			<button
+			{/*<button
 				type="button"
 				aria-label="알림 열기"
 				className="grid size-10 place-items-center text-body"
@@ -33,7 +33,7 @@ export function AppHeader() {
 					<path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 8h18c0-1-3-1-3-8" />
 					<path d="M10 21h4" />
 				</svg>
-			</button>
+			</button>*/}
 		</header>
 	);
 }

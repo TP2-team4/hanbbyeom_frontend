@@ -71,14 +71,24 @@ export default function RecruitmentCreateSuccessPage() {
 					</dl>
 				</div>
 
-				<Button
-					type="button"
-					variant="secondary"
-					className="h-14 w-full"
-					onClick={handleEdit}
-				>
-					모집글 수정하기
-				</Button>
+				<div className="flex flex-col gap-2">
+					<Button
+						type="button"
+						variant="primary"
+						className="h-14 w-full"
+						onClick={() => navigate("/home", { replace: true })}
+					>
+						홈으로
+					</Button>
+					<Button
+						type="button"
+						variant="secondary"
+						className="h-14 w-full"
+						onClick={handleEdit}
+					>
+						모집글 수정하기
+					</Button>
+				</div>
 			</section>
 		</main>
 	);

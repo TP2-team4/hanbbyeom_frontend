@@ -595,4 +595,14 @@ export const handlers = [
 			},
 		]);
 	}),
+
+	// 후기 작성
+	http.post(
+		"*/api/matching/matches/:activityMatchId/review",
+		async ({ request }) => {
+			const body = await request.json();
+			console.log("후기 등록:", body);
+			return new HttpResponse(null, { status: 204 });
+		},
+	),
 ];

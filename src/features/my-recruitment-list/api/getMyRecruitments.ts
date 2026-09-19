@@ -1,6 +1,38 @@
-import type { MyRecruitmentSummary } from "../../../entities/recruitment";
+import type {
+	MyRecruitmentSummary,
+	ConversationStyle,
+	MatchRequestStatus,
+} from "../../../entities/recruitment";
+import { authorizedFetch } from "../../../shared/lib/authorizedFetch";
+import { extractErrorMessage } from "../../../shared/lib/apiError";
+import { formatDate, toTimeValue } from "../../../shared/lib/date";
 
-const MOCK_MY_RECRUITMENTS: MyRecruitmentSummary[] = [
+type MyRecruitmentResponse = {
+	id: number;
+	courseName: string;
+	distanceMinMeters: number;
+	distanceMaxMeters: number;
+	scheduledAt: string;
+	talkLevel: ConversationStyle;
+	status: MatchRequestStatus;
+};
+
+function toMyRecruitment(
+	item: MyRecruitmentResponse,
+): MyRecruitmentSummary {
+	return {
+		id: item.id,
+		location: item.courseName,
+		minDistanceKm: item.distanceMinMeters / 1000,
+		maxDistanceKm: item.distanceMaxMeters / 1000,
+		conversationStyle: item.talkLevel,
+		dateLabel: formatDate(item.scheduledAt),
+		time: toTimeValue(new Date(item.scheduledAt)),
+		status: item.status,
+	};
+}
+
+/*const MOCK_MY_RECRUITMENTS: MyRecruitmentSummary[] = [
 	{
 		id: 1,
 		location: "뚝섬 한강공원",
@@ -80,12 +112,35 @@ const MOCK_MY_RECRUITMENTS: MyRecruitmentSummary[] = [
 		applicantCount: 0,
 		status: "RECRUITING",
 	},
-];
+];*/
 
-export async function getMyRecruitments(limit?: number) {
-	// TODO: 내가 작성한 모집글 조회 API 연동 필요
-	await new Promise((resolve) => setTimeout(resolve, 300));
+export async function getMyRecruitments(
+	limit?: number,
+	onlyRecruiting = false,
+) {
+	const response = await authorizedFetch("/api/matching/requests");
+
+	if (!response.ok) {
+		throw new Error(
+			await extractErrorMessage(
+				response,
+				"내 모집글을 불러오지 못했어요.",
+			),
+		);
+	}
+
+	const body: MyRecruitmentResponse[] = await response.json();
+	const recruitments = body.map(toMyRecruitment);
+
+	const filtered = onlyRecruiting
+		? recruitments.filter(
+			(item) =>
+				item.status === "SEARCHING" ||
+				item.status === "PENDING_CONFIRMATION",
+		)
+		: recruitments;
+
 	return limit === undefined
-		? MOCK_MY_RECRUITMENTS
-		: MOCK_MY_RECRUITMENTS.slice(0, limit);
+		? filtered
+		: filtered.slice(0, limit);
 }

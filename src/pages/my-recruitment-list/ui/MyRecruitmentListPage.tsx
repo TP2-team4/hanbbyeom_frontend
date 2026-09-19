@@ -59,9 +59,12 @@ export default function MyRecruitmentListPage() {
 								label: "전체",
 								count: recruitments.length,
 							},
-							{ value: "RECRUITING", label: "모집 중" },
-							{ value: "CLOSED", label: "마감" },
+							{ value: "SEARCHING", label: "모집 중" },
+							{ value: "PENDING_CONFIRMATION", label: "신청 확인 대기" },
+							{ value: "MATCHED", label: "매칭 확정" },
 							{ value: "CANCELLED", label: "취소" },
+							{ value: "EXPIRED", label: "기간 만료" },
+							{ value: "CLOSED", label: "마감" },
 						]}
 					/>
 				)}

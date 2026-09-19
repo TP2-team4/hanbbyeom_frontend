@@ -7,7 +7,7 @@ import { RetryButton } from "../../../shared/ui/retry-button";
 
 export function MyRecruitmentList() {
 	const navigate = useNavigate();
-	const { recruitments, isLoading, error, refetch } = useMyRecruitments(3);
+	const { recruitments, isLoading, error, refetch } = useMyRecruitments(3 , true);
 
 	return (
 		<section className="mt-8" aria-labelledby="my-recruitment-title">

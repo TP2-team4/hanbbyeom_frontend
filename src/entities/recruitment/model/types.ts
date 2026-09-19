@@ -19,7 +19,7 @@ export type Recruitment = {
 	status: RecruitmentStatus;
 };
 
-export type MyRecruitmentStatus = "RECRUITING" | "CLOSED" | "CANCELLED";
+export type MyRecruitmentStatus = MatchRequestStatus;
 
 export type MyRecruitmentSummary = {
 	id: number;
@@ -29,9 +29,7 @@ export type MyRecruitmentSummary = {
 	conversationStyle: ConversationStyle;
 	dateLabel: string;
 	time: string;
-	applicantCount: number;
 	status: MyRecruitmentStatus;
-	matchedPartnerNickname?: string;
 };
 
 export type AppliedRecruitmentStatus = "WAITING" | "ACCEPTED";

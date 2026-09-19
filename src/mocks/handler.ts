@@ -364,4 +364,55 @@ export const handlers = [
 		mockRequestStatus = "SEARCHING";
 		return new HttpResponse(null, { status: 204 });
 	}),
+
+	// 내 모집글 목록 조회
+	http.get("*/api/matching/requests", () => {
+
+		// return HttpResponse.json([]);
+
+		return HttpResponse.json([
+			{
+				id: 1,
+				courseName: "뚝섬 한강공원",
+				distanceMinMeters: 5000,
+				distanceMaxMeters: 10000,
+				scheduledAt: "2026-09-23T07:00:00",
+				talkLevel: "SILENT",
+				status: "CLOSED",
+			},
+			{
+				id: 2,
+				courseName: "여의도 한강공원",
+				distanceMinMeters: 3000,
+				distanceMaxMeters: 5000,
+				scheduledAt: "2026-09-22T08:00:00",
+				talkLevel: "LIGHT_CHAT",
+				status: "SEARCHING",
+			},
+			{
+				id: 3,
+				courseName: "잠실 한강공원",
+				distanceMinMeters: 5000,
+				distanceMaxMeters: 8000,
+				scheduledAt: "2026-09-21T09:00:00",
+				talkLevel: "SILENT",
+				status: "CANCELLED",
+			},
+			{
+				id: 4,
+				courseName: "반포 한강공원",
+				distanceMinMeters: 3000,
+				distanceMaxMeters: 6000,
+				scheduledAt: "2026-09-20T07:00:00",
+				talkLevel: "SILENT",
+				status: "PENDING_CONFIRMATION",
+			},
+		]);
+
+		/*return HttpResponse.json(
+			{ message: "내 모집글을 불러오지 못했어요." },
+			{ status: 500 },
+		);*/
+	}),
+
 ];

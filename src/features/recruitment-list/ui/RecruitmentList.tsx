@@ -116,8 +116,9 @@ export function RecruitmentList() {
 
 			{!isLoading && !error && (
 				<p className="px-6 pt-5 text-sm text-body">
-					내 조건과 맞는 모집글 {filteredRecruitments.length}건 ·
-					신청하면 작성자 수락 후 확정돼요
+					신청 가능한 모집글 {filteredRecruitments.length}건 · 내가 쓴
+					글과 신청한 글은 보이지 않아요 <br/> 신청하면 작성자 수락 후
+					확정돼요
 				</p>
 			)}
 

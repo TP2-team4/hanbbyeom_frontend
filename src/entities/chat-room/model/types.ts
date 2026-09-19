@@ -19,13 +19,15 @@ export type ChatRoom = {
 
 export type ChatMatchSummary = {
 	activityMatchId: number;
+	status: string;
+	meetingCode: string;
+	confirmedAt: string;
+	closedAt: string | null;
+	counterpartUserId: number;
 	courseName: string;
 	location: string;
 	scheduledAt: string;
 	scheduledEndAt: string;
-	status: string;
-	counterpartUserId: number;
-	messageSendable: boolean;
 };
 
 export type ChatMessage = {

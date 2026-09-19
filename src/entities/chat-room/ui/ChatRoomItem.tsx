@@ -1,4 +1,5 @@
 import type { ChatRoom, ChatRoomStatus } from "../model/types";
+import { formatDate, toTimeValue } from "../../../shared/lib/date";
 
 type Props = {
 	chatRoom: ChatRoom;
@@ -6,12 +7,17 @@ type Props = {
 };
 
 const STATUS_LABEL: Record<ChatRoomStatus, string> = {
-	scheduled: "진행 예정",
-	in_progress: "진행 중",
-	completed: "완료",
+	PROPOSED: "매칭 대기",
+	CONFIRMED: "진행 예정",
+	REJECTED: "매칭 거절",
+	EXPIRED: "기한 만료",
+	ENDED: "완료",
 };
 
 export function ChatRoomItem({ chatRoom, onClick }: Props) {
+	const dateLabel = formatDate(chatRoom.scheduledAt);
+	const timeLabel = toTimeValue(new Date(chatRoom.scheduledAt));
+
 	return (
 		<button
 			type="button"
@@ -38,28 +44,21 @@ export function ChatRoomItem({ chatRoom, onClick }: Props) {
 			<span className="min-w-0 flex-1">
 				<span className="flex flex-wrap items-center gap-2">
 					<strong className="text-lg font-bold text-title">
-						{chatRoom.participantNickname}
+						{chatRoom.courseName}
 					</strong>
 					<span
-						className={`rounded-full px-3 py-1 text-xs font-medium ${chatRoom.status === "completed" ? "bg-gray-50 text-gray-600" : "bg-primary-100 text-secondary-400"}`}
+						className={`rounded-full px-3 py-1 text-xs font-medium ${chatRoom.status === "ENDED" ? "bg-gray-50 text-gray-600" : "bg-primary-100 text-secondary-400"}`}
 					>
 						{STATUS_LABEL[chatRoom.status]}
 					</span>
 				</span>
 				<span className="mt-1 block line-clamp-2 break-words text-sm text-body">
-					{chatRoom.lastMessage}
+					{chatRoom.lastMessage ?? "아직 주고받은 메시지가 없어요."}
 				</span>
 				<span className="mt-1 block truncate text-xs text-body">
-					{chatRoom.activitySummary}
+					{dateLabel} {timeLabel} · {chatRoom.location}
 				</span>
 			</span>
-
-			{chatRoom.hasUnreadMessage && (
-				<span
-					className="size-2.5 shrink-0 rounded-full bg-primary-400"
-					aria-label="읽지 않은 메시지 있음"
-				/>
-			)}
 		</button>
 	);
 }

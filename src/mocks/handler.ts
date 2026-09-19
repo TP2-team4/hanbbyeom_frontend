@@ -435,4 +435,14 @@ export const handlers = [
 			},
 		]);
 	}),
+
+	//내 신뢰 프로필
+	http.get("*/api/users/me/trust-profile", () => {
+		return HttpResponse.json({
+			averageRating: 4.8,
+			reviewCount: 12,
+			completedCount: 12,
+			noShowReportCount: 1,
+		});
+	}),
 ];

@@ -1,5 +1,5 @@
 import type { ActivityHistory } from "../../../entities/activity-history";
-import { getCurrentUser, type UserProfile } from "../../../entities/user-profile";
+import { getCurrentUser, getMyTrustProfile, type UserProfile } from "../../../entities/user-profile";
 
 const MOCK_PROFILE: UserProfile = {
 	id: 1,
@@ -26,9 +26,18 @@ const MOCK_ACTIVITY_HISTORY: ActivityHistory[] = [
 ];
 
 export async function getMyPage() {
-	const currentUser = await getCurrentUser();
-	return {
-		profile: { ...MOCK_PROFILE, ...currentUser },
-		activityHistory: MOCK_ACTIVITY_HISTORY,
-	};
+    const [currentUser, trustProfile] = await Promise.all([
+        getCurrentUser(),
+        getMyTrustProfile(),
+    ]);
+
+    const profile: UserProfile = {
+        ...MOCK_PROFILE,
+        ...currentUser,
+        averageRating: trustProfile.averageRating ?? 0,
+        completedActivityCount: trustProfile.completedCount,
+        noShowReportCount: trustProfile.noShowReportCount,
+    };
+
+    return { profile, activityHistory: MOCK_ACTIVITY_HISTORY };
 }

@@ -87,7 +87,9 @@ export default function ChatRoomDetailPage() {
 	const isRoomNotFound =
 		!isChatRoomLoading && !chatRoomError && (!isValidId || !chatRoom);
 	const canSendMessage = Boolean(
-		matchSummary?.messageSendable && resolvedMatchId !== null,
+		matchSummary &&
+			matchSummary.closedAt === null &&
+			resolvedMatchId !== null,
 	);
 
 	const [showCancelConfirm, setShowCancelConfirm] = useState(false);
@@ -212,7 +214,7 @@ export default function ChatRoomDetailPage() {
 					/>
 				</>
 			)}
-				{matchSummary && !matchSummary.messageSendable && (
+				{matchSummary && matchSummary.closedAt !== null && (
 				<StatusText className="shrink-0 border-t border-divider bg-surface px-4 py-5">
 					종료된 채팅방이에요.
 				</StatusText>

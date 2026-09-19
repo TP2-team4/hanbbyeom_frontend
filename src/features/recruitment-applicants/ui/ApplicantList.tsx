@@ -2,6 +2,7 @@ import { useState } from "react";
 import Button from "../../../shared/ui/button";
 import { StatusText } from "../../../shared/ui/status-text";
 import { ErrorText } from "../../../shared/ui/error-text";
+import { RetryButton } from "../../../shared/ui/retry-button";
 import { ConfirmModal } from "../../../shared/ui/confirm-modal";
 import { useNavigate } from "react-router-dom";
 import { usePendingApplicant } from "../model/usePendingApplicant";
@@ -14,6 +15,7 @@ export function ApplicantList({ recruitmentId }: { recruitmentId: number }) {
 		pendingApplicant,
 		isLoading,
 		error,
+		refetch,
 		isProcessing,
 		actionError,
 		confirmedMatch,
@@ -50,9 +52,12 @@ export function ApplicantList({ recruitmentId }: { recruitmentId: number }) {
 		<div className="flex flex-col gap-3">
 			{isLoading && <StatusText>신청자 정보를 불러오는 중...</StatusText>}
 			{error && (
-				<ErrorText className="py-10 text-center text-sm">
-					{error}
-				</ErrorText>
+				<div className="flex flex-col items-center gap-3 py-10">
+					<ErrorText className="text-center text-sm">
+						{error}
+					</ErrorText>
+					<RetryButton onClick={refetch} />
+				</div>
 			)}
 			{!isLoading && !error && !pendingApplicant && (
 				<StatusText>아직 신청자가 없어요.</StatusText>

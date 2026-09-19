@@ -1,12 +1,20 @@
-export type ChatRoomStatus = "scheduled" | "in_progress" | "completed";
+export type ChatRoomStatus =
+	| "PROPOSED"
+	| "CONFIRMED"
+	| "REJECTED"
+	| "EXPIRED"
+	| "ENDED";
 
 export type ChatRoom = {
 	activityMatchId: number;
-	participantNickname: string;
-	lastMessage: string;
-	activitySummary: string;
+	counterpartUserId: number;
 	status: ChatRoomStatus;
-	hasUnreadMessage: boolean;
+	courseName: string;
+	location: string;
+	scheduledAt: string;
+	scheduledEndAt: string;
+	lastMessage: string | null;
+	lastMessageAt: string | null;
 };
 
 export type ChatMatchSummary = {

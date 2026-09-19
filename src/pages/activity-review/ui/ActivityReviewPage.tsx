@@ -5,6 +5,7 @@ import {
 	StarRating,
 	TalkLevelChips,
 	useActivityReview,
+	useFeedbackStatus,
 } from "../../../features/activity-review";
 import { CancelReasonOption } from "../../../features/activity-cancel";
 import { SelectableCard } from "../../../shared/ui/selectable-card";
@@ -44,6 +45,12 @@ export default function ActivityReviewPage() {
 		error,
 	} = useActivityReview(id);
 
+	const {
+		feedbackStatus,
+		isLoading: isStatusLoading,
+		error: statusError,
+	} = useFeedbackStatus(id);
+
 	if (!isValidId) {
 		return (
 			<main className="mx-auto flex min-h-full w-full max-w-[430px] flex-col items-center justify-center bg-primary-50">
@@ -66,6 +73,34 @@ export default function ActivityReviewPage() {
 				<ErrorText className="text-center text-sm">
 					{loadError ?? "활동을 찾을 수 없어요."}
 				</ErrorText>
+			</main>
+		);
+	}
+
+	if (isStatusLoading) {
+		return (
+			<main className="mx-auto flex min-h-full w-full max-w-[430px] flex-col items-center justify-center bg-primary-50">
+				<StatusText>확인하는 중...</StatusText>
+			</main>
+		);
+	}
+
+	if (statusError || (feedbackStatus && !feedbackStatus.canSubmit)) {
+		return (
+			<main className="mx-auto flex h-dvh w-full max-w-[430px] flex-col items-center justify-center gap-3 bg-primary-50 px-6 text-center">
+				<h1 className="text-xl font-bold text-title">
+					{feedbackStatus?.alreadySubmitted
+						? "이미 제출했어요"
+						: "지금은 제출할 수 없어요"}
+				</h1>
+				<Button
+					type="button"
+					variant="primary"
+					className="mt-8 h-14 w-full"
+					onClick={() => navigate("/my-page", { replace: true })}
+				>
+					마이페이지로
+				</Button>
 			</main>
 		);
 	}

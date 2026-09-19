@@ -6,6 +6,7 @@ import { useCourses } from "../model/useCourses";
 import Input from "../../../shared/ui/input";
 import { StatusText } from "../../../shared/ui/status-text";
 import { ErrorText } from "../../../shared/ui/error-text";
+import { RetryButton } from "../../../shared/ui/retry-button";
 import type { RecruitmentCreateForm } from "../model/useRecruitmentCreateForm";
 
 type Props = {
@@ -13,7 +14,7 @@ type Props = {
 };
 
 export function CourseStep({ form }: Props) {
-	const { courses, isLoading, error } = useCourses();
+	const { courses, isLoading, error, refetch } = useCourses();
 
 	// 코스 목록이 로드되면 기본 선택된 코스의 이름도 채워 넣기
 	useEffect(() => {
@@ -42,9 +43,10 @@ export function CourseStep({ form }: Props) {
 
 				{isLoading && <StatusText>코스를 불러오는 중...</StatusText>}
 				{error && (
-					<ErrorText className="py-10 text-center text-sm">
-						{error}
-					</ErrorText>
+					<div className="flex flex-col items-center gap-3 py-10">
+						<ErrorText className="text-center text-sm">{error}</ErrorText>
+						<RetryButton onClick={refetch} />
+					</div>
 				)}
 				{!isLoading && !error && (
 					<div className="mt-2 flex flex-col gap-3">

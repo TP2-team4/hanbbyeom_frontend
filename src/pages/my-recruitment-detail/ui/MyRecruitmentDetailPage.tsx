@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useAsync } from "../../../shared/lib/useAsync";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
 	getRecruitmentDetail,
@@ -15,8 +16,6 @@ import { ConfirmModal } from "../../../shared/ui/confirm-modal";
 export default function MyRecruitmentDetailPage() {
 	const navigate = useNavigate();
 	const { recruitmentId } = useParams();
-	const [detail, setDetail] = useState<RecruitmentDetail | null>();
-	const [loadError, setLoadError] = useState<string | null>(null);
 	const id = Number(recruitmentId);
 	const isValidId = Number.isInteger(id);
 	const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
@@ -27,27 +26,15 @@ export default function MyRecruitmentDetailPage() {
 		error: cancelError,
 	} = useCancelRecruitment(id);
 
-	useEffect(() => {
-		if (!isValidId) return;
-		let isActive = true;
-
-		const loadDetail = async () => {
-			try {
-				const recruitment = await getRecruitmentDetail(id);
-				if (isActive) setDetail(recruitment);
-			} catch {
-				if (isActive)
-					setLoadError(
-						"정보를 불러오지 못했어요. 다시 시도해 주세요.",
-					);
-			}
-		};
-
-		void loadDetail();
-		return () => {
-			isActive = false;
-		};
-	}, [id, isValidId]);
+	const { data: detail, setData: setDetail, isLoading, error: loadError } = useAsync<RecruitmentDetail | null>(
+		async () => {
+			if (!isValidId) return null;
+			return getRecruitmentDetail(id);
+		},
+		null,
+		[id, isValidId],
+		"정보를 불러오지 못했어요. 다시 시도해 주세요.",
+	);
 
 	const handleCancelRecruitment = async () => {
 		const success = await cancel();
@@ -93,7 +80,7 @@ export default function MyRecruitmentDetailPage() {
 				className="flex-1 space-y-5 px-6 py-6"
 				aria-live="polite"
 			>
-				{isValidId && !loadError && detail === undefined && (
+				{isValidId && !loadError && isLoading && (
 					<StatusText>모집글을 불러오는 중...</StatusText>
 				)}
 				{loadError && (
@@ -101,16 +88,16 @@ export default function MyRecruitmentDetailPage() {
 						{loadError}
 					</ErrorText>
 				)}
-				{!loadError && (!isValidId || detail === null) && (
+				{!loadError && (!isValidId || (!isLoading && detail === null)) && (
 					<StatusText>모집글을 찾을 수 없어요.</StatusText>
 				)}
-				{isValidId && detail && !detail.isOwner && (
+				{isValidId && !isLoading && !loadError && detail && !detail.isOwner && (
 					<StatusText>
 						내가 작성한 모집글만 확인할 수 있어요.
 					</StatusText>
 				)}
 
-				{isValidId && detail && detail.isOwner && (
+				{isValidId && !isLoading && !loadError && detail && detail.isOwner && (
 					<>
 						<RecruitmentInfoCard recruitment={detail} />
 

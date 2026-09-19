@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useAsync } from "../../../shared/lib/useAsync";
+
 import { useNavigate, useParams } from "react-router-dom";
 import {
 	getRecruitmentApplicantProfile,
@@ -10,29 +11,18 @@ import { ErrorText } from "../../../shared/ui/error-text";
 export default function ApplicantProfilePage() {
 	const navigate = useNavigate();
 	const { activityMatchId } = useParams();
-	const [profile, setProfile] = useState<RecruitmentAuthorProfile | null>();
-	const [loadError, setLoadError] = useState<string | null>(null);
 	const id = Number(activityMatchId);
 	const isValidId = Number.isInteger(id);
 
-	useEffect(() => {
-		if (!isValidId) return;
-		let isActive = true;
-
-		const loadProfile = async () => {
-			try {
-				const response = await getRecruitmentApplicantProfile(id);
-				if (isActive) setProfile(response);
-			} catch {
-				if (isActive) setLoadError("정보를 불러오지 못했어요. 다시 시도해 주세요.");
-			}
-		};
-
-		void loadProfile();
-		return () => {
-			isActive = false;
-		};
-	}, [id, isValidId]);
+	const { data: profile, isLoading, error: loadError } = useAsync<RecruitmentAuthorProfile | null>(
+		async () => {
+			if (!isValidId) return null;
+			return getRecruitmentApplicantProfile(id);
+		},
+		null,
+		[id, isValidId],
+		"정보를 불러오지 못했어요. 다시 시도해 주세요.",
+	);
 
 	return (
 		<main className="mx-auto flex min-h-full w-full max-w-[430px] flex-col bg-primary-50">
@@ -58,7 +48,7 @@ export default function ApplicantProfilePage() {
 			</header>
 
 			<section className="flex-1 space-y-5 px-6 py-6" aria-live="polite">
-				{isValidId && !loadError && profile === undefined && (
+				{isValidId && !loadError && isLoading && (
 					<StatusText>정보를 불러오는 중...</StatusText>
 				)}
 				{loadError && (
@@ -66,10 +56,10 @@ export default function ApplicantProfilePage() {
 						{loadError}
 					</ErrorText>
 				)}
-				{!loadError && (!isValidId || profile === null) && (
+				{!loadError && (!isValidId || (!isLoading && profile === null)) && (
 					<StatusText>정보를 찾을 수 없어요.</StatusText>
 				)}
-				{isValidId && profile && (
+				{isValidId && !isLoading && !loadError && profile && (
 					<section
 						className="rounded-2xl border border-border bg-surface p-6"
 						aria-labelledby="applicant-profile-heading"

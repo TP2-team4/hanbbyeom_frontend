@@ -3,7 +3,7 @@ import { useAsync } from "../../../shared/lib/useAsync";
 import { getChatMatchSummary } from "../api/getChatMatchSummary";
 
 export function useChatMatchSummary(activityMatchId: number | null) {
-	const { data, isLoading, error } = useAsync(
+	const { data, isLoading, error, refetch } = useAsync(
 		() =>
 			activityMatchId === null
 				? Promise.resolve(null)
@@ -13,5 +13,5 @@ export function useChatMatchSummary(activityMatchId: number | null) {
 		"활동 정보를 불러오지 못했어요.",
 	);
 
-	return { matchSummary: data, isLoading, error };
+	return { matchSummary: data, isLoading, error, refetch };
 }

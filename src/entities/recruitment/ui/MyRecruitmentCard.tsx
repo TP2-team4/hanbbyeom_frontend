@@ -12,39 +12,41 @@ type Props = {
 
 function getBadge(recruitment: MyRecruitmentSummary) {
 	switch (recruitment.status) {
-		case "RECRUITING":
-			return { label: "모집 중", className: "bg-primary-100 text-secondary-400" };
-		case "CLOSED":
-			return { label: "마감", className: "bg-gray-100 text-body" };
+		case "SEARCHING":
+			return {
+				label: "모집 중",
+				className: "bg-primary-100 text-secondary-400",
+			};
+		case "PENDING_CONFIRMATION":
+			return {
+				label: "신청 확인 대기",
+				className: "bg-primary-100 text-secondary-400",
+			};
+		case "MATCHED":
+			return { label: "매칭 확정", className: "bg-gray-100 text-body" };
 		case "CANCELLED":
 			return { label: "취소", className: "bg-gray-100 text-body" };
+		case "EXPIRED":
+			return { label: "기간 만료", className: "bg-gray-100 text-body" };
+		case "CLOSED":
+			return { label: "마감", className: "bg-gray-100 text-body" };
 	}
 }
 
 function getSubtitle(recruitment: MyRecruitmentSummary) {
-	const base = `${recruitment.dateLabel} ${recruitment.time}`;
-
-	if (recruitment.status === "RECRUITING") {
-		return `${base} · ${CONVERSATION_STYLE_LABEL[recruitment.conversationStyle]} · ${
-			recruitment.applicantCount > 0
-				? `신청자 ${recruitment.applicantCount}명`
-				: "신청자 없음"
-		}`;
-	}
-
-	if (recruitment.status === "CLOSED") {
-		return recruitment.matchedPartnerNickname
-			? `${base} · ${recruitment.matchedPartnerNickname} 확정`
-			: `${base} · 신청자 없이 마감`;
-	}
-
-	return base;
+	return `${recruitment.dateLabel} ${recruitment.time} · ${
+		CONVERSATION_STYLE_LABEL[recruitment.conversationStyle]
+	}`;
 }
 
 export function MyRecruitmentCard({ recruitment, onClick }: Props) {
 	const badge = getBadge(recruitment);
-	const isRecruiting = recruitment.status === "RECRUITING";
-	const showApplicantCheck = isRecruiting && recruitment.applicantCount > 0;
+	const isRecruiting =
+		recruitment.status === "SEARCHING" ||
+		recruitment.status === "PENDING_CONFIRMATION";
+
+	const showApplicantCheck =
+		recruitment.status === "PENDING_CONFIRMATION";
 
 	const content = (
 		<div className="min-w-0 flex-1">

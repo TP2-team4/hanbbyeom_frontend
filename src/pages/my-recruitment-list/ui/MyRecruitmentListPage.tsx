@@ -8,12 +8,13 @@ import { useMyRecruitments } from "../../../features/my-recruitment-list";
 import { FilterTabs } from "../../../shared/ui/filter-tabs";
 import { StatusText } from "../../../shared/ui/status-text";
 import { ErrorText } from "../../../shared/ui/error-text";
+import { RetryButton } from "../../../shared/ui/retry-button";
 
 type FilterValue = "ALL" | MyRecruitmentStatus;
 
 export default function MyRecruitmentListPage() {
 	const navigate = useNavigate();
-	const { recruitments, isLoading, error } = useMyRecruitments();
+	const { recruitments, isLoading, error, refetch } = useMyRecruitments();
 	const [filter, setFilter] = useState<FilterValue>("ALL");
 
 	const filtered =
@@ -58,9 +59,12 @@ export default function MyRecruitmentListPage() {
 								label: "전체",
 								count: recruitments.length,
 							},
-							{ value: "RECRUITING", label: "모집 중" },
-							{ value: "CLOSED", label: "마감" },
+							{ value: "SEARCHING", label: "모집 중" },
+							{ value: "PENDING_CONFIRMATION", label: "신청 확인 대기" },
+							{ value: "MATCHED", label: "매칭 확정" },
 							{ value: "CANCELLED", label: "취소" },
+							{ value: "EXPIRED", label: "기간 만료" },
+							{ value: "CLOSED", label: "마감" },
 						]}
 					/>
 				)}
@@ -71,7 +75,14 @@ export default function MyRecruitmentListPage() {
 							모집 중인 내 글을 불러오는 중...
 						</StatusText>
 					)}
-					{error && <ErrorText>{error}</ErrorText>}
+					{error && (
+						<div className="flex flex-col items-center gap-3 py-4">
+							<ErrorText className="text-center text-sm">
+								{error}
+							</ErrorText>
+							<RetryButton onClick={refetch} />
+						</div>
+					)}
 					{!isLoading && !error && filtered.length === 0 && (
 						<StatusText>해당하는 모집글이 없어요.</StatusText>
 					)}

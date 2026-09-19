@@ -27,6 +27,7 @@ import NicknameEditPage from "../../pages/settings/ui/NicknameEditPage";
 import ConversationPreferenceEditPage from "../../pages/settings/ui/ConversationPreferenceEditPage";
 import RecruitmentCreateSuccessPage from "../../pages/recruitment-create/ui/RecruitmentCreateSuccessPage";
 import RecruitmentEditPage from "../../pages/recruitment-edit/ui/RecruitmentEditPage";
+import AppliedRecruitmentListPage from "../../pages/applied-recruitment-list/ui/AppliedRecruitmentListPage";
 
 export function AppRouter() {
 	return (
@@ -122,6 +123,10 @@ export function AppRouter() {
 				<Route
 					path="/recruitments/mine"
 					element={<MyRecruitmentListPage />}
+				/>
+				<Route
+					path="/recruitments/applied"
+					element={<AppliedRecruitmentListPage />}
 				/>
 				<Route
 					path="/my-page/activity-history"

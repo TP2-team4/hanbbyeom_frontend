@@ -5,3 +5,5 @@ export { getRecruitmentApplicantProfile } from "./api/getRecruitmentApplicantPro
 export { getCurrentUser } from "./api/getCurrentUser";
 export type { CurrentUser } from "./api/getCurrentUser";
 export type { RecruitmentAuthorProfile, UserProfile } from "./model/types";
+export { getMyTrustProfile } from "./api/getMyTrustProfile";
+export type { TrustProfile } from "./api/getMyTrustProfile";

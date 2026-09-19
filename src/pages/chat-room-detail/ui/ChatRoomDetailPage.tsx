@@ -15,6 +15,7 @@ import {
 } from "../../../features/chat-room-detail";
 import { StatusText } from "../../../shared/ui/status-text";
 import { ErrorText } from "../../../shared/ui/error-text";
+import { RetryButton } from "../../../shared/ui/retry-button";
 import { ConfirmModal } from "../../../shared/ui/confirm-modal";
 
 // TODO: 인증 사용자 정보 조회 API가 연결되면 실제 사용자 ID로 교체
@@ -35,17 +36,26 @@ export default function ChatRoomDetailPage() {
 	const resolvedMatchId =
 		isValidId && !isChatRoomLoading && chatRoom ? id : null;
 
-	const { messages, isLoading, error, isSending, sendError, sendMessage } =
-		useChatRoomMessages(resolvedMatchId);
+	const {
+		messages,
+		isLoading,
+		error,
+		refetch,
+		isSending,
+		sendError,
+		sendMessage,
+	} = useChatRoomMessages(resolvedMatchId);
 	const {
 		presets,
 		isLoading: isPresetLoading,
 		error: presetError,
+		refetch: refetchPresets,
 	} = useChatPresets();
 	const {
 		matchSummary,
 		isLoading: isMatchSummaryLoading,
 		error: matchSummaryError,
+		refetch: refetchMatchSummary,
 	} = useChatMatchSummary(resolvedMatchId);
 
 	const bottomRef = useRef<HTMLDivElement>(null);
@@ -111,7 +121,7 @@ export default function ChatRoomDetailPage() {
 					</svg>
 				</button>
 				<h1 className="text-2xl font-bold text-title">
-					{chatRoom?.participantNickname ?? "채팅"}
+					{chatRoom?.courseName ?? "채팅"}
 				</h1>
 				</header>
 				{resolvedMatchId !== null && isMatchSummaryLoading && (
@@ -120,9 +130,12 @@ export default function ChatRoomDetailPage() {
 					</StatusText>
 				)}
 				{resolvedMatchId !== null && matchSummaryError && (
-					<ErrorText className="shrink-0 px-4 pb-3 text-center text-sm">
-						{matchSummaryError}
-					</ErrorText>
+					<div className="flex shrink-0 flex-col items-center gap-2 px-4 pb-3">
+						<ErrorText className="text-center text-sm">
+							{matchSummaryError}
+						</ErrorText>
+						<RetryButton onClick={refetchMatchSummary} />
+					</div>
 				)}
 				{matchSummary && <ChatMatchSummaryCard match={matchSummary} />}
 
@@ -146,9 +159,12 @@ export default function ChatRoomDetailPage() {
 					<StatusText>메시지를 불러오는 중...</StatusText>
 				)}
 				{resolvedMatchId !== null && error && (
-					<ErrorText className="text-center text-sm">
-						{error}
-					</ErrorText>
+					<div className="flex flex-col items-center gap-3 py-4">
+						<ErrorText className="text-center text-sm">
+							{error}
+						</ErrorText>
+						<RetryButton onClick={refetch} />
+					</div>
 				)}
 				{resolvedMatchId !== null &&
 					!isLoading &&
@@ -172,9 +188,13 @@ export default function ChatRoomDetailPage() {
 			{canSendMessage && (
 				<>
 					{presetError && (
-						<ErrorText className="px-4 py-2 text-sm">
-							{presetError}
-						</ErrorText>
+						<div className="flex items-center gap-2 px-4 py-2">
+							<ErrorText>{presetError}</ErrorText>
+							<RetryButton
+								onClick={refetchPresets}
+								className="shrink-0 px-3 py-1"
+							/>
+						</div>
 					)}
 					<ChatPresetList
 						presets={presets}

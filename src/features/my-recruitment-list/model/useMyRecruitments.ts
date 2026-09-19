@@ -3,7 +3,7 @@ import { useAsync } from "../../../shared/lib/useAsync";
 import { getMyRecruitments } from "../api/getMyRecruitments";
 
 export function useMyRecruitments(limit?: number) {
-	const { data, isLoading, error } = useAsync(
+	const { data, isLoading, error, refetch } = useAsync(
 		() => getMyRecruitments(limit),
 		[] as MyRecruitmentSummary[],
 		[limit],
@@ -14,5 +14,6 @@ export function useMyRecruitments(limit?: number) {
 		recruitments: data,
 		isLoading,
 		error,
+		refetch,
 	};
 }

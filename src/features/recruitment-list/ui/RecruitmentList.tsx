@@ -10,6 +10,7 @@ import { RecruitmentFilterModal } from "./RecruitmentFilterModal";
 import { Dropdown } from "../../../shared/ui/dropdown";
 import { StatusText } from "../../../shared/ui/status-text";
 import { ErrorText } from "../../../shared/ui/error-text";
+import { RetryButton } from "../../../shared/ui/retry-button";
 import { ConfirmModal } from "../../../shared/ui/confirm-modal";
 
 type SortOption = "LATEST" | "DATE" | "DISTANCE";
@@ -27,8 +28,15 @@ const FILTER_LABELS = {
 
 export function RecruitmentList() {
 	const navigate = useNavigate();
-	const { recruitments, isLoading, error, processingId, actionError, apply } =
-		useRecruitments();
+	const {
+		recruitments,
+		isLoading,
+		error,
+		refetch,
+		processingId,
+		actionError,
+		apply,
+	} = useRecruitments();
 	const [filters, setFilters] = useState<RecruitmentFilters>(EMPTY_FILTERS);
 	const [draftFilters, setDraftFilters] =
 		useState<RecruitmentFilters>(EMPTY_FILTERS);
@@ -116,17 +124,21 @@ export function RecruitmentList() {
 
 			{!isLoading && !error && (
 				<p className="px-6 pt-5 text-sm text-body">
-					내 조건과 맞는 모집글 {filteredRecruitments.length}건 ·
-					신청하면 작성자 수락 후 확정돼요
+					신청 가능한 모집글 {filteredRecruitments.length}건 · 내가 쓴
+					글과 신청한 글은 보이지 않아요 <br/> 신청하면 작성자 수락 후
+					확정돼요
 				</p>
 			)}
 
 			<div className="flex flex-col gap-3 px-6 pb-32 pt-5">
 				{isLoading && <StatusText>모집글을 불러오는 중...</StatusText>}
 				{error && (
-					<ErrorText className="py-10 text-center text-sm">
-						{error}
-					</ErrorText>
+					<div className="flex flex-col items-center gap-3 py-10">
+						<ErrorText className="text-center text-sm">
+							{error}
+						</ErrorText>
+						<RetryButton onClick={refetch} />
+					</div>
 				)}
 				{actionError && <ErrorText>{actionError}</ErrorText>}
 				{!isLoading && !error && filteredRecruitments.length === 0 && (

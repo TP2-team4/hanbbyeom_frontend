@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../app/provider/AuthProvider";
 import { useMyPage } from "../../../features/my-profile";
-import Button from "../../../shared/ui/button";
 import { StatusText } from "../../../shared/ui/status-text";
 import { ErrorText } from "../../../shared/ui/error-text";
 import { useState } from "react";
@@ -49,7 +48,7 @@ function SettingsRow({
 
 export default function SettingsPage() {
 	const navigate = useNavigate();
-	const { logout, triggerSessionExpired } = useAuth();
+	const { logout } = useAuth();
 	const { profile, isLoading, error } = useMyPage();
 	const [isTryLogout, setIsTryLogout] = useState(false);
 
@@ -122,28 +121,17 @@ export default function SettingsPage() {
 					</li>
 				</ul>
 
-				{/* TODO : 회원 탈퇴 API 구현 되면 추가 화면 ui 및 로직 필요 */}
 				<ul className="overflow-hidden rounded-lg border border-border bg-surface">
 					<li>
 						<button
 							type="button"
-							onClick={() => {}}
+							onClick={() => navigate("/my-page/settings/withdraw")}
 							className="w-full px-5 py-4 text-left text-base font-medium text-error-text "
 						>
 							회원탈퇴
 						</button>
 					</li>
 				</ul>
-
-				{/* TODO: 실제 401 응답 감지 로직 연동 필요 - 연동되면 이 버튼 삭제 */}
-				<Button
-					type="button"
-					variant="secondary"
-					className="h-14 w-full text-secondary-400"
-					onClick={triggerSessionExpired}
-				>
-					세션 만료 테스트
-				</Button>
 			</section>
 
 			{isTryLogout && (

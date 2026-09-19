@@ -28,6 +28,7 @@ import ConversationPreferenceEditPage from "../../pages/settings/ui/Conversation
 import RecruitmentCreateSuccessPage from "../../pages/recruitment-create/ui/RecruitmentCreateSuccessPage";
 import RecruitmentEditPage from "../../pages/recruitment-edit/ui/RecruitmentEditPage";
 import AppliedRecruitmentListPage from "../../pages/applied-recruitment-list/ui/AppliedRecruitmentListPage";
+import WithdrawPage from "../../pages/settings/ui/WithdrawPage";
 
 export function AppRouter() {
 	return (
@@ -143,6 +144,10 @@ export function AppRouter() {
 				<Route
 					path="/my-page/settings/conversation-preference"
 					element={<ConversationPreferenceEditPage />}
+				/>
+				<Route
+					path="/my-page/settings/withdraw"
+					element={<WithdrawPage />}
 				/>
 			</Route>
 

@@ -626,4 +626,16 @@ export const handlers = [
 			});
 		},
 	),
+
+	//회원 탈퇴
+	http.post("*/api/users/me/withdraw", async ({ request }) => {
+		const body = (await request.json()) as { password: string };
+		if (body.password !== "123123123123") {
+			return HttpResponse.json(
+				{ message: "비밀번호가 일치하지 않아요." },
+				{ status: 400 },
+			);
+		}
+		return new HttpResponse(null, { status: 204 });
+	}),
 ];

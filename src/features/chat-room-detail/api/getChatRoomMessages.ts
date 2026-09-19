@@ -3,9 +3,11 @@ import { authorizedFetch } from "../../../shared/lib/authorizedFetch";
 
 export async function getChatRoomMessages(
 	activityMatchId: number,
+	afterId?: number,
 ): Promise<ChatMessage[]> {
+	const query = afterId ? `?afterId=${afterId}` : "";
 	const response = await authorizedFetch(
-		`/api/matching/matches/${activityMatchId}/messages`,
+		`/api/matching/matches/${activityMatchId}/messages${query}`,
 	);
 
 	if (!response.ok) {

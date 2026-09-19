@@ -1,10 +1,15 @@
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { ChatMessage } from "../../../entities/chat-room";
 import { useAsync } from "../../../shared/lib/useAsync";
 import { getChatRoomMessages } from "../api/getChatRoomMessages";
 import { sendChatMessage } from "../api/sendChatMessage";
 
-export function useChatRoomMessages(activityMatchId: number | null) {
+const POLL_INTERVAL_MS = 4000;
+
+export function useChatRoomMessages(
+	activityMatchId: number | null,
+	enabled = true,
+) {
 	const { data, setData, isLoading, error, refetch } = useAsync(
 		() =>
 			activityMatchId === null
@@ -16,18 +21,46 @@ export function useChatRoomMessages(activityMatchId: number | null) {
 	);
 	const [isSending, setIsSending] = useState(false);
 	const [sendError, setSendError] = useState<string | null>(null);
+	const messagesRef = useRef(data);
+	useEffect(() => {
+		messagesRef.current = data;
+	}, [data]);
 
-	const appendMessage = (message: ChatMessage) => {
-		setData((current) => {
-			const messagesById = new Map(
-				current.map((item) => [item.id, item]),
-			);
+	const appendMessage = useCallback(
+		(message: ChatMessage) => {
+			setData((current) => {
+				const messagesById = new Map(
+					current.map((item) => [item.id, item]),
+				);
 
-			messagesById.set(message.id, message);
+				messagesById.set(message.id, message);
 
-			return [...messagesById.values()].sort((a, b) => a.id - b.id);
-		});
-	};
+				return [...messagesById.values()].sort((a, b) => a.id - b.id);
+			});
+		},
+		[setData],
+	);
+
+	useEffect(() => {
+		if (!enabled || activityMatchId === null) return;
+
+		const poll = async () => {
+			if (document.hidden) return;
+			const lastId = messagesRef.current.at(-1)?.id;
+			try {
+				const newMessages = await getChatRoomMessages(
+					activityMatchId,
+					lastId,
+				);
+				newMessages.forEach(appendMessage);
+			} catch {
+				// 폴링 실패는 조용히 무시하고 다음 주기에 재시도
+			}
+		};
+
+		const timerId = window.setInterval(poll, POLL_INTERVAL_MS);
+		return () => window.clearInterval(timerId);
+	}, [activityMatchId, enabled, appendMessage]);
 
 	const sendMessage = async (content: string): Promise<boolean> => {
 		const trimmed = content.trim();

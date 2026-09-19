@@ -43,6 +43,18 @@ export default function ChatRoomDetailPage() {
 		isValidId && !isChatRoomLoading && chatRoom ? id : null;
 
 	const {
+		matchSummary,
+		isLoading: isMatchSummaryLoading,
+		error: matchSummaryError,
+		refetch: refetchMatchSummary,
+	} = useChatMatchSummary(resolvedMatchId);
+	const canSendMessage = Boolean(
+		matchSummary &&
+			matchSummary.closedAt === null &&
+			resolvedMatchId !== null,
+	);
+
+	const {
 		messages,
 		isLoading,
 		error,
@@ -50,19 +62,13 @@ export default function ChatRoomDetailPage() {
 		isSending,
 		sendError,
 		sendMessage,
-	} = useChatRoomMessages(resolvedMatchId);
+	} = useChatRoomMessages(resolvedMatchId, canSendMessage);
 	const {
 		presets,
 		isLoading: isPresetLoading,
 		error: presetError,
 		refetch: refetchPresets,
 	} = useChatPresets();
-	const {
-		matchSummary,
-		isLoading: isMatchSummaryLoading,
-		error: matchSummaryError,
-		refetch: refetchMatchSummary,
-	} = useChatMatchSummary(resolvedMatchId);
 
 	const bottomRef = useRef<HTMLDivElement>(null);
 	const messageListRef = useRef<HTMLElement>(null);
@@ -92,11 +98,6 @@ export default function ChatRoomDetailPage() {
 
 	const isRoomNotFound =
 		!isChatRoomLoading && !chatRoomError && (!isValidId || !chatRoom);
-	const canSendMessage = Boolean(
-		matchSummary &&
-			matchSummary.closedAt === null &&
-			resolvedMatchId !== null,
-	);
 
 	const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 

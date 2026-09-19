@@ -20,7 +20,5 @@ const MOCK_CHAT_PRESETS: ChatPreset[] = [
 ];
 
 export async function getChatPresets(): Promise<ChatPreset[]> {
-	// TODO: GET /api/matching/messages/presets 연동
-	await new Promise((resolve) => setTimeout(resolve, 200));
 	return MOCK_CHAT_PRESETS;
 }

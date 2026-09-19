@@ -32,10 +32,7 @@ export type ChatMatchSummary = {
 
 export type ChatMessage = {
 	id: number;
-	activityMatchId: number;
 	senderId: number;
-	messageType: "TEXT" | "PRESET";
-	presetCode: string | null;
 	content: string;
 	createdAt: string;
 };

@@ -41,7 +41,6 @@ export function useChatRoomMessages(activityMatchId: number | null) {
 		setSendError(null);
 		try {
 			const message = await sendChatMessage(activityMatchId, {
-				messageType: "TEXT",
 				content: trimmed,
 			});
 			appendMessage(message);

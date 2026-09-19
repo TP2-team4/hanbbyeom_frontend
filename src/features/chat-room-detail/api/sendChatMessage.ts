@@ -2,7 +2,6 @@ import type { ChatMessage } from "../../../entities/chat-room";
 import { authorizedFetch } from "../../../shared/lib/authorizedFetch";
 
 export type SendChatMessageRequest = {
-	messageType: "TEXT";
 	content: string;
 };
 

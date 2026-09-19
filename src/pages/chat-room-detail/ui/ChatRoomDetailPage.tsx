@@ -4,6 +4,7 @@ import {
 	ChatMessageBubble,
 	type ChatPreset,
 } from "../../../entities/chat-room";
+import { getCurrentUser, type CurrentUser } from "../../../entities/user-profile";
 import { useChatRooms } from "../../../features/chat-room-list";
 import {
 	ChatMessageComposer,
@@ -13,19 +14,24 @@ import {
 	useChatPresets,
 	useChatRoomMessages,
 } from "../../../features/chat-room-detail";
+import { useAsync } from "../../../shared/lib/useAsync";
 import { StatusText } from "../../../shared/ui/status-text";
 import { ErrorText } from "../../../shared/ui/error-text";
 import { RetryButton } from "../../../shared/ui/retry-button";
 import { ConfirmModal } from "../../../shared/ui/confirm-modal";
-
-// TODO: 인증 사용자 정보 조회 API가 연결되면 실제 사용자 ID로 교체
-const MOCK_CURRENT_USER_ID = 1;
 
 export default function ChatRoomDetailPage() {
 	const navigate = useNavigate();
 	const { activityMatchId } = useParams();
 	const id = Number(activityMatchId);
 	const isValidId = Number.isInteger(id) && id > 0;
+
+	const { data: currentUser } = useAsync<CurrentUser | null>(
+		getCurrentUser,
+		null,
+		[],
+		"내 정보를 불러오지 못했어요.",
+	);
 
 	const {
 		chatRooms,
@@ -181,7 +187,7 @@ export default function ChatRoomDetailPage() {
 						<ChatMessageBubble
 							key={message.id}
 							message={message}
-							currentUserId={MOCK_CURRENT_USER_ID}
+							currentUserId={currentUser?.id ?? -1}
 						/>
 					))}
 				<div ref={bottomRef} />

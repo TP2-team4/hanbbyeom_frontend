@@ -1,12 +1,12 @@
 import type { RecruitmentAuthorProfile } from "../model/types";
+import { RecentReviewList } from "./RecentReviewList";
 
 type Props = {
 	nickname: string;
 	profile: RecruitmentAuthorProfile;
-	onViewProfile?: () => void;
 };
 
-export function RecruitmentAuthorCard({ nickname, profile, onViewProfile }: Props) {
+export function RecruitmentAuthorCard({ nickname, profile }: Props) {
 	return (
 		<section
 			className="rounded-2xl border border-border bg-surface p-6"
@@ -51,16 +51,22 @@ export function RecruitmentAuthorCard({ nickname, profile, onViewProfile }: Prop
 						완료 {profile.completedActivityCount}회 · 노쇼{" "}
 						{profile.noShowReportCount}회
 					</p>
+					{profile.perceivedTalkLevelMajority && (
+						<p className="mt-1 text-xs text-body">
+							체감 대화 수준:{" "}
+							{profile.perceivedTalkLevelMajority === "SILENT"
+								? "조용히"
+								: "가벼운 대화"}{" "}
+							({profile.perceivedTalkLevelMajorityCount}명)
+						</p>
+					)}
 				</div>
 			</div>
 
-			<button
-				type="button"
-				className="mt-5 w-full rounded-md bg-primary-100 px-4 py-4 font-bold text-secondary-400 transition-colors hover:bg-primary-200"
-				onClick={() => onViewProfile?.()}
-			>
-				상세 프로필 보기
-			</button>
+			<h3 className="mt-5 text-sm font-bold text-title">최근 후기</h3>
+			<div className="mt-2">
+				<RecentReviewList reviews={profile.recentReviews} />
+			</div>
 		</section>
 	);
 }

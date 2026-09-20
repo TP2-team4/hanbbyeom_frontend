@@ -1,11 +1,7 @@
+import type { RecruitmentAuthorProfile } from "../model/types";
 import { authorizedFetch } from "../../../shared/lib/authorizedFetch";
 
-export type TrustProfile = {
-    averageRating: number | null;
-    reviewCount: number;
-    completedCount: number;
-    noShowReportCount: number;
-};
+export type TrustProfile = RecruitmentAuthorProfile;
 
 export async function getMyTrustProfile(): Promise<TrustProfile> {
     const response = await authorizedFetch("/api/users/me/trust-profile");

@@ -16,7 +16,6 @@ import { OnboardingRoute } from "./OnboardingRoute";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { PublicOnlyRoute } from "./PublicOnlyRoute";
 import MyRecruitmentDetailPage from "../../pages/my-recruitment-detail/ui/MyRecruitmentDetailPage";
-import ApplicantProfilePage from "../../pages/applicant-profile/ui/ApplicantProfilePage";
 import ChatRoomDetailPage from "../../pages/chat-room-detail/ui/ChatRoomDetailPage";
 import ActivityCancelPage from "../../pages/activity-cancel/ui/ActivityCancelPage";
 import ActivityReviewPage from "../../pages/activity-review/ui/ActivityReviewPage";
@@ -29,7 +28,6 @@ import RecruitmentCreateSuccessPage from "../../pages/recruitment-create/ui/Recr
 import RecruitmentEditPage from "../../pages/recruitment-edit/ui/RecruitmentEditPage";
 import AppliedRecruitmentListPage from "../../pages/applied-recruitment-list/ui/AppliedRecruitmentListPage";
 import WithdrawPage from "../../pages/settings/ui/WithdrawPage";
-import RecruitmentAuthorProfilePage from "../../pages/recruitment-detail/ui/RecruitmentAuthorProfilePage";
 
 export function AppRouter() {
 	return (
@@ -105,14 +103,6 @@ export function AppRouter() {
 				<Route
 					path="/recruitments/:recruitmentId/edit"
 					element={<RecruitmentEditPage />}
-				/>
-				<Route
-					path="/recruitments/:recruitmentId/author-profile"
-					element={<RecruitmentAuthorProfilePage />}
-				/>
-				<Route
-					path="/matches/:activityMatchId/applicant-profile"
-					element={<ApplicantProfilePage />}
 				/>
 				<Route
 					path="/chats/:activityMatchId"

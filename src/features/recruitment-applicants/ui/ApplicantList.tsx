@@ -4,13 +4,12 @@ import { StatusText } from "../../../shared/ui/status-text";
 import { ErrorText } from "../../../shared/ui/error-text";
 import { RetryButton } from "../../../shared/ui/retry-button";
 import { ConfirmModal } from "../../../shared/ui/confirm-modal";
-import { useNavigate } from "react-router-dom";
+import { RecentReviewList } from "../../../entities/user-profile";
 import { usePendingApplicant } from "../model/usePendingApplicant";
 
 type PendingAction = "accept" | "reject";
 
 export function ApplicantList({ recruitmentId }: { recruitmentId: number }) {
-	const navigate = useNavigate();
 	const {
 		pendingApplicant,
 		isLoading,
@@ -89,6 +88,18 @@ export function ApplicantList({ recruitmentId }: { recruitmentId: number }) {
 						회
 					</p>
 
+					{pendingApplicant.profile.perceivedTalkLevelMajority && (
+						<p className="mt-1 text-sm text-body">
+							체감 대화 수준:{" "}
+							{pendingApplicant.profile.perceivedTalkLevelMajority ===
+							"SILENT"
+								? "조용히"
+								: "가벼운 대화"}{" "}
+							({pendingApplicant.profile.perceivedTalkLevelMajorityCount}
+							명)
+						</p>
+					)}
+
 					<p className="mt-2 text-sm text-body">
 						응답 기한:{" "}
 						{new Date(
@@ -96,19 +107,16 @@ export function ApplicantList({ recruitmentId }: { recruitmentId: number }) {
 						).toLocaleString("ko-KR")}
 					</p>
 
-					<div className="mt-4 flex items-center gap-2">
-						<button
-							type="button"
-							className="text-sm font-medium text-body underline"
-							onClick={() =>
-								navigate(
-									`/matches/${pendingApplicant.activityMatchId}/applicant-profile`,
-								)
-							}
-						>
-							프로필 보기
-						</button>
+					<h4 className="mt-4 text-sm font-bold text-title">
+						최근 후기
+					</h4>
+					<div className="mt-2">
+						<RecentReviewList
+							reviews={pendingApplicant.profile.recentReviews}
+						/>
+					</div>
 
+					<div className="mt-4 flex items-center gap-2">
 						<div className="ml-auto flex gap-2">
 							<Button
 								type="button"

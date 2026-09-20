@@ -197,6 +197,19 @@ export const handlers = [
 			reviewCount: 10,
 			completedCount: 12,
 			noShowReportCount: 0,
+			perceivedTalkLevelMajority: "LIGHT_CHAT",
+			perceivedTalkLevelMajorityCount: 5,
+			recentReviews: [
+				{
+					rating: 5,
+					perceivedTalkLevel: "LIGHT_CHAT",
+					comment: "즐거운 러닝이었어요!",
+					createdAt: "2026-09-18T09:00:00+09:00",
+					courseName: "뚝섬 한강공원",
+					distanceMinMeters: 5000,
+					distanceMaxMeters: 12000,
+				},
+			],
 		});
 	}),
 
@@ -207,6 +220,19 @@ export const handlers = [
 			reviewCount: 10,
 			completedCount: 12,
 			noShowReportCount: 0,
+			perceivedTalkLevelMajority: "LIGHT_CHAT",
+			perceivedTalkLevelMajorityCount: 5,
+			recentReviews: [
+				{
+					rating: 5,
+					perceivedTalkLevel: "LIGHT_CHAT",
+					comment: "즐거운 러닝이었어요!",
+					createdAt: "2026-09-18T09:00:00+09:00",
+					courseName: "뚝섬 한강공원",
+					distanceMinMeters: 5000,
+					distanceMaxMeters: 12000,
+				},
+			],
 		});
 	}),
 
@@ -467,6 +493,19 @@ export const handlers = [
 			reviewCount: 12,
 			completedCount: 12,
 			noShowReportCount: 1,
+			perceivedTalkLevelMajority: "LIGHT_CHAT",
+			perceivedTalkLevelMajorityCount: 5,
+			recentReviews: [
+				{
+					rating: 5,
+					perceivedTalkLevel: "LIGHT_CHAT",
+					comment: "즐거운 러닝이었어요!",
+					createdAt: "2026-09-18T09:00:00+09:00",
+					courseName: "뚝섬 한강공원",
+					distanceMinMeters: 5000,
+					distanceMaxMeters: 12000,
+				},
+			],
 		});
 	}),
 

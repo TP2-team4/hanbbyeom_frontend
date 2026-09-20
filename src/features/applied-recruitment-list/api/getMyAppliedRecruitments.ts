@@ -17,7 +17,7 @@ type MyAppliedRecruitmentResponse = {
 	scheduledAt: string;
 	talkLevel: ConversationStyle;
 	host: {
-		nickname: string;
+		nickname: string | null;
 		rating: number | null;
 		completedCount: number;
 	};
@@ -35,7 +35,7 @@ function toMyAppliedRecruitment(
 		maxDistanceKm: item.distanceMaxMeters / 1000,
 		dateLabel: formatDate(item.scheduledAt),
 		time: toTimeValue(new Date(item.scheduledAt)),
-		authorNickname: item.host.nickname,
+		authorNickname: item.host.nickname ?? "탈퇴한 사용자",
 		status: item.status,
 	};
 }

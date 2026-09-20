@@ -74,9 +74,11 @@ export function RecruitmentCard({
 					</svg>
 				</span>
 				<p className="min-w-0 flex-1 truncate text-sm text-body">
-					{recruitment.authorNickname} · ★{" "}
-					{recruitment.authorRating.toFixed(1)} · 완료{" "}
-					{recruitment.authorCompletedCount}회
+					{recruitment.authorNickname} ·{" "}
+					{recruitment.authorRating !== null
+						? `★ ${recruitment.authorRating.toFixed(1)}`
+						: "평가 없음"}{" "}
+					· 완료 {recruitment.authorCompletedCount}회
 				</p>
 				<Button
 					type="button"

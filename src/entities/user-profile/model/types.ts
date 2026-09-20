@@ -3,7 +3,7 @@ export type UserProfile = {
 	nickname: string;
 	email: string;
 	conversationPreference: "SILENT" | "LIGHT_CHAT";
-	averageRating: number;
+	averageRating: number | null;
 	completedActivityCount: number;
 	noShowReportCount: number;
 };

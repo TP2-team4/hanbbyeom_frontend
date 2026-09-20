@@ -14,7 +14,7 @@ export type Recruitment = {
 	minPaceSeconds: number;
 	maxPaceSeconds: number;
 	authorNickname: string;
-	authorRating: number;
+	authorRating: number | null;
 	authorCompletedCount: number;
 	status: RecruitmentStatus;
 };
@@ -68,7 +68,7 @@ export type RecruitmentDetail = {
 	isOwner: boolean;
 	applicantCount: number;
 	authorNickname: string;
-	authorRating: number;
+	authorRating: number | null;
 	authorCompletedCount: number;
 };
 

@@ -25,7 +25,7 @@ export async function getMyPage() {
     const profile: UserProfile = {
         ...MOCK_PROFILE,
         ...currentUser,
-        averageRating: trustProfile.averageRating ?? 0,
+        averageRating: trustProfile.averageRating,
         completedActivityCount: trustProfile.completedCount,
         noShowReportCount: trustProfile.noShowReportCount,
     };

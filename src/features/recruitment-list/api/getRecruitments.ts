@@ -13,7 +13,7 @@ type BoardItemResponse = {
 	paceMinSec: number;
 	paceMaxSec: number;
 	author: {
-		nickname: string;
+		nickname: string | null;
 		rating: number | null;
 		completedCount: number | null;
 	};
@@ -38,8 +38,8 @@ function toRecruitment(item: BoardItemResponse): Recruitment {
 		pace: `${formatPace(item.paceMinSec)}~${formatPace(item.paceMaxSec)}`,
 		minPaceSeconds: item.paceMinSec,
 		maxPaceSeconds: item.paceMaxSec,
-		authorNickname: item.author.nickname,
-		authorRating: item.author.rating ?? 0,
+		authorNickname: item.author.nickname ?? "탈퇴한 사용자",
+		authorRating: item.author.rating,
 		authorCompletedCount: item.author.completedCount ?? 0,
 		// TODO: board 응답에 "이미 신청했는지" 필드가 없어 항상 open으로 고정 (백엔드 API 갭, 추후 필드 추가되면 매핑 필요)
 		status: "open",

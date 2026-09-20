@@ -21,7 +21,14 @@ export function ProfileSummaryCard({ profile }: Props) {
             </div>
 
             <dl className="mt-6 grid grid-cols-3 gap-2">
-                <Stat value={profile.averageRating.toFixed(1)} label="평균 별점" />
+                <Stat
+                    value={
+                        profile.averageRating !== null
+                            ? profile.averageRating.toFixed(1)
+                            : "평가 없음"
+                    }
+                    label="평균 별점"
+                />
                 <Stat value={String(profile.completedActivityCount)} label="완료한 활동" />
                 <Stat value={String(profile.noShowReportCount)} label="노쇼 신고" />
             </dl>

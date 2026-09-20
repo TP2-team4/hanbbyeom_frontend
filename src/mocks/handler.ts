@@ -615,6 +615,7 @@ export const handlers = [
 			{
 				activityMatchId: 1,
 				counterpartUserId: 2,
+				counterpartNickname: "조용한러너",
 				status: "CONFIRMED",
 				courseName: "뚝섬 한강공원",
 				location: "뚝섬유원지역 3번 출구",
@@ -626,6 +627,7 @@ export const handlers = [
 			{
 				activityMatchId: 2,
 				counterpartUserId: 3,
+				counterpartNickname: "밤산책",
 				status: "CONFIRMED",
 				courseName: "잠실 한강공원",
 				location: "잠실역 2번 출구",
@@ -637,6 +639,7 @@ export const handlers = [
 			{
 				activityMatchId: 3,
 				counterpartUserId: 4,
+				counterpartNickname: null,
 				status: "ENDED",
 				courseName: "여의도 한강공원",
 				location: "여의나루역 2번 출구",

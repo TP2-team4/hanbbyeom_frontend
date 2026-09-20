@@ -130,7 +130,7 @@ export default function ChatRoomDetailPage() {
 					</svg>
 				</button>
 				<h1 className="text-2xl font-bold text-title">
-					{chatRoom?.courseName ?? "채팅"}
+					{chatRoom?.counterpartNickname ?? "채팅"}
 				</h1>
 				</header>
 				{resolvedMatchId !== null && isMatchSummaryLoading && (

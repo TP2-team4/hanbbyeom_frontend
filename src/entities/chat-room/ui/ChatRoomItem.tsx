@@ -44,7 +44,7 @@ export function ChatRoomItem({ chatRoom, onClick }: Props) {
 			<span className="min-w-0 flex-1">
 				<span className="flex flex-wrap items-center gap-2">
 					<strong className="text-lg font-bold text-title">
-						{chatRoom.courseName}
+						{chatRoom.counterpartNickname ?? "탈퇴한 사용자"}
 					</strong>
 					<span
 						className={`rounded-full px-3 py-1 text-xs font-medium ${chatRoom.status === "ENDED" ? "bg-gray-50 text-gray-600" : "bg-primary-100 text-secondary-400"}`}
@@ -56,7 +56,8 @@ export function ChatRoomItem({ chatRoom, onClick }: Props) {
 					{chatRoom.lastMessage ?? "아직 주고받은 메시지가 없어요."}
 				</span>
 				<span className="mt-1 block truncate text-xs text-body">
-					{dateLabel} {timeLabel} · {chatRoom.location}
+					{chatRoom.courseName} · {dateLabel} {timeLabel} ·{" "}
+					{chatRoom.location}
 				</span>
 			</span>
 		</button>

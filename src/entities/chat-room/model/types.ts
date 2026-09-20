@@ -8,6 +8,7 @@ export type ChatRoomStatus =
 export type ChatRoom = {
 	activityMatchId: number;
 	counterpartUserId: number;
+	counterpartNickname: string | null;
 	status: ChatRoomStatus;
 	courseName: string;
 	location: string;

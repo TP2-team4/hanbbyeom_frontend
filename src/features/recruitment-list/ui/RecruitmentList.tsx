@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
 	RecruitmentCard,
@@ -46,6 +46,19 @@ export function RecruitmentList() {
 	const [sortOption, setSortOption] = useState<SortOption>("LATEST");
 	const [isFilterOpen, setIsFilterOpen] = useState(false);
 	const [pendingId, setPendingId] = useState<number | null>(null);
+	// 응답이 대부분 아주 빨리 끝나서(로컬 목데이터 등) "처리 중" 문구가 순간적으로 깜빡이듯
+	// 보이는 문제 방지 — 200ms 이상 걸릴 때만 로딩 상태를 화면에 노출한다.
+	const [visibleProcessingId, setVisibleProcessingId] = useState<
+		number | null
+	>(null);
+	useEffect(() => {
+		if (processingId === null) {
+			setVisibleProcessingId(null);
+			return;
+		}
+		const timer = setTimeout(() => setVisibleProcessingId(processingId), 200);
+		return () => clearTimeout(timer);
+	}, [processingId]);
 	const pendingRecruitment = recruitments.find(
 		(item) => item.id === pendingId,
 	);
@@ -62,6 +75,10 @@ export function RecruitmentList() {
 		[draftFilters, recruitments],
 	);
 	const activeFilters = getActiveFilters(filters);
+	// 400/409 응답 후 refetch()로 목록을 조용히 갱신할 때, 이미 떠 있던 목록 위에
+	// "불러오는 중" 문구가 끼어들면서 화면이 깜빡이는 것처럼 보이는 문제 방지 —
+	// 데이터가 한 번도 없었을 때(최초 로딩)만 로딩 문구를 보여준다.
+	const isInitialLoading = isLoading && recruitments.length === 0;
 
 	const openFilter = () => {
 		setDraftFilters(filters);
@@ -125,7 +142,7 @@ export function RecruitmentList() {
 				</div>
 			)}
 
-			{!isLoading && !error && (
+			{!isInitialLoading && !error && (
 				<p className="px-6 pt-5 text-sm text-body">
 					신청 가능한 모집글 {filteredRecruitments.length}건 · 내가 쓴
 					글과 신청한 글은 보이지 않아요 <br/> 신청하면 작성자 수락 후
@@ -134,7 +151,7 @@ export function RecruitmentList() {
 			)}
 
 			<div className="flex flex-col gap-3 px-6 pb-32 pt-5">
-				{isLoading && <StatusText>모집글을 불러오는 중...</StatusText>}
+				{isInitialLoading && <StatusText>모집글을 불러오는 중...</StatusText>}
 				{error && (
 					<div className="flex flex-col items-center gap-3 py-10">
 						<ErrorText className="text-center text-sm">
@@ -144,7 +161,7 @@ export function RecruitmentList() {
 					</div>
 				)}
 				{actionError && <ErrorText>{actionError}</ErrorText>}
-				{!isLoading && !error && filteredRecruitments.length === 0 && (
+				{!isInitialLoading && !error && filteredRecruitments.length === 0 && (
 					<StatusText>조건에 맞는 모집글이 없어요.</StatusText>
 				)}
 				{filteredRecruitments.map((recruitment) => (
@@ -153,7 +170,7 @@ export function RecruitmentList() {
 						recruitment={recruitment}
 						onApply={setPendingId}
 						onClick={(id) => navigate(`/recruitments/${id}`)}
-						isProcessing={processingId === recruitment.id}
+						isProcessing={visibleProcessingId === recruitment.id}
 					/>
 				))}
 			</div>

@@ -45,25 +45,27 @@ export function useRecruitments() {
 	const [toastMessage, setToastMessage] = useState<string | null>(null);
 
 	const apply = async (id: number) => {
+		if (processingId !== null) return; // 처리 중 중복 클릭 방지
+
 		const target = recruitments.find((item) => item.id === id);
 		if (!target) return;
+		const isCancelling = target.status === "applied";
 
 		setProcessingId(id);
 		setActionError(null);
 		try {
-			if (target.status === "applied") {
+			if (isCancelling) {
 				await cancelApplication(id);
 			} else {
 				await applyToRecruitment(id);
 			}
+			// 성공했을 때만, 방금 수행한 액션에 맞는 상태로 명시적으로 바꾼다
+			// (실패 시 catch로 빠지므로 이 아래 줄은 절대 실행되지 않는다)
+			const nextStatus = isCancelling ? "open" : "applied";
 			setRecruitments((current) =>
-				current.map((item) => {
-					if (item.id !== id) return item;
-					return {
-						...item,
-						status: item.status === "applied" ? "open" : "applied",
-					};
-				}),
+				current.map((item) =>
+					item.id === id ? { ...item, status: nextStatus } : item,
+				),
 			);
 		} catch (error) {
 			if (isStaleRecruitmentError(error)) {

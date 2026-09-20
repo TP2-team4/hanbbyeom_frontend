@@ -11,9 +11,9 @@ export default function PasswordResetPage() {
 		form.verificationStatus === "sent" ||
 		form.verificationStatus === "verifying";
 	const isExpired = codeWasSent && form.verificationExpirySeconds === 0;
-	const visibleVerificationError = isExpired
-		? "인증번호가 만료되었습니다. 재전송 버튼을 눌러주세요"
-		: form.verificationError;
+	const visibleVerificationError =
+		form.verificationError ??
+		(isExpired ? "인증번호가 만료되었습니다. 재전송 버튼을 눌러주세요" : null);
 
 	const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
 		event.preventDefault();

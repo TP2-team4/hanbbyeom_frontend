@@ -40,9 +40,9 @@ export function EmailVerificationField({
 	// 인증 번호 만료 안내 및 타이머 표시 추가
 	const isExpired =
 		showsCode && status !== "verified" && verificationExpirySeconds === 0;
-	const visibleVerificationError = isExpired
-		? "인증 코드가 만료되었습니다. 재전송 버튼을 눌러주세요"
-		: verificationError;
+	const visibleVerificationError =
+		verificationError ??
+		(isExpired ? "인증 코드가 만료되었습니다. 재전송 버튼을 눌러주세요" : null);
 
 	return (
 		<div className="flex flex-col gap-2">

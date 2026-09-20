@@ -114,11 +114,12 @@ export const handlers = [
 	}),
 
 	//모집 게시판 - 목록 조회
+	// id별로 /apply 응답 시나리오가 다르게 매핑되어 있음 (아래 apply 핸들러 참고) — 신청 실패 케이스 테스트용
 	http.get("*/api/matching/board", () => {
 		return HttpResponse.json([
 			{
 				id: 1,
-				courseName: "뚝섬 한강공원",
+				courseName: "뚝섬 한강공원 (내가 이미 신청 중 · 대기)",
 				distanceMinMeters: 6000,
 				distanceMaxMeters: 8000,
 				talkLevel: "SILENT",
@@ -133,7 +134,7 @@ export const handlers = [
 			},
 			{
 				id: 2,
-				courseName: "여의도 한강공원",
+				courseName: "여의도 한강공원 (마감/시작됨 · 400)",
 				distanceMinMeters: 8000,
 				distanceMaxMeters: 10000,
 				talkLevel: "LIGHT_CHAT",
@@ -148,7 +149,7 @@ export const handlers = [
 			},
 			{
 				id: 3,
-				courseName: "반포 한강공원",
+				courseName: "반포 한강공원 (경합 · 409)",
 				distanceMinMeters: 3000,
 				distanceMaxMeters: 5000,
 				talkLevel: "SILENT",
@@ -158,45 +159,37 @@ export const handlers = [
 				author: { nickname: "밤산책", rating: 4.9, completedCount: 8 },
 			},
 			{
-				id: 1,
-				courseName: "뚝섬 한강공원",
-				distanceMinMeters: 6000,
-				distanceMaxMeters: 8000,
+				id: 4,
+				courseName: "잠실 한강공원 (다른 글에 신청 중 · 500)",
+				distanceMinMeters: 5000,
+				distanceMaxMeters: 9000,
+				talkLevel: "LIGHT_CHAT",
+				scheduledAt: "2026-09-15T08:00:00+09:00",
+				paceMinSec: 350,
+				paceMaxSec: 390,
+				author: { nickname: "한강러너", rating: 4.7, completedCount: 20 },
+			},
+			{
+				id: 5,
+				courseName: "성수 한강공원 (작성자 신청 중 · 500)",
+				distanceMinMeters: 4000,
+				distanceMaxMeters: 7000,
 				talkLevel: "SILENT",
-				scheduledAt: "2026-09-12T07:00:00+09:00",
+				scheduledAt: "2026-09-16T19:00:00+09:00",
+				paceMinSec: 370,
+				paceMaxSec: 410,
+				author: { nickname: "야간러너", rating: 4.5, completedCount: 5 },
+			},
+			{
+				id: 6,
+				courseName: "광나루 한강공원 (정상 신청)",
+				distanceMinMeters: 4000,
+				distanceMaxMeters: 8000,
+				talkLevel: "LIGHT_CHAT",
+				scheduledAt: "2026-09-17T07:30:00+09:00",
 				paceMinSec: 360,
 				paceMaxSec: 400,
-				author: {
-					nickname: "조용한러너",
-					rating: 4.8,
-					completedCount: 31,
-				},
-			},
-			{
-				id: 2,
-				courseName: "여의도 한강공원",
-				distanceMinMeters: 8000,
-				distanceMaxMeters: 10000,
-				talkLevel: "LIGHT_CHAT",
-				scheduledAt: "2026-09-13T06:30:00+09:00",
-				paceMinSec: 340,
-				paceMaxSec: 370,
-				author: {
-					nickname: "새벽공기",
-					rating: 4.6,
-					completedCount: 12,
-				},
-			},
-			{
-				id: 3,
-				courseName: "반포 한강공원",
-				distanceMinMeters: 3000,
-				distanceMaxMeters: 5000,
-				talkLevel: "SILENT",
-				scheduledAt: "2026-09-14T20:00:00+09:00",
-				paceMinSec: 390,
-				paceMaxSec: 420,
-				author: { nickname: "밤산책", rating: 4.9, completedCount: 8 },
+				author: { nickname: "아침러너", rating: 4.9, completedCount: 15 },
 			},
 		]);
 	}),
@@ -376,8 +369,36 @@ export const handlers = [
 		return new HttpResponse(null, { status: 204 });
 	}),
 
-	//모집 게시판 - 신청
-	http.post("*/api/matching/board/:id/apply", () => {
+	// 모집 게시판 - 신청
+	// 백엔드팀 안내 표에 맞춰 id별로 다른 실패 응답을 재현 (위 board 목록의 courseName 참고)
+	http.post("*/api/matching/board/:id/apply", ({ params }) => {
+		const id = Number(params.id);
+
+		if (id === 2) {
+			return HttpResponse.json(
+				{ message: "너무 임박해서 신청할 수 없어요." },
+				{ status: 400 },
+			);
+		}
+		if (id === 3) {
+			return HttpResponse.json(
+				{ message: "다른 사용자가 이미 신청해서 마감됐어요." },
+				{ status: 409 },
+			);
+		}
+		if (id === 4) {
+			return HttpResponse.json(
+				{ message: "이미 다른 모집에 신청 중이라 신청할 수 없어요." },
+				{ status: 500 },
+			);
+		}
+		if (id === 5) {
+			return HttpResponse.json(
+				{ message: "작성자가 다른 신청을 처리 중이에요." },
+				{ status: 500 },
+			);
+		}
+
 		return new HttpResponse(null, {
 			status: 201,
 			headers: { Location: "/api/matching/matches/1" },
@@ -481,17 +502,17 @@ export const handlers = [
 		return HttpResponse.json([
 			{
 				activityMatchId: 12,
-				hostMatchRequestId: 35,
+				hostMatchRequestId: 1,
 				status: "PENDING",
-				courseName: "뚝섬 한강공원",
-				distanceMinMeters: 3000,
-				distanceMaxMeters: 5000,
-				scheduledAt: "2026-09-20T09:00:00Z",
-				talkLevel: "LIGHT_CHAT",
+				courseName: "뚝섬 한강공원 (내가 이미 신청 중 · 대기)",
+				distanceMinMeters: 6000,
+				distanceMaxMeters: 8000,
+				scheduledAt: "2026-09-12T07:00:00+09:00",
+				talkLevel: "SILENT",
 				host: {
-					nickname: "러닝메이트",
-					rating: 4.5,
-					completedCount: 8,
+					nickname: "조용한러너",
+					rating: 4.8,
+					completedCount: 31,
 				},
 			},
 		]);

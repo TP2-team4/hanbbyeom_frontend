@@ -11,3 +11,25 @@ export async function extractErrorMessage(response: Response, fallback: string) 
 	}
 	return fallback;
 }
+
+// HTTP status를 함께 들고 다니는 에러. 호출부에서 400/409처럼 특정 상태코드에 따라
+// 다르게 대응해야 할 때(e.g. 토스트+새로고침) 사용한다.
+export class ApiError extends Error {
+	status: number;
+
+	constructor(message: string, status: number) {
+		super(message);
+		this.name = "ApiError";
+		this.status = status;
+	}
+}
+
+export async function throwApiError(
+	response: Response,
+	fallback: string,
+): Promise<never> {
+	throw new ApiError(
+		await extractErrorMessage(response, fallback),
+		response.status,
+	);
+}

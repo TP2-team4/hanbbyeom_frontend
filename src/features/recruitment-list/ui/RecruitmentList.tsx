@@ -12,6 +12,7 @@ import { StatusText } from "../../../shared/ui/status-text";
 import { ErrorText } from "../../../shared/ui/error-text";
 import { RetryButton } from "../../../shared/ui/retry-button";
 import { ConfirmModal } from "../../../shared/ui/confirm-modal";
+import { Toast } from "../../../shared/ui/toast";
 
 type SortOption = "LATEST" | "DATE" | "DISTANCE";
 
@@ -36,6 +37,8 @@ export function RecruitmentList() {
 		processingId,
 		actionError,
 		apply,
+		toastMessage,
+		dismissToast,
 	} = useRecruitments();
 	const [filters, setFilters] = useState<RecruitmentFilters>(EMPTY_FILTERS);
 	const [draftFilters, setDraftFilters] =
@@ -197,6 +200,10 @@ export function RecruitmentList() {
 						setPendingId(null);
 					}}
 				/>
+			)}
+
+			{toastMessage && (
+				<Toast message={toastMessage} onDismiss={dismissToast} />
 			)}
 		</>
 	);

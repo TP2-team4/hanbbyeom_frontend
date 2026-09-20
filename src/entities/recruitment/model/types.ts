@@ -63,7 +63,6 @@ export type RecruitmentDetail = {
 	time: string;
 	pace: string;
 	meetingPlace: string;
-	status: RecruitmentStatus;
 	requestStatus: MatchRequestStatus;
 	isOwner: boolean;
 	applicantCount: number;

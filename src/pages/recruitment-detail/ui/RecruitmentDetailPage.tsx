@@ -16,16 +16,26 @@ import { StatusText } from "../../../shared/ui/status-text";
 import { ErrorText } from "../../../shared/ui/error-text";
 import { ConfirmModal } from "../../../shared/ui/confirm-modal";
 import { useApplication } from "../../../features/recruitment-detail";
+import { getMyAppliedRecruitments } from "../../../features/applied-recruitment-list";
 
 type DetailData = {
 	recruitment: RecruitmentDetail;
 	author: RecruitmentAuthorProfile;
+	hasMyPendingApplication: boolean;
 };
 
-const STATUS_LABEL = {
-	open: "신청하기",
-	applied: "신청 취소",
-} as const;
+type FooterState = "open" | "waiting" | "closed";
+
+function getFooterState(
+	requestStatus: RecruitmentDetail["requestStatus"],
+	hasMyPendingApplication: boolean,
+): FooterState {
+	if (requestStatus === "SEARCHING") return "open";
+	if (requestStatus === "PENDING_CONFIRMATION" && hasMyPendingApplication) {
+		return "waiting";
+	}
+	return "closed";
+}
 
 export default function RecruitmentDetailPage() {
 	const navigate = useNavigate();
@@ -35,34 +45,38 @@ export default function RecruitmentDetailPage() {
 	const isValidId = Number.isInteger(id);
 	const { apply, cancel, isProcessing, error, feedback } = useApplication(id);
 
-	const { data: detail, setData: setDetail, isLoading, error: loadError } = useAsync<DetailData | null>(
+	const { data: detail, isLoading, error: loadError, refetch } = useAsync<DetailData | null>(
 		async () => {
 			if (!isValidId) return null;
 			const recruitment = await getRecruitmentDetail(id);
 			if (!recruitment) return null;
 			const author = await getRecruitmentAuthorProfile(id);
-			return author ? { recruitment, author } : null;
+			if (!author) return null;
+			const hasMyPendingApplication = await getMyAppliedRecruitments()
+				.then((applications) =>
+					applications.some(
+						(application) =>
+							application.hostMatchRequestId === id &&
+							application.status === "PENDING",
+					),
+				)
+				.catch(() => false);
+			return { recruitment, author, hasMyPendingApplication };
 		},
 		null,
 		[id, isValidId],
 		"정보를 불러오지 못했어요. 다시 시도해 주세요.",
 	);
 
+	const footerState = detail
+		? getFooterState(detail.recruitment.requestStatus, detail.hasMyPendingApplication)
+		: "closed";
+
 	const handleConfirm = async () => {
-		const newStatus = pending === "apply" ? await apply() : await cancel();
+		const succeeded = pending === "apply" ? await apply() : await cancel();
 		setPending(null);
-		if (newStatus) {
-			setDetail((current) =>
-				current
-					? {
-							...current,
-							recruitment: {
-								...current.recruitment,
-								status: newStatus,
-							},
-						}
-					: current,
-			);
+		if (succeeded) {
+			void refetch();
 		}
 	};
 
@@ -106,6 +120,13 @@ export default function RecruitmentDetailPage() {
 				)}
 				{isValidId && !isLoading && !loadError && detail && (
 					<>
+						{footerState !== "open" && (
+							<p className="rounded-xl bg-primary-100 px-4 py-3 text-center text-sm font-semibold text-secondary-500">
+								{footerState === "waiting"
+									? "작성자의 수락을 기다리고 있어요."
+									: "마감된 모집이에요."}
+							</p>
+						)}
 						<RecruitmentInfoCard recruitment={detail.recruitment} />
 						<RecruitmentAuthorCard
 							nickname={detail.recruitment.authorNickname}
@@ -115,7 +136,7 @@ export default function RecruitmentDetailPage() {
 				)}
 			</section>
 
-			{isValidId && !isLoading && !loadError && detail && (
+			{isValidId && !isLoading && !loadError && detail && footerState !== "closed" && (
 				<footer className="sticky bottom-0 border-t border-divider bg-surface p-4">
 					{error && (
 						<ErrorText className="mb-2 text-sm">{error}</ErrorText>
@@ -125,22 +146,14 @@ export default function RecruitmentDetailPage() {
 					)}
 					<Button
 						type="button"
-						variant={
-							detail.recruitment.status === "applied"
-								? "secondary"
-								: "primary"
-						}
+						variant={footerState === "waiting" ? "secondary" : "primary"}
 						isLoading={isProcessing}
 						onClick={() =>
-							setPending(
-								detail.recruitment.status === "applied"
-									? "cancel"
-									: "apply",
-							)
+							setPending(footerState === "waiting" ? "cancel" : "apply")
 						}
 						className="h-14 w-full"
 					>
-						{STATUS_LABEL[detail.recruitment.status]}
+						{footerState === "waiting" ? "신청 취소" : "신청하기"}
 					</Button>
 				</footer>
 			)}

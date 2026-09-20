@@ -640,4 +640,16 @@ export const handlers = [
 		}
 		return new HttpResponse(null, { status: 204 });
 	}),
+
+	//닉네임 수정
+	http.patch("*/api/users/me/nickname", async ({ request }) => {
+		const body = (await request.json()) as { nickname: string };
+		if (body.nickname.length < 2 || body.nickname.length > 16) {
+			return HttpResponse.json(
+				{ message: "닉네임은 2자 이상 16자 이하로 입력해주세요." },
+				{ status: 400 },
+			);
+		}
+		return HttpResponse.json({ nickname: body.nickname });
+	}),
 ];

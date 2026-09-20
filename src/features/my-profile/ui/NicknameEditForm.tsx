@@ -31,7 +31,7 @@ export function NicknameEditForm({ initialNickname, onSaved }: Props) {
 				id="nickname"
 				value={nickname}
 				onChange={(event) => setNickname(event.target.value)}
-				maxLength={12}
+				maxLength={16}
 				className="mt-2"
 			/>
 			{error && <ErrorText className="mt-2 text-sm">{error}</ErrorText>}

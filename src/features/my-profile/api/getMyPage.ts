@@ -26,7 +26,7 @@ export async function getMyPage() {
         ...MOCK_PROFILE,
         ...currentUser,
         averageRating: trustProfile.averageRating,
-        completedActivityCount: trustProfile.completedCount,
+        completedActivityCount: trustProfile.completedActivityCount,
         noShowReportCount: trustProfile.noShowReportCount,
     };
 

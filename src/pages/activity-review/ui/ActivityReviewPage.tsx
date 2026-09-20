@@ -176,7 +176,8 @@ export default function ActivityReviewPage() {
 								{activity.title}
 							</strong>
 							<p className="mt-1 text-sm text-body">
-								{activity.dateLabel} · {activity.distanceKm}km ·{" "}
+								{activity.dateLabel} · {activity.minDistanceKm}~
+								{activity.maxDistanceKm}km ·{" "}
 								{activity.partnerNickname}
 							</p>
 						</div>
@@ -228,7 +229,6 @@ export default function ActivityReviewPage() {
 								<TalkLevelChips
 									value={talkLevel}
 									onChange={setTalkLevel}
-									partnerTalkLevel={activity.partnerTalkLevel}
 								/>
 							</div>
 						</div>

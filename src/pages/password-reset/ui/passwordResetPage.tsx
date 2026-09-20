@@ -10,6 +10,10 @@ export default function PasswordResetPage() {
 	const codeWasSent =
 		form.verificationStatus === "sent" ||
 		form.verificationStatus === "verifying";
+	const isExpired = codeWasSent && form.verificationExpirySeconds === 0;
+	const visibleVerificationError = isExpired
+		? "인증번호가 만료되었습니다. 재전송 버튼을 눌러주세요"
+		: form.verificationError;
 
 	const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -99,26 +103,37 @@ export default function PasswordResetPage() {
 									인증번호
 								</label>
 								<div className="flex gap-2">
-									<Input
-										id="reset-code"
-										name="verificationCode"
-										type="text"
-										inputMode="numeric"
-										autoComplete="one-time-code"
-										placeholder="인증번호 6자리"
-										className="min-w-0 flex-1"
-										maxLength={6}
-										value={form.verificationCode}
-										disabled={
-											form.verificationStatus ===
-											"verifying"
-										}
-										onChange={(event) =>
-											form.changeVerificationCode(
-												event.target.value,
-											)
-										}
-									/>
+									<div className="relative min-w-0 flex-1">
+										<Input
+											id="reset-code"
+											name="verificationCode"
+											type="text"
+											inputMode="numeric"
+											autoComplete="one-time-code"
+											placeholder="인증번호 6자리"
+											className="min-w-0 pr-16"
+											maxLength={6}
+											value={form.verificationCode}
+											disabled={
+												form.verificationStatus ===
+												"verifying"
+											}
+											onChange={(event) =>
+												form.changeVerificationCode(
+													event.target.value,
+												)
+											}
+										/>
+										<span
+											className={`absolute right-4 top-1/2 -translate-y-1/2 text-xs ${isExpired ? "text-error-text" : "text-body"}`}
+										>
+											{isExpired
+												? "만료됨"
+												: formatTime(
+														form.verificationExpirySeconds,
+													)}
+										</span>
+									</div>
 									<Button
 										variant="secondary"
 										className="h-14 shrink-0 px-4"
@@ -137,9 +152,14 @@ export default function PasswordResetPage() {
 								</div>
 							</div>
 						)}
-						{form.verificationError && (
+						{codeWasSent && !visibleVerificationError && (
+							<p className="text-xs text-blue-500">
+								이메일이 오지 않았다면 스팸함도 확인해 주세요.
+							</p>
+						)}
+						{visibleVerificationError && (
 							<ErrorText className="text-xs">
-								{form.verificationError}
+								{visibleVerificationError}
 							</ErrorText>
 						)}
 					</div>
@@ -268,4 +288,10 @@ export default function PasswordResetPage() {
 			</section>
 		</main>
 	);
+}
+
+function formatTime(totalSeconds: number) {
+	const minutes = Math.floor(totalSeconds / 60);
+	const seconds = totalSeconds % 60;
+	return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 }

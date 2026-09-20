@@ -1,13 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { isValidEmail, isValidPassword } from "../../../shared/lib/validation";
 import {
+    PasswordResetError,
     requestPasswordResetCode,
     resetPassword,
     verifyPasswordResetCode,
 } from "../api/passwordReset";
 
 type Step = "verify-email" | "reset-password" | "complete";
-type VerificationStatus = "idle" | "requesting" | "sent" | "verifying";
+type VerificationStatus =
+    | "idle"
+    | "requesting"
+    | "sent"
+    | "verifying"
+    | "verified"
+    | "error";
 
 export function usePasswordReset() {
     const [step, setStep] = useState<Step>("verify-email");
@@ -16,6 +23,14 @@ export function usePasswordReset() {
     const [verificationStatus, setVerificationStatus] =
         useState<VerificationStatus>("idle");
     const [verificationError, setVerificationError] = useState<string | null>(null);
+    // 인증 번호 유효시간과 재전송 대기시간 (회원가입과 동일한 카운트다운 로직)
+    const [verificationExpiresAt, setVerificationExpiresAt] = useState<
+        number | null
+    >(null);
+    const [resendAvailableAt, setResendAvailableAt] = useState<number | null>(
+        null,
+    );
+    const [currentTime, setCurrentTime] = useState(() => Date.now());
     const [password, setPassword] = useState("");
     const [passwordConfirm, setPasswordConfirm] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -27,11 +42,30 @@ export function usePasswordReset() {
         passwordConfirm.length > 0 && password === passwordConfirm;
     const canResetPassword = passwordIsValid && isPasswordMatch;
 
+    const verificationExpirySeconds = verificationExpiresAt
+        ? Math.max(0, Math.ceil((verificationExpiresAt - currentTime) / 1000))
+        : 0;
+    const resendCooldownSeconds = resendAvailableAt
+        ? Math.max(0, Math.ceil((resendAvailableAt - currentTime) / 1000))
+        : 0;
+
+    // 인증 번호와 재전송 카운트다운 갱신 (1초마다)
+    useEffect(() => {
+        if (!verificationExpiresAt && !resendAvailableAt) return;
+        const timerId = window.setInterval(
+            () => setCurrentTime(Date.now()),
+            1000,
+        );
+        return () => window.clearInterval(timerId);
+    }, [resendAvailableAt, verificationExpiresAt]);
+
     const changeEmail = (value: string) => {
         setEmail(value);
         setVerificationCode("");
         setVerificationStatus("idle");
         setVerificationError(null);
+        setVerificationExpiresAt(null);
+        setResendAvailableAt(null);
     };
 
     const changeVerificationCode = (value: string) => {
@@ -46,11 +80,23 @@ export function usePasswordReset() {
         setVerificationError(null);
 
         try {
-            await requestPasswordResetCode(email);
+            const response = await requestPasswordResetCode(email);
+            setVerificationExpiresAt(response.expiresAt);
+            setResendAvailableAt(response.resendAvailableAt);
+            setCurrentTime(Date.now());
             setVerificationStatus("sent");
-        } catch {
-            setVerificationStatus("idle");
-            setVerificationError("인증번호 요청에 실패했어요. 다시 시도해 주세요.");
+        } catch (error) {
+            setVerificationError(
+                error instanceof PasswordResetError
+                    ? error.message
+                    : "인증번호 요청에 실패했어요. 다시 시도해 주세요.",
+            );
+            setVerificationStatus(
+                verificationStatus === "sent" ||
+                    verificationStatus === "verified"
+                    ? verificationStatus
+                    : "error",
+            );
         }
     };
 
@@ -62,14 +108,17 @@ export function usePasswordReset() {
         try {
             const response = await verifyPasswordResetCode(email, verificationCode);
             if (response.verified) {
+                setVerificationStatus("verified");
                 setStep("reset-password");
                 return;
             }
+        } catch (error) {
             setVerificationStatus("sent");
-            setVerificationError("인증번호가 올바르지 않아요.");
-        } catch {
-            setVerificationStatus("sent");
-            setVerificationError("인증번호 확인에 실패했어요. 다시 시도해 주세요.");
+            setVerificationError(
+                error instanceof PasswordResetError
+                    ? error.message
+                    : "인증번호 확인에 실패했어요. 다시 시도해 주세요.",
+            );
         }
     };
 
@@ -79,10 +128,14 @@ export function usePasswordReset() {
         setSubmitError(null);
 
         try {
-            await resetPassword(email, password);
+            await resetPassword(email, verificationCode, password);
             setStep("complete");
-        } catch {
-            setSubmitError("비밀번호 변경에 실패했어요. 다시 시도해 주세요.");
+        } catch (e) {
+            setSubmitError(
+                e instanceof Error
+                    ? e.message
+                    : "비밀번호 변경에 실패했어요. 다시 시도해 주세요.",
+            );
         } finally {
             setIsSubmitting(false);
         }
@@ -95,6 +148,8 @@ export function usePasswordReset() {
         verificationCode,
         verificationStatus,
         verificationError,
+        verificationExpirySeconds,
+        resendCooldownSeconds,
         password,
         passwordConfirm,
         isPasswordMatch,

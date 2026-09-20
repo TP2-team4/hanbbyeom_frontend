@@ -66,6 +66,17 @@ export const handlers = [
 		return new HttpResponse(null, { status: 200 });
 	}),
 
+	//비밀번호 재설정
+	http.post("*/api/auth/password-reset", async ({ request }) => {
+		const body = (await request.json()) as {
+			email: string;
+			code: string;
+			newPassword: string;
+		};
+		console.log("비밀번호 재설정:", body);
+		return new HttpResponse(null, { status: 204 });
+	}),
+
 	//회원 가입 - 회원 가입 요청
 	http.post("*/api/auth/signup", async ({ request }) => {
 		const body = await request.json();

@@ -4,3 +4,4 @@ export type {
 	ActivityHistoryStatus,
 	TalkLevel,
 } from "./model/types";
+export { getActivityHistory } from "./api/getActivityHistory";

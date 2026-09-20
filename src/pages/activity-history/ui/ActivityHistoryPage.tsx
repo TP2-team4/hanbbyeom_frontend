@@ -13,7 +13,6 @@ type FilterValue = "ALL" | "UPCOMING" | "REVIEW_REQUIRED" | "DONE";
 
 const DONE_STATUSES: ActivityHistoryStatus[] = [
 	"REVIEW_COMPLETED",
-	"COMPLETED",
 	"CANCELLED",
 	"NO_SHOW_REPORTED",
 ];

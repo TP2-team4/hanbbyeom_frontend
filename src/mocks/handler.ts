@@ -652,4 +652,58 @@ export const handlers = [
 		}
 		return HttpResponse.json({ nickname: body.nickname });
 	}),
+
+	//활동 이력
+	http.get("*/api/matching/matches", () => {
+		return HttpResponse.json([
+			{
+				activityMatchId: 1,
+				courseName: "뚝섬 한강공원",
+				distanceMinMeters: 5000,
+				distanceMaxMeters: 12000,
+				scheduledAt: "2026-09-25T07:00:00+09:00",
+				scheduledEndAt: "2026-09-25T09:00:00+09:00",
+				status: "CONFIRMED",
+				cancelledBy: null,
+				counterpartNickname: "조용한러너",
+				submittedFeedbackType: null,
+			},
+			{
+				activityMatchId: 2,
+				courseName: "여의도 한강공원",
+				distanceMinMeters: 5000,
+				distanceMaxMeters: 12000,
+				scheduledAt: "2026-09-15T07:00:00+09:00",
+				scheduledEndAt: "2026-09-15T09:00:00+09:00",
+				status: "ENDED",
+				cancelledBy: null,
+				counterpartNickname: "밤산책",
+				submittedFeedbackType: null,
+			},
+			{
+				activityMatchId: 3,
+				courseName: "반포 한강공원",
+				distanceMinMeters: 3000,
+				distanceMaxMeters: 6000,
+				scheduledAt: "2026-09-10T07:00:00+09:00",
+				scheduledEndAt: "2026-09-10T09:00:00+09:00",
+				status: "ENDED",
+				cancelledBy: null,
+				counterpartNickname: "새벽공기",
+				submittedFeedbackType: "REVIEW",
+			},
+			{
+				activityMatchId: 4,
+				courseName: "안양천",
+				distanceMinMeters: 8000,
+				distanceMaxMeters: 15000,
+				scheduledAt: "2026-09-05T07:00:00+09:00",
+				scheduledEndAt: "2026-09-05T09:00:00+09:00",
+				status: "CANCELLED",
+				cancelledBy: "COUNTERPART",
+				counterpartNickname: "고요한밤",
+				submittedFeedbackType: null,
+			},
+		]);
+	}),
 ];

@@ -22,7 +22,6 @@ const STATUS_BADGE: Record<
 		label: "후기 작성 완료",
 		className: "bg-gray-100 text-body",
 	},
-	COMPLETED: { label: "완료", className: "bg-gray-100 text-body" },
 	CANCELLED: { label: "취소", className: "bg-gray-100 text-body" },
 	NO_SHOW_REPORTED: {
 		label: "노쇼 신고",
@@ -41,7 +40,8 @@ export function ActivityHistoryItem({ activity, onReview }: Props) {
 					{activity.title}
 				</strong>
 				<p className="mt-1 truncate text-sm text-body">
-					{activity.dateLabel} · {activity.distanceKm}km ·{" "}
+					{activity.dateLabel} · {activity.minDistanceKm}~{activity.maxDistanceKm}km ·{" "}
+					{activity.partnerNickname}
 					{activity.partnerNickname}
 				</p>
 			</div>

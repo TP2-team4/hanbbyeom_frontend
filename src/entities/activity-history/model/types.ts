@@ -5,7 +5,6 @@ export type ActivityHistoryStatus =
     | "IN_PROGRESS"
     | "REVIEW_REQUIRED"
     | "REVIEW_COMPLETED"
-    | "COMPLETED"
     | "CANCELLED"
     | "NO_SHOW_REPORTED";
 
@@ -14,8 +13,8 @@ export type ActivityHistory = {
     activityMatchId: number;
     title: string;
     dateLabel: string;
-    distanceKm: number;
+    minDistanceKm: number;
+    maxDistanceKm: number;
     partnerNickname: string;
-    partnerTalkLevel: TalkLevel;
     status: ActivityHistoryStatus;
 };

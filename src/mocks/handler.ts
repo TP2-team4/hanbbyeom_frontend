@@ -463,6 +463,11 @@ export const handlers = [
 		return new HttpResponse(null, { status: 204 });
 	}),
 
+	// 확정된 활동 참여 취소
+	http.post("*/api/matching/matches/:id/cancel", () => {
+		return new HttpResponse(null, { status: 200 });
+	}),
+
 	// 내 모집글 목록 조회
 	http.get("*/api/matching/requests", () => {
 

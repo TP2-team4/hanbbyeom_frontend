@@ -1,10 +1,15 @@
-import type { CancelReasonCode } from "../model/types";
+import { authorizedFetch } from "../../../shared/lib/authorizedFetch";
+import { extractErrorMessage } from "../../../shared/lib/apiError";
 
-export async function cancelActivity(
-	activityMatchId: number,
-	reasonCode: CancelReasonCode,
-): Promise<void> {
-	// TODO: 활동 취소 API가 개발되면 실제 요청으로 교체 (백엔드에 아직 해당 엔드포인트 없음)
-	await new Promise((resolve) => setTimeout(resolve, 400));
-	console.log("활동 취소:", { activityMatchId, reasonCode });
+export async function cancelActivity(activityMatchId: number): Promise<void> {
+	const response = await authorizedFetch(
+		`/api/matching/matches/${activityMatchId}/cancel`,
+		{ method: "POST" },
+	);
+
+	if (!response.ok) {
+		throw new Error(
+			await extractErrorMessage(response, "활동 취소에 실패했습니다."),
+		);
+	}
 }

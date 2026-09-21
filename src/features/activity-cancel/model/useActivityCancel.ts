@@ -16,7 +16,7 @@ export function useActivityCancel(activityMatchId: number) {
 		setIsSubmitting(true);
 		setError(null);
 		try {
-			await cancelActivity(activityMatchId, selectedReason);
+			await cancelActivity(activityMatchId);
 			setIsCompleted(true);
 		} catch {
 			setError("활동을 취소하지 못했어요. 다시 시도해 주세요.");

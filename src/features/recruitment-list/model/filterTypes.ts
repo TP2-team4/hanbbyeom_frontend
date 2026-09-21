@@ -2,6 +2,9 @@ import type { ConversationStyle } from "../../../entities/recruitment";
 
 export type DateFilter = "TODAY" | "TOMORROW" | "THIS_WEEKEND";
 
+// 서버가 지원하는 정렬 값 그대로 (GET /api/matching/board의 sort 파라미터)
+export type RecruitmentSort = "LATEST" | "SCHEDULED" | "DISTANCE";
+
 export type RecruitmentFilters = {
     location: string | null;
     date: DateFilter | null;

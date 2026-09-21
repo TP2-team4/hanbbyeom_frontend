@@ -2,45 +2,25 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { RecruitmentCard } from "../../../entities/recruitment";
 import { useRecruitments } from "../model/useRecruitments";
-import { EMPTY_FILTERS, type RecruitmentFilters } from "../model/filterTypes";
+import {
+	EMPTY_FILTERS,
+	type RecruitmentFilters,
+	type RecruitmentSort,
+} from "../model/filterTypes";
 import { RecruitmentFilterModal } from "./RecruitmentFilterModal";
+import { Dropdown } from "../../../shared/ui/dropdown";
 import { StatusText } from "../../../shared/ui/status-text";
 import { ErrorText } from "../../../shared/ui/error-text";
 import { RetryButton } from "../../../shared/ui/retry-button";
 import { ConfirmModal } from "../../../shared/ui/confirm-modal";
 import { Toast } from "../../../shared/ui/toast";
 
-// PR #104: 목록이 커서 페이지네이션으로 바뀌면서 서버는 "최신순" 고정 정렬만 지원.
-// 날짜순/거리순은 이미 불러온 페이지 안에서만 재정렬 가능해서 무한스크롤 중 카드 순서가
-// 뒤섞이는 문제가 있어 정렬 UI를 임시로 뺐다. 서버가 정렬 파라미터를 지원하게 되면 복구.
-/*
-import { Dropdown } from "../../../shared/ui/dropdown";
-import type { Recruitment } from "../../../entities/recruitment";
-
-type SortOption = "LATEST" | "DATE" | "DISTANCE";
-
-const SORT_OPTIONS: { value: SortOption; label: string }[] = [
+// GET /api/matching/board의 sort 파라미터 그대로
+const SORT_OPTIONS: { value: RecruitmentSort; label: string }[] = [
 	{ value: "LATEST", label: "최신순" },
-	{ value: "DATE", label: "날짜 빠른 순" },
+	{ value: "SCHEDULED", label: "날짜 빠른 순" },
 	{ value: "DISTANCE", label: "거리 짧은 순" },
 ];
-
-function sortRecruitments(recruitments: Recruitment[], sortOption: SortOption) {
-	if (sortOption === "DISTANCE") {
-		return [...recruitments].sort(
-			(a, b) =>
-				a.minDistanceKm - b.minDistanceKm ||
-				a.maxDistanceKm - b.maxDistanceKm,
-		);
-	}
-	if (sortOption === "DATE") {
-		return [...recruitments].sort(
-			(a, b) => Date.parse(a.startsAt) - Date.parse(b.startsAt),
-		);
-	}
-	return recruitments;
-}
-*/
 
 const FILTER_LABELS = {
 	date: { TODAY: "오늘", TOMORROW: "내일", THIS_WEEKEND: "이번 주말" },
@@ -50,6 +30,7 @@ const FILTER_LABELS = {
 export function RecruitmentList() {
 	const navigate = useNavigate();
 	const [filters, setFilters] = useState<RecruitmentFilters>(EMPTY_FILTERS);
+	const [sortOption, setSortOption] = useState<RecruitmentSort>("LATEST");
 	const {
 		recruitments,
 		isLoading,
@@ -63,7 +44,7 @@ export function RecruitmentList() {
 		apply,
 		toastMessage,
 		dismissToast,
-	} = useRecruitments(filters);
+	} = useRecruitments(filters, sortOption);
 	const [draftFilters, setDraftFilters] =
 		useState<RecruitmentFilters>(EMPTY_FILTERS);
 	const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -134,14 +115,12 @@ export function RecruitmentList() {
 						</span>
 					)}
 				</button>
-				{/* PR #104: 서버 정렬이 최신순 고정이라 정렬 UI 임시 비활성화 (파일 상단 주석 참고)
 				<Dropdown
 					options={SORT_OPTIONS}
 					value={sortOption}
 					onChange={setSortOption}
 					label="정렬 조건"
 				/>
-				*/}
 			</div>
 
 			{activeFilters.length > 0 && (

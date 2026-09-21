@@ -197,12 +197,22 @@ export const handlers = [
 
 		const url = new URL(request.url);
 		const size = Number(url.searchParams.get("size") ?? 20);
+		const sort = url.searchParams.get("sort") ?? "LATEST";
+		const sorted = [...boardItems];
+		if (sort === "SCHEDULED") {
+			sorted.sort(
+				(a, b) => Date.parse(a.scheduledAt) - Date.parse(b.scheduledAt),
+			);
+		} else if (sort === "DISTANCE") {
+			sorted.sort((a, b) => a.distanceMinMeters - b.distanceMinMeters);
+		}
+
 		const cursor = url.searchParams.get("cursor");
 		const startIndex = cursor
-			? boardItems.findIndex((item) => item.id === Number(cursor)) + 1
+			? sorted.findIndex((item) => item.id === Number(cursor)) + 1
 			: 0;
-		const page = boardItems.slice(startIndex, startIndex + size);
-		const hasNext = startIndex + size < boardItems.length;
+		const page = sorted.slice(startIndex, startIndex + size);
+		const hasNext = startIndex + size < sorted.length;
 
 		return HttpResponse.json({
 			items: page,

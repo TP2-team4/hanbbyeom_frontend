@@ -7,7 +7,7 @@ import {
 import { ApiError } from "../../../shared/lib/apiError";
 import { getRecruitments } from "../api/getRecruitments";
 import { getMyPendingApplicationIds } from "../api/getMyPendingApplicationIds";
-import type { RecruitmentFilters } from "./filterTypes";
+import type { RecruitmentFilters, RecruitmentSort } from "./filterTypes";
 
 const PAGE_SIZE = 20;
 
@@ -21,11 +21,12 @@ function isStaleRecruitmentError(error: unknown): error is ApiError {
 
 async function fetchPageWithMyStatus(
 	filters: RecruitmentFilters,
+	sort: RecruitmentSort,
 	cursor?: number,
 ) {
 	const [{ recruitments, nextCursor, hasNext }, myPendingIds] =
 		await Promise.all([
-			getRecruitments(filters, { cursor, size: PAGE_SIZE }),
+			getRecruitments(filters, { cursor, size: PAGE_SIZE, sort }),
 			getMyPendingApplicationIds(),
 		]);
 	return {
@@ -37,7 +38,10 @@ async function fetchPageWithMyStatus(
 	};
 }
 
-export function useRecruitments(filters: RecruitmentFilters) {
+export function useRecruitments(
+	filters: RecruitmentFilters,
+	sort: RecruitmentSort,
+) {
 	const [recruitments, setRecruitments] = useState<Recruitment[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -51,7 +55,7 @@ export function useRecruitments(filters: RecruitmentFilters) {
 		setIsLoading(true);
 		setError(null);
 		try {
-			const page = await fetchPageWithMyStatus(filters);
+			const page = await fetchPageWithMyStatus(filters, sort);
 			if (currentRequest !== requestId.current) return;
 			setRecruitments(page.items);
 			setNextCursor(page.nextCursor);
@@ -62,8 +66,8 @@ export function useRecruitments(filters: RecruitmentFilters) {
 		} finally {
 			if (currentRequest === requestId.current) setIsLoading(false);
 		}
-		// filters가 바뀌면(=적용 버튼 클릭) 커서 없이 첫 페이지부터 다시 불러온다
-	}, [filters]);
+		// filters나 sort가 바뀌면 커서 없이 첫 페이지부터 다시 불러온다 (커서는 같은 sort·필터에서만 유효)
+	}, [filters, sort]);
 
 	useEffect(() => {
 		void loadFirstPage();
@@ -77,7 +81,7 @@ export function useRecruitments(filters: RecruitmentFilters) {
 		const currentRequest = requestId.current;
 		setIsLoadingMore(true);
 		try {
-			const page = await fetchPageWithMyStatus(filters, nextCursor);
+			const page = await fetchPageWithMyStatus(filters, sort, nextCursor);
 			if (currentRequest !== requestId.current) return;
 			setRecruitments((current) => [...current, ...page.items]);
 			setNextCursor(page.nextCursor);
@@ -90,7 +94,7 @@ export function useRecruitments(filters: RecruitmentFilters) {
 		} finally {
 			if (currentRequest === requestId.current) setIsLoadingMore(false);
 		}
-	}, [filters, hasNext, isLoadingMore, nextCursor]);
+	}, [filters, sort, hasNext, isLoadingMore, nextCursor]);
 
 	const [processingId, setProcessingId] = useState<number | null>(null);
 	const [actionError, setActionError] = useState<string | null>(null);

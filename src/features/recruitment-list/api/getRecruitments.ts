@@ -2,7 +2,11 @@ import type { ConversationStyle, Recruitment } from "../../../entities/recruitme
 import { authorizedFetch } from "../../../shared/lib/authorizedFetch";
 import { extractErrorMessage } from "../../../shared/lib/apiError";
 import { formatDate, toTimeValue } from "../../../shared/lib/date";
-import { EMPTY_FILTERS, type RecruitmentFilters } from "../model/filterTypes";
+import {
+	EMPTY_FILTERS,
+	type RecruitmentFilters,
+	type RecruitmentSort,
+} from "../model/filterTypes";
 
 type BoardItemResponse = {
 	id: number;
@@ -36,10 +40,10 @@ export type RecruitmentsPage = {
 type GetRecruitmentsPage = {
 	cursor?: number;
 	size?: number;
+	sort?: RecruitmentSort;
 };
 
-// distanceMin/maxMeters, paceMin/maxSec 등 서버 응답 필드 네이밍 관례에 맞춘 추정치.
-// PR #104 안내엔 단위가 명시돼 있지 않아 실제 동작은 Swagger/백엔드로 재확인 필요.
+// distanceMin/maxMeters, paceMin/maxSec 등 미터/초 단위 — 백엔드와 합의된 단위
 function buildFilterQuery(filters: RecruitmentFilters): URLSearchParams {
 	const query = new URLSearchParams();
 	if (filters.location) query.set("course", filters.location);
@@ -94,6 +98,7 @@ export async function getRecruitments(
 	const query = buildFilterQuery(filters);
 	if (page.cursor !== undefined) query.set("cursor", String(page.cursor));
 	if (page.size !== undefined) query.set("size", String(page.size));
+	if (page.sort !== undefined) query.set("sort", page.sort);
 
 	const queryString = query.toString();
 	const response = await authorizedFetch(

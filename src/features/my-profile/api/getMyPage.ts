@@ -1,20 +1,6 @@
 import { getActivityHistory } from "../../../entities/activity-history";
 import { getCurrentUser, getMyTrustProfile, type UserProfile } from "../../../entities/user-profile";
 
-const MOCK_PROFILE: UserProfile = {
-    id: 1,
-    nickname: "담백한하루",
-    email: "user@hanbbyeom.com",
-    conversationPreference: "SILENT",
-    averageRating: 4.9,
-    completedActivityCount: 12,
-    noShowReportCount: 0,
-};
-
-export function updateMockProfile(patch: Partial<UserProfile>) {
-    Object.assign(MOCK_PROFILE, patch);
-}
-
 export async function getMyPage() {
     const [currentUser, trustProfile, activityHistory] = await Promise.all([
         getCurrentUser(),
@@ -23,8 +9,10 @@ export async function getMyPage() {
     ]);
 
     const profile: UserProfile = {
-        ...MOCK_PROFILE,
-        ...currentUser,
+        id: currentUser.id,
+        nickname: currentUser.nickname,
+        email: currentUser.email,
+        conversationPreference: currentUser.defaultTalkLevel,
         averageRating: trustProfile.averageRating,
         completedActivityCount: trustProfile.completedActivityCount,
         noShowReportCount: trustProfile.noShowReportCount,

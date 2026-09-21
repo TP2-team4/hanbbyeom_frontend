@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { ConversationPreferenceForm } from "../../../features/conversation-preference";
-import { updateMockProfile, useMyPage } from "../../../features/my-profile";
+import { useMyPage } from "../../../features/my-profile";
 import { StatusText } from "../../../shared/ui/status-text";
 import { ErrorText } from "../../../shared/ui/error-text";
 
@@ -48,10 +48,7 @@ export default function ConversationPreferenceEditPage() {
 					<ConversationPreferenceForm
 						initialPreference={profile.conversationPreference}
 						submitLabel="저장"
-						onSuccess={(preference) => {
-							updateMockProfile({
-								conversationPreference: preference,
-							});
+						onSuccess={() => {
 							navigate(-1);
 						}}
 					/>

@@ -103,6 +103,7 @@ export const handlers = [
 			id: 1,
 			email: "user@example.com",
 			nickname: "담백한하루",
+			defaultTalkLevel: "SILENT",
 		});
 	}),
 

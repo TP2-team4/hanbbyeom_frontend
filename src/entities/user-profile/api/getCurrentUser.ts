@@ -5,6 +5,7 @@ export type CurrentUser = {
 	id: number;
 	email: string;
 	nickname: string;
+	defaultTalkLevel: "SILENT" | "LIGHT_CHAT";
 };
 
 export async function getCurrentUser(): Promise<CurrentUser> {

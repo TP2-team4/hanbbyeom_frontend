@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
 	applyToRecruitment,
 	cancelApplication,
 	type Recruitment,
 } from "../../../entities/recruitment";
-import { useAsync } from "../../../shared/lib/useAsync";
 import { ApiError } from "../../../shared/lib/apiError";
 import { getRecruitments } from "../api/getRecruitments";
 import { getMyPendingApplicationIds } from "../api/getMyPendingApplicationIds";
+import type { RecruitmentFilters } from "./filterTypes";
+
+const PAGE_SIZE = 20;
 
 // 신청 시점에 게시글 상태가 이미 바뀐 경우(마감/시작됨/경합 등) 백엔드가 400 또는 409로 응답한다.
 // 이 경우엔 인라인 에러 대신 토스트로 안내하고 목록을 새로고침해서 최신 상태를 반영한다.
@@ -17,29 +19,79 @@ function isStaleRecruitmentError(error: unknown): error is ApiError {
 	);
 }
 
-async function loadRecruitmentsWithMyStatus(): Promise<Recruitment[]> {
-	const [recruitments, myPendingIds] = await Promise.all([
-		getRecruitments(),
-		getMyPendingApplicationIds(),
-	]);
-	return recruitments.map((item) =>
-		myPendingIds.has(item.id) ? { ...item, status: "applied" as const } : item,
-	);
+async function fetchPageWithMyStatus(
+	filters: RecruitmentFilters,
+	cursor?: number,
+) {
+	const [{ recruitments, nextCursor, hasNext }, myPendingIds] =
+		await Promise.all([
+			getRecruitments(filters, { cursor, size: PAGE_SIZE }),
+			getMyPendingApplicationIds(),
+		]);
+	return {
+		items: recruitments.map((item) =>
+			myPendingIds.has(item.id) ? { ...item, status: "applied" as const } : item,
+		),
+		nextCursor,
+		hasNext,
+	};
 }
 
-export function useRecruitments() {
-	const {
-		data: recruitments,
-		setData: setRecruitments,
-		isLoading,
-		error,
-		refetch,
-	} = useAsync(
-		loadRecruitmentsWithMyStatus,
-		[] as Recruitment[],
-		[],
-		"모집글을 불러오지 못했어요.",
-	);
+export function useRecruitments(filters: RecruitmentFilters) {
+	const [recruitments, setRecruitments] = useState<Recruitment[]>([]);
+	const [isLoading, setIsLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
+	const [isLoadingMore, setIsLoadingMore] = useState(false);
+	const [nextCursor, setNextCursor] = useState<number | null>(null);
+	const [hasNext, setHasNext] = useState(false);
+	const requestId = useRef(0);
+
+	const loadFirstPage = useCallback(async () => {
+		const currentRequest = ++requestId.current;
+		setIsLoading(true);
+		setError(null);
+		try {
+			const page = await fetchPageWithMyStatus(filters);
+			if (currentRequest !== requestId.current) return;
+			setRecruitments(page.items);
+			setNextCursor(page.nextCursor);
+			setHasNext(page.hasNext);
+		} catch (e) {
+			if (currentRequest !== requestId.current) return;
+			setError(e instanceof Error ? e.message : "모집글을 불러오지 못했어요.");
+		} finally {
+			if (currentRequest === requestId.current) setIsLoading(false);
+		}
+		// filters가 바뀌면(=적용 버튼 클릭) 커서 없이 첫 페이지부터 다시 불러온다
+	}, [filters]);
+
+	useEffect(() => {
+		void loadFirstPage();
+		return () => {
+			requestId.current += 1;
+		};
+	}, [loadFirstPage]);
+
+	const loadMore = useCallback(async () => {
+		if (isLoadingMore || !hasNext || nextCursor === null) return;
+		const currentRequest = requestId.current;
+		setIsLoadingMore(true);
+		try {
+			const page = await fetchPageWithMyStatus(filters, nextCursor);
+			if (currentRequest !== requestId.current) return;
+			setRecruitments((current) => [...current, ...page.items]);
+			setNextCursor(page.nextCursor);
+			setHasNext(page.hasNext);
+		} catch (e) {
+			if (currentRequest !== requestId.current) return;
+			setError(
+				e instanceof Error ? e.message : "모집글을 더 불러오지 못했어요.",
+			);
+		} finally {
+			if (currentRequest === requestId.current) setIsLoadingMore(false);
+		}
+	}, [filters, hasNext, isLoadingMore, nextCursor]);
+
 	const [processingId, setProcessingId] = useState<number | null>(null);
 	const [actionError, setActionError] = useState<string | null>(null);
 	const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -70,7 +122,7 @@ export function useRecruitments() {
 		} catch (error) {
 			if (isStaleRecruitmentError(error)) {
 				setToastMessage(error.message);
-				void refetch();
+				void loadFirstPage();
 			} else {
 				setActionError(
 					error instanceof Error
@@ -89,7 +141,10 @@ export function useRecruitments() {
 		recruitments,
 		isLoading,
 		error,
-		refetch,
+		refetch: loadFirstPage,
+		loadMore,
+		isLoadingMore,
+		hasNext,
 		processingId,
 		actionError,
 		apply,

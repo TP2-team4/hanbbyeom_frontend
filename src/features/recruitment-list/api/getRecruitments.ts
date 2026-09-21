@@ -2,6 +2,7 @@ import type { ConversationStyle, Recruitment } from "../../../entities/recruitme
 import { authorizedFetch } from "../../../shared/lib/authorizedFetch";
 import { extractErrorMessage } from "../../../shared/lib/apiError";
 import { formatDate, toTimeValue } from "../../../shared/lib/date";
+import { EMPTY_FILTERS, type RecruitmentFilters } from "../model/filterTypes";
 
 type BoardItemResponse = {
 	id: number;
@@ -18,6 +19,46 @@ type BoardItemResponse = {
 		completedCount: number | null;
 	};
 };
+
+// PR #104: 목록 응답이 배열 -> { items, nextCursor, hasNext } 커서 페이지네이션으로 변경됨
+type BoardResponse = {
+	items: BoardItemResponse[];
+	nextCursor: number | null;
+	hasNext: boolean;
+};
+
+export type RecruitmentsPage = {
+	recruitments: Recruitment[];
+	nextCursor: number | null;
+	hasNext: boolean;
+};
+
+type GetRecruitmentsPage = {
+	cursor?: number;
+	size?: number;
+};
+
+// distanceMin/maxMeters, paceMin/maxSec 등 서버 응답 필드 네이밍 관례에 맞춘 추정치.
+// PR #104 안내엔 단위가 명시돼 있지 않아 실제 동작은 Swagger/백엔드로 재확인 필요.
+function buildFilterQuery(filters: RecruitmentFilters): URLSearchParams {
+	const query = new URLSearchParams();
+	if (filters.location) query.set("course", filters.location);
+	if (filters.conversationStyle) query.set("talkLevel", filters.conversationStyle);
+	if (filters.minDistanceKm !== EMPTY_FILTERS.minDistanceKm) {
+		query.set("minDistance", String(Math.round(filters.minDistanceKm * 1000)));
+	}
+	if (filters.maxDistanceKm !== EMPTY_FILTERS.maxDistanceKm) {
+		query.set("maxDistance", String(Math.round(filters.maxDistanceKm * 1000)));
+	}
+	if (filters.minPaceSeconds !== EMPTY_FILTERS.minPaceSeconds) {
+		query.set("minPace", String(filters.minPaceSeconds));
+	}
+	if (filters.maxPaceSeconds !== EMPTY_FILTERS.maxPaceSeconds) {
+		query.set("maxPace", String(filters.maxPaceSeconds));
+	}
+	if (filters.date) query.set("datePreset", filters.date);
+	return query;
+}
 
 function formatPace(totalSeconds: number) {
 	const minutes = Math.floor(totalSeconds / 60);
@@ -46,8 +87,18 @@ function toRecruitment(item: BoardItemResponse): Recruitment {
 	};
 }
 
-export async function getRecruitments() {
-	const response = await authorizedFetch("/api/matching/board");
+export async function getRecruitments(
+	filters: RecruitmentFilters = EMPTY_FILTERS,
+	page: GetRecruitmentsPage = {},
+): Promise<RecruitmentsPage> {
+	const query = buildFilterQuery(filters);
+	if (page.cursor !== undefined) query.set("cursor", String(page.cursor));
+	if (page.size !== undefined) query.set("size", String(page.size));
+
+	const queryString = query.toString();
+	const response = await authorizedFetch(
+		`/api/matching/board${queryString ? `?${queryString}` : ""}`,
+	);
 
 	if (!response.ok) {
 		throw new Error(
@@ -55,6 +106,10 @@ export async function getRecruitments() {
 		);
 	}
 
-	const body: BoardItemResponse[] = await response.json();
-	return body.map(toRecruitment);
+	const body: BoardResponse = await response.json();
+	return {
+		recruitments: body.items.map(toRecruitment),
+		nextCursor: body.nextCursor,
+		hasNext: body.hasNext,
+	};
 }

@@ -9,7 +9,6 @@ import type { ConversationStyle } from "../../../entities/recruitment";
 
 type Props = {
     filters: RecruitmentFilters;
-    resultCount: number;
     onChange: (filters: RecruitmentFilters) => void;
     onReset: () => void;
     onClose: () => void;
@@ -27,7 +26,7 @@ const CONVERSATIONS: { value: ConversationStyle; label: string }[] = [
     { value: "LIGHT_CHAT", label: "가벼운 대화" },
 ];
 
-export function RecruitmentFilterModal({ filters, resultCount, onChange, onReset, onClose, onApply }: Props) {
+export function RecruitmentFilterModal({ filters, onChange, onReset, onClose, onApply }: Props) {
     return (
         <div className="fixed inset-0 z-50 grid place-items-center bg-gray-900/40 px-4" role="presentation">
             <section role="dialog" aria-modal="true" aria-labelledby="filter-modal-title" className="max-h-[calc(100dvh-2rem)] w-full max-w-[400px] overflow-y-auto rounded-2xl bg-surface p-6 shadow-xl">
@@ -101,7 +100,7 @@ export function RecruitmentFilterModal({ filters, resultCount, onChange, onReset
 
                 <footer className="mt-6 grid grid-cols-[0.8fr_1.7fr] gap-3">
                     <Button type="button" variant="secondary" className="h-14 px-3 text-body" onClick={onReset}>초기화</Button>
-                    <Button type="button" className="h-14 px-3" onClick={onApply}>모집글 {resultCount}건 보기</Button>
+                    <Button type="button" className="h-14 px-3" onClick={onApply}>모집글 보기</Button>
                 </footer>
             </section>
         </div>

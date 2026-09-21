@@ -1,18 +1,21 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-	RecruitmentCard,
-	type Recruitment,
-} from "../../../entities/recruitment";
+import { RecruitmentCard } from "../../../entities/recruitment";
 import { useRecruitments } from "../model/useRecruitments";
 import { EMPTY_FILTERS, type RecruitmentFilters } from "../model/filterTypes";
 import { RecruitmentFilterModal } from "./RecruitmentFilterModal";
-import { Dropdown } from "../../../shared/ui/dropdown";
 import { StatusText } from "../../../shared/ui/status-text";
 import { ErrorText } from "../../../shared/ui/error-text";
 import { RetryButton } from "../../../shared/ui/retry-button";
 import { ConfirmModal } from "../../../shared/ui/confirm-modal";
 import { Toast } from "../../../shared/ui/toast";
+
+// PR #104: 목록이 커서 페이지네이션으로 바뀌면서 서버는 "최신순" 고정 정렬만 지원.
+// 날짜순/거리순은 이미 불러온 페이지 안에서만 재정렬 가능해서 무한스크롤 중 카드 순서가
+// 뒤섞이는 문제가 있어 정렬 UI를 임시로 뺐다. 서버가 정렬 파라미터를 지원하게 되면 복구.
+/*
+import { Dropdown } from "../../../shared/ui/dropdown";
+import type { Recruitment } from "../../../entities/recruitment";
 
 type SortOption = "LATEST" | "DATE" | "DISTANCE";
 
@@ -22,6 +25,23 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
 	{ value: "DISTANCE", label: "거리 짧은 순" },
 ];
 
+function sortRecruitments(recruitments: Recruitment[], sortOption: SortOption) {
+	if (sortOption === "DISTANCE") {
+		return [...recruitments].sort(
+			(a, b) =>
+				a.minDistanceKm - b.minDistanceKm ||
+				a.maxDistanceKm - b.maxDistanceKm,
+		);
+	}
+	if (sortOption === "DATE") {
+		return [...recruitments].sort(
+			(a, b) => Date.parse(a.startsAt) - Date.parse(b.startsAt),
+		);
+	}
+	return recruitments;
+}
+*/
+
 const FILTER_LABELS = {
 	date: { TODAY: "오늘", TOMORROW: "내일", THIS_WEEKEND: "이번 주말" },
 	conversationStyle: { SILENT: "조용히", LIGHT_CHAT: "가벼운 대화" },
@@ -29,21 +49,23 @@ const FILTER_LABELS = {
 
 export function RecruitmentList() {
 	const navigate = useNavigate();
+	const [filters, setFilters] = useState<RecruitmentFilters>(EMPTY_FILTERS);
 	const {
 		recruitments,
 		isLoading,
 		error,
 		refetch,
+		loadMore,
+		isLoadingMore,
+		hasNext,
 		processingId,
 		actionError,
 		apply,
 		toastMessage,
 		dismissToast,
-	} = useRecruitments();
-	const [filters, setFilters] = useState<RecruitmentFilters>(EMPTY_FILTERS);
+	} = useRecruitments(filters);
 	const [draftFilters, setDraftFilters] =
 		useState<RecruitmentFilters>(EMPTY_FILTERS);
-	const [sortOption, setSortOption] = useState<SortOption>("LATEST");
 	const [isFilterOpen, setIsFilterOpen] = useState(false);
 	const [pendingId, setPendingId] = useState<number | null>(null);
 	// 응답이 대부분 아주 빨리 끝나서(로컬 목데이터 등) "처리 중" 문구가 순간적으로 깜빡이듯
@@ -63,17 +85,6 @@ export function RecruitmentList() {
 		(item) => item.id === pendingId,
 	);
 
-	const filteredRecruitments = useMemo(() => {
-		return sortRecruitments(
-			filterRecruitments(recruitments, filters),
-			sortOption,
-		);
-	}, [filters, recruitments, sortOption]);
-
-	const draftResultCount = useMemo(
-		() => filterRecruitments(recruitments, draftFilters).length,
-		[draftFilters, recruitments],
-	);
 	const activeFilters = getActiveFilters(filters);
 	// 400/409 응답 후 refetch()로 목록을 조용히 갱신할 때, 이미 떠 있던 목록 위에
 	// "불러오는 중" 문구가 끼어들면서 화면이 깜빡이는 것처럼 보이는 문제 방지 —
@@ -84,6 +95,21 @@ export function RecruitmentList() {
 		setDraftFilters(filters);
 		setIsFilterOpen(true);
 	};
+
+	// 무한스크롤: 목록 끝의 sentinel이 화면에 보이면 다음 페이지를 불러온다
+	const sentinelRef = useRef<HTMLDivElement | null>(null);
+	useEffect(() => {
+		const sentinel = sentinelRef.current;
+		if (!sentinel || !hasNext) return;
+		const observer = new IntersectionObserver(
+			(entries) => {
+				if (entries[0].isIntersecting) void loadMore();
+			},
+			{ rootMargin: "200px" },
+		);
+		observer.observe(sentinel);
+		return () => observer.disconnect();
+	}, [hasNext, loadMore]);
 
 	return (
 		<>
@@ -108,12 +134,14 @@ export function RecruitmentList() {
 						</span>
 					)}
 				</button>
+				{/* PR #104: 서버 정렬이 최신순 고정이라 정렬 UI 임시 비활성화 (파일 상단 주석 참고)
 				<Dropdown
 					options={SORT_OPTIONS}
 					value={sortOption}
 					onChange={setSortOption}
 					label="정렬 조건"
 				/>
+				*/}
 			</div>
 
 			{activeFilters.length > 0 && (
@@ -144,7 +172,7 @@ export function RecruitmentList() {
 
 			{!isInitialLoading && !error && (
 				<p className="px-6 pt-5 text-sm text-body">
-					신청 가능한 모집글 {filteredRecruitments.length}건 · 내가 쓴
+					신청 가능한 모집글 · 내가 쓴
 					글과 신청한 글은 보이지 않아요 <br/> 신청하면 작성자 수락 후
 					확정돼요
 				</p>
@@ -161,10 +189,10 @@ export function RecruitmentList() {
 					</div>
 				)}
 				{actionError && <ErrorText>{actionError}</ErrorText>}
-				{!isInitialLoading && !error && filteredRecruitments.length === 0 && (
+				{!isInitialLoading && !error && recruitments.length === 0 && (
 					<StatusText>조건에 맞는 모집글이 없어요.</StatusText>
 				)}
-				{filteredRecruitments.map((recruitment) => (
+				{recruitments.map((recruitment) => (
 					<RecruitmentCard
 						key={recruitment.id}
 						recruitment={recruitment}
@@ -173,12 +201,15 @@ export function RecruitmentList() {
 						isProcessing={visibleProcessingId === recruitment.id}
 					/>
 				))}
+				{hasNext && (
+					<div ref={sentinelRef} aria-hidden="true" className="h-1" />
+				)}
+				{isLoadingMore && <StatusText>더 불러오는 중...</StatusText>}
 			</div>
 
 			{isFilterOpen && (
 				<RecruitmentFilterModal
 					filters={draftFilters}
-					resultCount={draftResultCount}
 					onChange={setDraftFilters}
 					onReset={() => setDraftFilters(EMPTY_FILTERS)}
 					onClose={() => setIsFilterOpen(false)}
@@ -224,73 +255,6 @@ export function RecruitmentList() {
 			)}
 		</>
 	);
-}
-
-function filterRecruitments(
-	recruitments: Recruitment[],
-	filters: RecruitmentFilters,
-) {
-	return recruitments.filter((item) => {
-		if (filters.location && item.location !== filters.location)
-			return false;
-		if (
-			item.maxDistanceKm < filters.minDistanceKm ||
-			item.minDistanceKm > filters.maxDistanceKm
-		)
-			return false;
-		if (
-			item.maxPaceSeconds < filters.minPaceSeconds ||
-			item.minPaceSeconds > filters.maxPaceSeconds
-		)
-			return false;
-		if (
-			filters.conversationStyle &&
-			item.conversationStyle !== filters.conversationStyle
-		)
-			return false;
-		if (filters.date && !matchesDateFilter(item.startsAt, filters.date))
-			return false;
-		return true;
-	});
-}
-
-function sortRecruitments(recruitments: Recruitment[], sortOption: SortOption) {
-	if (sortOption === "DISTANCE") {
-		return [...recruitments].sort(
-			(a, b) =>
-				a.minDistanceKm - b.minDistanceKm ||
-				a.maxDistanceKm - b.maxDistanceKm,
-		);
-	}
-	if (sortOption === "DATE") {
-		return [...recruitments].sort(
-			(a, b) => Date.parse(a.startsAt) - Date.parse(b.startsAt),
-		);
-	}
-	return recruitments;
-}
-
-function matchesDateFilter(
-	startsAt: string,
-	filter: NonNullable<RecruitmentFilters["date"]>,
-) {
-	const target = new Date(startsAt);
-	const today = new Date();
-	if (filter === "TODAY") {
-		return target.toDateString() === today.toDateString();
-	}
-	if (filter === "TOMORROW") {
-		const tomorrow = new Date(today);
-		tomorrow.setDate(today.getDate() + 1);
-		return target.toDateString() === tomorrow.toDateString();
-	}
-	const saturday = new Date(today);
-	const daysUntilSaturday = (6 - today.getDay() + 7) % 7;
-	saturday.setDate(today.getDate() + daysUntilSaturday);
-	saturday.setHours(0, 0, 0, 0);
-	const monday = new Date(saturday);
-	monday.setDate(saturday.getDate() + 2);
-	return target >= saturday && target < monday;
 }
 
 function getActiveFilters(filters: RecruitmentFilters) {

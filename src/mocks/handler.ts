@@ -115,8 +115,9 @@ export const handlers = [
 
 	//모집 게시판 - 목록 조회
 	// id별로 /apply 응답 시나리오가 다르게 매핑되어 있음 (아래 apply 핸들러 참고) — 신청 실패 케이스 테스트용
-	http.get("*/api/matching/board", () => {
-		return HttpResponse.json([
+	// PR #104: 응답이 배열 -> { items, nextCursor, hasNext } 커서 페이지네이션으로 변경됨
+	http.get("*/api/matching/board", ({ request }) => {
+		const boardItems = [
 			{
 				id: 1,
 				courseName: "뚝섬 한강공원 (내가 이미 신청 중 · 대기)",
@@ -191,7 +192,22 @@ export const handlers = [
 				paceMaxSec: 400,
 				author: { nickname: "아침러너", rating: 4.9, completedCount: 15 },
 			},
-		]);
+		];
+
+		const url = new URL(request.url);
+		const size = Number(url.searchParams.get("size") ?? 20);
+		const cursor = url.searchParams.get("cursor");
+		const startIndex = cursor
+			? boardItems.findIndex((item) => item.id === Number(cursor)) + 1
+			: 0;
+		const page = boardItems.slice(startIndex, startIndex + size);
+		const hasNext = startIndex + size < boardItems.length;
+
+		return HttpResponse.json({
+			items: page,
+			nextCursor: hasNext ? (page.at(-1)?.id ?? null) : null,
+			hasNext,
+		});
 	}),
 
 	//모집 게시판 - 호스트 신뢰 프로필 조회

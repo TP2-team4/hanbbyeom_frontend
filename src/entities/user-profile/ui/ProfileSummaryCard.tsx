@@ -27,6 +27,7 @@ export function ProfileSummaryCard({ profile }: Props) {
                             ? profile.averageRating.toFixed(1)
                             : "평가 없음"
                     }
+                    compact={profile.averageRating === null}
                     label="평균 별점"
                 />
                 <Stat value={String(profile.completedActivityCount)} label="완료한 활동" />
@@ -36,11 +37,23 @@ export function ProfileSummaryCard({ profile }: Props) {
     );
 }
 
-function Stat({ value, label }: { value: string; label: string }) {
+function Stat({
+    value,
+    label,
+    compact,
+}: {
+    value: string;
+    label: string;
+    compact?: boolean;
+}) {
     return (
         <div className="flex flex-col rounded-lg bg-gray-50 px-3 py-5">
             <dt className="text-xs text-body">{label}</dt>
-            <dd className="-order-1 mb-1 text-2xl font-bold text-title">{value}</dd>
+            <dd
+                className={`-order-1 mb-1 whitespace-nowrap font-bold text-title ${compact ? "text-base" : "text-2xl"}`}
+            >
+                {value}
+            </dd>
         </div>
     );
 }

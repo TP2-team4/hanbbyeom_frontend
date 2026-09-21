@@ -647,7 +647,7 @@ export const handlers = [
 					content: body.content,
 					createdAt: new Date().toISOString(),
 				},
-				{ status: 201 },
+				{ status: 200 },
 			);
 		},
 	),

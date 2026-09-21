@@ -53,7 +53,6 @@ export type AppliedRecruitmentSummary = {
 
 export type RecruitmentDetail = {
 	id: number;
-	authorId: number;
 	location: string;
 	minDistanceKm: number;
 	maxDistanceKm: number;

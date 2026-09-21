@@ -37,7 +37,6 @@ function toRecruitmentDetail(
 ): RecruitmentDetail {
 	return {
 		id: response.id,
-		authorId: response.id,
 		location: response.courseName,
 		minDistanceKm: response.distanceMinMeters / 1000,
 		maxDistanceKm: response.distanceMaxMeters / 1000,

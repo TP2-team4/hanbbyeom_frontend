@@ -26,6 +26,7 @@ export type ChatMatchSummary = {
 	confirmedAt: string;
 	closedAt: string | null;
 	counterpartUserId: number;
+	counterpartNickname: string | null;
 	courseName: string;
 	location: string;
 	scheduledAt: string;

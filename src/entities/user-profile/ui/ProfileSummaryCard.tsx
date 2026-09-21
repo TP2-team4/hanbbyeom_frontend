@@ -49,10 +49,12 @@ function Stat({
     return (
         <div className="flex flex-col rounded-lg bg-gray-50 px-3 py-5">
             <dt className="text-xs text-body">{label}</dt>
-            <dd
-                className={`-order-1 mb-1 whitespace-nowrap font-bold text-title ${compact ? "text-base" : "text-2xl"}`}
-            >
-                {value}
+            <dd className="-order-1 mb-1 flex h-8 items-center">
+                <span
+                    className={`whitespace-nowrap font-bold text-title ${compact ? "text-base" : "text-2xl"}`}
+                >
+                    {value}
+                </span>
             </dd>
         </div>
     );

@@ -11,6 +11,7 @@ const STATUS_LABEL: Record<ChatRoomStatus, string> = {
 	CONFIRMED: "진행 예정",
 	REJECTED: "매칭 거절",
 	EXPIRED: "기한 만료",
+	CANCELLED: "활동 취소",
 	ENDED: "완료",
 };
 

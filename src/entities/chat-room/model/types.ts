@@ -3,6 +3,7 @@ export type ChatRoomStatus =
 	| "CONFIRMED"
 	| "REJECTED"
 	| "EXPIRED"
+	| "CANCELLED"
 	| "ENDED";
 
 export type ChatRoom = {

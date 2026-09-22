@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import type { UserProfile } from "../model/types";
-import logoHb from "../../../shared/assets/images/logo-hb.svg";
+import logoHb from "../../../shared/assets/images/logo_hb_2.png";
 
 type Props = {
 	profile: UserProfile;

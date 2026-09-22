@@ -8,12 +8,12 @@ export function AppHeader() {
 			<h1
 				className="flex items-center gap-2 font-jejudoldam text-3xl text-secondary-500"
 				onClick={() => navigate("/home", { replace: true })}
-				>
-					<img
-						src={logoHb}
-						alt=""
-						className="mr-2 size-8 shrink-0 object-contain"
-					/>
+			>
+				<img
+					src={logoHb}
+					alt=""
+					className="mr-2 size-9 shrink-0 object-contain"
+				/>
 				한뼘
 			</h1>
 			{/*<button

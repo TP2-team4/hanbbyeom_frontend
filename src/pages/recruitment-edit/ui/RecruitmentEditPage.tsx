@@ -23,7 +23,11 @@ export default function RecruitmentEditPage() {
 	const id = Number(recruitmentId);
 	const isValidId = Number.isInteger(id);
 
-	const { data: initialValues, isLoading, error: loadError } = useAsync<RecruitmentInitialValues | undefined>(
+	const {
+		data: initialValues,
+		isLoading,
+		error: loadError,
+	} = useAsync<RecruitmentInitialValues | undefined>(
 		async () => {
 			if (!isValidId) return undefined;
 			const [detail, condition] = await Promise.all([
@@ -101,10 +105,7 @@ type WizardProps = {
 
 // 모집글 작성 마법사(CourseStep/ScheduleStep/ConversationStep)를 그대로 재사용해서
 // 이전에 올렸던 값을 채운 채로 보여주고, 저장 시 수정 API를 호출하도록 함
-function RecruitmentEditWizard({
-	recruitmentId,
-	initialValues,
-}: WizardProps) {
+function RecruitmentEditWizard({ recruitmentId, initialValues }: WizardProps) {
 	const navigate = useNavigate();
 	const form = useRecruitmentCreateForm({
 		editingRecruitmentId: recruitmentId,
@@ -184,18 +185,18 @@ function RecruitmentEditWizard({
 
 			<div className="flex-1 px-6 pb-12 pt-9">
 				<section aria-labelledby="home-recommendation-title">
-					{step === 1 && <CourseStep form={form} />}
+					{step === 1 && <CourseStep form={form} showSubmitError />}
 					{step === 2 && <ScheduleStep form={form} />}
 					{step === 3 && <ConversationStep form={form} />}
 				</section>
-			</div>
-
-			<footer className="sticky bottom-0 border-t border-divider bg-primary-50 p-4">
-				{form.submitError && (
-					<ErrorText className="mb-2 text-xs">
+				{step !== 1 && form.submitError && (
+					<ErrorText className="mt-4 text-xs">
 						{form.submitError}
 					</ErrorText>
 				)}
+			</div>
+
+			<footer className="sticky bottom-0 border-t border-divider bg-primary-50 p-4">
 				<Button
 					type="button"
 					variant="primary"

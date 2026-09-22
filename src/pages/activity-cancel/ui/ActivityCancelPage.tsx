@@ -51,7 +51,9 @@ export default function ActivityCancelPage() {
 				<h1 className="mt-2 text-xl font-bold text-title">
 					활동을 취소했어요
 				</h1>
-				<p className="text-sm text-body">상대에게 취소 사실을 전달했어요.</p>
+				<p className="text-sm text-body">
+					상대에게 취소 사실을 전달했어요.
+				</p>
 				<Button
 					type="button"
 					variant="primary"
@@ -107,10 +109,12 @@ export default function ActivityCancelPage() {
 						/>
 					))}
 				</div>
+				{error && (
+					<ErrorText className="mb-2 text-sm">{error}</ErrorText>
+				)}
 			</section>
 
-			<footer className="sticky bottom-0 border-t border-divider bg-surface p-4">
-				{error && <ErrorText className="mb-2 text-sm">{error}</ErrorText>}
+			<footer className="sticky bottom-0 border-t border-divider bg-primary-50 p-4">
 				<div className="flex gap-2">
 					<Button
 						type="button"

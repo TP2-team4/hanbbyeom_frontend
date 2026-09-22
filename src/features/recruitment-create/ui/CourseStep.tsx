@@ -11,9 +11,10 @@ import type { RecruitmentCreateForm } from "../model/useRecruitmentCreateForm";
 
 type Props = {
 	form: RecruitmentCreateForm;
+	showSubmitError?: boolean;
 };
 
-export function CourseStep({ form }: Props) {
+export function CourseStep({ form, showSubmitError = false }: Props) {
 	const { courses, isLoading, error, refetch } = useCourses();
 
 	// 코스 목록이 로드되면 기본 선택된 코스의 이름도 채워 넣기
@@ -82,11 +83,16 @@ export function CourseStep({ form }: Props) {
 					className="mt-2"
 					maxLength={30}
 					value={form.meetingPlace}
-					onChange={(event) =>
-						form.setMeetingPlace(event.target.value)
-					}
-				/>
-			</section>
+						onChange={(event) =>
+							form.setMeetingPlace(event.target.value)
+						}
+					/>
+					{showSubmitError && form.submitError && (
+						<ErrorText className="mt-2 text-xs">
+							{form.submitError}
+						</ErrorText>
+					)}
+				</section>
 		</div>
 	);
 }

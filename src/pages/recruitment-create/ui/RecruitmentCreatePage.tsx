@@ -90,18 +90,18 @@ export default function RecruitmentCreatePage() {
 
 			<div className="flex-1 px-6 pb-12 pt-9">
 				<section aria-labelledby="home-recommendation-title">
-					{step === 1 && <CourseStep form={form} />}
+					{step === 1 && <CourseStep form={form} showSubmitError />}
 					{step === 2 && <ScheduleStep form={form} />}
 					{step === 3 && <ConversationStep form={form} />}
 				</section>
-			</div>
-
-			<footer className="sticky bottom-0 border-t border-divider bg-primary-50 p-4">
-				{form.submitError && (
-					<ErrorText className="mb-2 text-xs">
+				{step !== 1 && form.submitError && (
+					<ErrorText className="mt-4 text-xs">
 						{form.submitError}
 					</ErrorText>
 				)}
+			</div>
+
+			<footer className="sticky bottom-0 border-t border-divider bg-primary-50 p-4">
 				<Button
 					type="button"
 					variant="primary"

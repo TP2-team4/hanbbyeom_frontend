@@ -714,45 +714,45 @@ export const handlers = [
 
 	// 채팅 목록 조회
 	http.get("*/api/chats", () => {
-		// return HttpResponse.json([
-		// 	{
-		// 		activityMatchId: 1,
-		// 		counterpartUserId: 2,
-		// 		counterpartNickname: "조용한러너",
-		// 		status: "CONFIRMED",
-		// 		courseName: "뚝섬 한강공원",
-		// 		location: "뚝섬유원지역 3번 출구",
-		// 		scheduledAt: "2026-09-12T07:00:00+09:00",
-		// 		scheduledEndAt: "2026-09-12T09:00:00+09:00",
-		// 		lastMessage: "5분 늦어요",
-		// 		lastMessageAt: "2026-09-12T06:55:00+09:00",
-		// 	},
-		// 	{
-		// 		activityMatchId: 2,
-		// 		counterpartUserId: 3,
-		// 		counterpartNickname: "밤산책",
-		// 		status: "CONFIRMED",
-		// 		courseName: "잠실 한강공원",
-		// 		location: "잠실역 2번 출구",
-		// 		scheduledAt: "2026-09-19T09:00:00+09:00",
-		// 		scheduledEndAt: "2026-09-19T11:00:00+09:00",
-		// 		lastMessage: "출발 지점에 도착했어요",
-		// 		lastMessageAt: "2026-09-19T08:58:00+09:00",
-		// 	},
-		// 	{
-		// 		activityMatchId: 3,
-		// 		counterpartUserId: 4,
-		// 		counterpartNickname: null,
-		// 		status: "ENDED",
-		// 		courseName: "여의도 한강공원",
-		// 		location: "여의나루역 2번 출구",
-		// 		scheduledAt: "2026-09-05T10:00:00+09:00",
-		// 		scheduledEndAt: "2026-09-05T12:00:00+09:00",
-		// 		lastMessage: "도착했어요",
-		// 		lastMessageAt: "2026-09-05T11:25:00+09:00",
-		// 	},
-		// ]);
-		return HttpResponse.json([]);
+		return HttpResponse.json([
+			{
+				activityMatchId: 1,
+				counterpartUserId: 2,
+				counterpartNickname: "조용한러너",
+				status: "CONFIRMED",
+				courseName: "뚝섬 한강공원",
+				location: "뚝섬유원지역 3번 출구",
+				scheduledAt: "2026-09-12T07:00:00+09:00",
+				scheduledEndAt: "2026-09-12T09:00:00+09:00",
+				lastMessage: "5분 늦어요",
+				lastMessageAt: "2026-09-12T06:55:00+09:00",
+			},
+			{
+				activityMatchId: 2,
+				counterpartUserId: 3,
+				counterpartNickname: "밤산책",
+				status: "CONFIRMED",
+				courseName: "잠실 한강공원",
+				location: "잠실역 2번 출구",
+				scheduledAt: "2026-09-19T09:00:00+09:00",
+				scheduledEndAt: "2026-09-19T11:00:00+09:00",
+				lastMessage: "출발 지점에 도착했어요",
+				lastMessageAt: "2026-09-19T08:58:00+09:00",
+			},
+			{
+				activityMatchId: 3,
+				counterpartUserId: 4,
+				counterpartNickname: null,
+				status: "ENDED",
+				courseName: "여의도 한강공원",
+				location: "여의나루역 2번 출구",
+				scheduledAt: "2026-09-05T10:00:00+09:00",
+				scheduledEndAt: "2026-09-05T12:00:00+09:00",
+				lastMessage: "도착했어요",
+				lastMessageAt: "2026-09-05T11:25:00+09:00",
+			},
+		]);
+		// return HttpResponse.json([]);
 	}),
 
 	// 후기 작성

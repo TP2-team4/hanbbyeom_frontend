@@ -132,16 +132,14 @@ export default function RecruitmentDetailPage() {
 							nickname={detail.recruitment.authorNickname}
 							profile={detail.author}
 						/>
-					</>
-				)}
-			</section>
-
-			{isValidId && !isLoading && !loadError && detail && footerState !== "closed" && (
-				<footer className="sticky bottom-0 border-t border-divider bg-surface p-4">
-					{error && (
-						<ErrorText className="mb-2 text-sm">{error}</ErrorText>
+						</>
 					)}
-					{feedback && (
+					{error && <ErrorText className="text-sm">{error}</ErrorText>}
+				</section>
+
+				{isValidId && !isLoading && !loadError && detail && footerState !== "closed" && (
+					<footer className="sticky bottom-0 border-t border-divider bg-primary-50 p-4">
+						{feedback && (
 						<p className="mb-2 text-sm text-body">{feedback}</p>
 					)}
 					<Button

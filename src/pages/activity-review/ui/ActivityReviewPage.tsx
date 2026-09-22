@@ -296,12 +296,12 @@ export default function ActivityReviewPage() {
 							</p>
 						)}
 					</>
-				)}
-			</section>
+						)}
+					{error && <ErrorText className="text-sm">{error}</ErrorText>}
+				</section>
 
-			<footer className="sticky bottom-0 border-t border-divider bg-surface p-4">
-				{error && <ErrorText className="mb-2 text-sm">{error}</ErrorText>}
-				{step === "confirm" && (
+				<footer className="sticky bottom-0 border-t border-divider bg-primary-50 p-4">
+					{step === "confirm" && (
 					<Button
 						type="button"
 						variant="primary"

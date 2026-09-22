@@ -55,12 +55,12 @@ export function SignupForm({ onSuccess }: Props) {
                     ))}
                 </div>
 
+                {form.submitError && (
+                    <ErrorText className="text-xs">
+                        {form.submitError}
+                    </ErrorText>
+                )}
                 <footer className="-mx-4 mt-2 border-t border-divider p-4">
-                    {form.submitError && (
-                        <ErrorText className="mb-2 text-xs">
-                            {form.submitError}
-                        </ErrorText>
-                    )}
                     <Button
                         type="submit"
                         variant="primary"

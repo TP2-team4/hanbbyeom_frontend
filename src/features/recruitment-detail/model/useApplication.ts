@@ -16,8 +16,12 @@ export function useApplication(recruitmentId: number) {
 			await applyToRecruitment(recruitmentId);
 			setFeedback("모집에 신청했어요.");
 			return true;
-		} catch {
-			setError("신청하지 못했어요. 다시 시도해 주세요.");
+		} catch (error) {
+			setError(
+				error instanceof Error
+					? error.message
+					: "신청하지 못했어요. 다시 시도해 주세요.",
+			);
 			return false;
 		} finally {
 			setIsProcessing(false);
@@ -31,8 +35,12 @@ export function useApplication(recruitmentId: number) {
 			await cancelApplication(recruitmentId);
 			setFeedback("신청을 취소했어요.");
 			return true;
-		} catch {
-			setError("신청을 취소하지 못했어요. 다시 시도해 주세요.");
+		} catch (error) {
+			setError(
+				error instanceof Error
+					? error.message
+					: "신청을 취소하지 못했어요. 다시 시도해 주세요.",
+			);
 			return false;
 		} finally {
 			setIsProcessing(false);

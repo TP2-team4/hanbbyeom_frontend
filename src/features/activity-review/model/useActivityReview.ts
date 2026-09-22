@@ -37,8 +37,12 @@ export function useActivityReview(activityMatchId: number) {
 				comment,
 			});
 			setStep("done");
-		} catch {
-			setError("후기를 등록하지 못했어요. 다시 시도해 주세요.");
+		} catch (error) {
+			setError(
+				error instanceof Error
+					? error.message
+					: "후기를 등록하지 못했어요. 다시 시도해 주세요.",
+			);
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -52,8 +56,12 @@ export function useActivityReview(activityMatchId: number) {
 		try {
 			await submitNoShowReport({ activityMatchId, reasonCode, detail });
 			setStep("done");
-		} catch {
-			setError("신고를 접수하지 못했어요. 다시 시도해 주세요.");
+		} catch (error) {
+			setError(
+				error instanceof Error
+					? error.message
+					: "신고를 접수하지 못했어요. 다시 시도해 주세요.",
+			);
 		} finally {
 			setIsSubmitting(false);
 		}

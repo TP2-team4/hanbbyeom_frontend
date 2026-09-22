@@ -24,8 +24,12 @@ export function useConversationPreference({
         try {
             await saveConversationPreference(selectedPreference);
             onSuccess(selectedPreference);
-        } catch {
-            setSubmitError("대화 수준 저장에 실패했어요. 다시 시도해 주세요.");
+        } catch (error) {
+            setSubmitError(
+                error instanceof Error
+                    ? error.message
+                    : "대화 수준 저장에 실패했어요. 다시 시도해 주세요.",
+            );
         } finally {
             setIsSubmitting(false);
         }

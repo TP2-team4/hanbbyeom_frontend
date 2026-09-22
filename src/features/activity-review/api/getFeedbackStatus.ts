@@ -1,4 +1,5 @@
 import { authorizedFetch } from "../../../shared/lib/authorizedFetch";
+import { extractErrorMessage } from "../../../shared/lib/apiError";
 
 export type FeedbackStatus = {
 	canSubmit: boolean;
@@ -14,7 +15,9 @@ export async function getFeedbackStatus(
 	);
 
 	if (!response.ok) {
-		throw new Error("제출 가능 여부를 확인하지 못했습니다.");
+		throw new Error(
+			await extractErrorMessage(response, "제출 가능 여부를 확인하지 못했습니다."),
+		);
 	}
 
 	return response.json() as Promise<FeedbackStatus>;

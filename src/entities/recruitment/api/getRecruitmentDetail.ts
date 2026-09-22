@@ -4,6 +4,7 @@ import type {
 	RecruitmentDetail,
 } from "../model/types";
 import { authorizedFetch } from "../../../shared/lib/authorizedFetch";
+import { extractErrorMessage } from "../../../shared/lib/apiError";
 import { formatDate, toTimeValue } from "../../../shared/lib/date";
 
 type MatchRequestResponse = {
@@ -58,8 +59,14 @@ function toRecruitmentDetail(
 export async function getRecruitmentDetail(id: number) {
 	const response = await authorizedFetch(`/api/matching/requests/${id}`);
 
-	if (!response.ok) {
+	if (response.status === 404) {
 		return null;
+	}
+
+	if (!response.ok) {
+		throw new Error(
+			await extractErrorMessage(response, "모집글 정보를 불러오지 못했습니다."),
+		);
 	}
 
 	const body: MatchRequestResponse = await response.json();

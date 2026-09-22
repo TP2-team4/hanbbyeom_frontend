@@ -1,4 +1,5 @@
 import { API_BASE_URL } from "../../../shared/lib/apiConfig";
+import { extractErrorMessage } from "../../../shared/lib/apiError";
 
 // 인증 번호 유효시간 및 재전송 제한 추가
 export const VERIFICATION_CODE_EXPIRY_SECONDS = 5 * 60;
@@ -25,7 +26,9 @@ export async function requestEmailVerification(email: string) {
 	});
 
 	if (!response.ok) {
-		throw new EmailVerificationError("인증 코드 요청에 실패했습니다.");
+		throw new EmailVerificationError(
+			await extractErrorMessage(response, "인증 코드 요청에 실패했습니다."),
+		);
 	}
 
 	//타이머
@@ -91,7 +94,9 @@ export async function verifyEmail(email: string, code: string) {
 				"시도 횟수를 초과했습니다. 인증 코드를 재전송해주세요",
 			);
 		}
-		throw new EmailVerificationError("인증 코드가 일치하지 않습니다");
+		throw new EmailVerificationError(
+			await extractErrorMessage(response, "인증 코드가 일치하지 않습니다"),
+		);
 	}
 
 	session.verified = true;

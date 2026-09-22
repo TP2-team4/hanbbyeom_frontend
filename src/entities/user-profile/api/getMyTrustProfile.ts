@@ -1,5 +1,6 @@
 import type { RecruitmentAuthorProfile } from "../model/types";
 import { authorizedFetch } from "../../../shared/lib/authorizedFetch";
+import { extractErrorMessage } from "../../../shared/lib/apiError";
 
 export type TrustProfile = RecruitmentAuthorProfile;
 
@@ -27,7 +28,9 @@ export async function getMyTrustProfile(): Promise<TrustProfile> {
 	const response = await authorizedFetch("/api/users/me/trust-profile");
 
 	if (!response.ok) {
-		throw new Error("신뢰도 정보를 불러오지 못했습니다.");
+		throw new Error(
+			await extractErrorMessage(response, "신뢰도 정보를 불러오지 못했습니다."),
+		);
 	}
 
 	const body: TrustProfileResponse = await response.json();

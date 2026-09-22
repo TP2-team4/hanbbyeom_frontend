@@ -18,8 +18,12 @@ export function useActivityCancel(activityMatchId: number) {
 		try {
 			await cancelActivity(activityMatchId);
 			setIsCompleted(true);
-		} catch {
-			setError("활동을 취소하지 못했어요. 다시 시도해 주세요.");
+		} catch (error) {
+			setError(
+				error instanceof Error
+					? error.message
+					: "활동을 취소하지 못했어요. 다시 시도해 주세요.",
+			);
 		} finally {
 			setIsSubmitting(false);
 		}

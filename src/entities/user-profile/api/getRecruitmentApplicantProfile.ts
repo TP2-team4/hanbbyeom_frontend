@@ -1,5 +1,6 @@
 import type { RecruitmentAuthorProfile } from "../model/types";
 import { authorizedFetch } from "../../../shared/lib/authorizedFetch";
+import { extractErrorMessage } from "../../../shared/lib/apiError";
 
 type ApplicantProfileResponse = {
 	averageRating: number | null;
@@ -29,7 +30,9 @@ export async function getRecruitmentApplicantProfile(
 	);
 
 	if (!response.ok) {
-		return null;
+		throw new Error(
+			await extractErrorMessage(response, "신청자 프로필을 불러오지 못했습니다."),
+		);
 	}
 
 	const body: ApplicantProfileResponse = await response.json();

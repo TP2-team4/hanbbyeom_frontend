@@ -79,8 +79,12 @@ export function useChatRoomMessages(
 			appendMessage(message);
 
 			return true;
-		} catch {
-			setSendError("메시지를 보내지 못했어요. 다시 시도해 주세요.");
+		} catch (error) {
+			setSendError(
+				error instanceof Error
+					? error.message
+					: "메시지를 보내지 못했어요. 다시 시도해 주세요.",
+			);
 			return false;
 		} finally {
 			setIsSending(false);

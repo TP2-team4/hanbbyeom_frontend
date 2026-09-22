@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import { MyProfileContent } from "../../../features/my-profile";
 
 export default function MyPage() {

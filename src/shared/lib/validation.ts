@@ -34,3 +34,17 @@ export function isValidNickname(nickname: string) {
         trimmed.length <= NICKNAME_MAX_LENGTH
     );
 }
+
+export function getNicknameError(nickname: string) {
+    const trimmed = nickname.trim();
+
+    if (trimmed.length === 0) return "닉네임을 입력해주세요.";
+    if (trimmed.length < NICKNAME_MIN_LENGTH) {
+        return `닉네임은 ${NICKNAME_MIN_LENGTH}자 이상 입력해주세요.`;
+    }
+    if (trimmed.length > NICKNAME_MAX_LENGTH) {
+        return `닉네임은 최대 ${NICKNAME_MAX_LENGTH}자까지 입력할 수 있어요.`;
+    }
+
+    return null;
+}

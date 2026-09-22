@@ -42,7 +42,6 @@ export function ActivityHistoryItem({ activity, onReview }: Props) {
 				<p className="mt-1 truncate text-sm text-body">
 					{activity.dateLabel} · {activity.minDistanceKm}~{activity.maxDistanceKm}km ·{" "}
 					{activity.partnerNickname}
-					{activity.partnerNickname}
 				</p>
 			</div>
 			<span

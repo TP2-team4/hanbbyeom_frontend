@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import logoHb from "../../../shared/assets/images/logo-hb.svg";
+import logoHb from "../../../shared/assets/images/logo_hb_2.png";
 
 export function AppHeader() {
 	const navigate = useNavigate();

@@ -9,7 +9,6 @@ let mockRequestStatus: "SEARCHING" | "PENDING_CONFIRMATION" | "MATCHED" =
 export const handlers = [
 	//모집글 작성 - 코스 전체 리스트
 	http.get("*/api/run/courses", () => {
-
 		// 정상 응답: 기존 코스 목데이터
 		return HttpResponse.json([
 			{
@@ -169,7 +168,11 @@ export const handlers = [
 				scheduledAt: "2026-09-15T08:00:00+09:00",
 				paceMinSec: 350,
 				paceMaxSec: 390,
-				author: { nickname: "한강러너", rating: 4.7, completedCount: 20 },
+				author: {
+					nickname: "한강러너",
+					rating: 4.7,
+					completedCount: 20,
+				},
 			},
 			{
 				id: 5,
@@ -180,7 +183,11 @@ export const handlers = [
 				scheduledAt: "2026-09-16T19:00:00+09:00",
 				paceMinSec: 370,
 				paceMaxSec: 410,
-				author: { nickname: "야간러너", rating: 4.5, completedCount: 5 },
+				author: {
+					nickname: "야간러너",
+					rating: 4.5,
+					completedCount: 5,
+				},
 			},
 			{
 				id: 6,
@@ -191,7 +198,11 @@ export const handlers = [
 				scheduledAt: "2026-09-17T07:30:00+09:00",
 				paceMinSec: 360,
 				paceMaxSec: 400,
-				author: { nickname: "아침러너", rating: 4.9, completedCount: 15 },
+				author: {
+					nickname: "아침러너",
+					rating: 4.9,
+					completedCount: 15,
+				},
 			},
 		];
 
@@ -481,7 +492,6 @@ export const handlers = [
 
 	// 내 모집글 목록 조회
 	http.get("*/api/matching/requests", () => {
-
 		// return HttpResponse.json([]);
 
 		return HttpResponse.json([
@@ -627,18 +637,58 @@ export const handlers = [
 			const id = Number(params.activityMatchId);
 			const messages: Record<number, object[]> = {
 				1: [
-					{ id: 1, senderId: 2, content: "안녕하세요! 이번 러닝 같이 하게 됐네요", createdAt: "2026-09-17T00:12:00Z" },
-					{ id: 2, senderId: 1, content: "네 반가워요, 잘 부탁드려요", createdAt: "2026-09-17T00:13:00Z" },
-					{ id: 3, senderId: 2, content: "5분 늦어요", createdAt: "2026-09-17T00:14:00Z" },
+					{
+						id: 1,
+						senderId: 2,
+						content: "안녕하세요! 이번 러닝 같이 하게 됐네요",
+						createdAt: "2026-09-17T00:12:00Z",
+					},
+					{
+						id: 2,
+						senderId: 1,
+						content: "네 반가워요, 잘 부탁드려요",
+						createdAt: "2026-09-17T00:13:00Z",
+					},
+					{
+						id: 3,
+						senderId: 2,
+						content: "5분 늦어요",
+						createdAt: "2026-09-17T00:14:00Z",
+					},
 				],
 				2: [
-					{ id: 4, senderId: 1, content: "출발하셨나요?", createdAt: "2026-09-17T23:55:00Z" },
-					{ id: 5, senderId: 3, content: "출발 지점에 도착했어요", createdAt: "2026-09-17T23:58:00Z" },
+					{
+						id: 4,
+						senderId: 1,
+						content: "출발하셨나요?",
+						createdAt: "2026-09-17T23:55:00Z",
+					},
+					{
+						id: 5,
+						senderId: 3,
+						content: "출발 지점에 도착했어요",
+						createdAt: "2026-09-17T23:58:00Z",
+					},
 				],
 				3: [
-					{ id: 6, senderId: 4, content: "오늘 즐거웠어요!", createdAt: "2026-09-17T01:20:00Z" },
-					{ id: 7, senderId: 1, content: "저도요, 다음에 또 봐요", createdAt: "2026-09-17T01:21:00Z" },
-					{ id: 8, senderId: 4, content: "도착했어요", createdAt: "2026-09-17T01:25:00Z" },
+					{
+						id: 6,
+						senderId: 4,
+						content: "오늘 즐거웠어요!",
+						createdAt: "2026-09-17T01:20:00Z",
+					},
+					{
+						id: 7,
+						senderId: 1,
+						content: "저도요, 다음에 또 봐요",
+						createdAt: "2026-09-17T01:21:00Z",
+					},
+					{
+						id: 8,
+						senderId: 4,
+						content: "도착했어요",
+						createdAt: "2026-09-17T01:25:00Z",
+					},
 				],
 			};
 			return HttpResponse.json(messages[id] ?? []);
@@ -664,44 +714,45 @@ export const handlers = [
 
 	// 채팅 목록 조회
 	http.get("*/api/chats", () => {
-		return HttpResponse.json([
-			{
-				activityMatchId: 1,
-				counterpartUserId: 2,
-				counterpartNickname: "조용한러너",
-				status: "CONFIRMED",
-				courseName: "뚝섬 한강공원",
-				location: "뚝섬유원지역 3번 출구",
-				scheduledAt: "2026-09-12T07:00:00+09:00",
-				scheduledEndAt: "2026-09-12T09:00:00+09:00",
-				lastMessage: "5분 늦어요",
-				lastMessageAt: "2026-09-12T06:55:00+09:00",
-			},
-			{
-				activityMatchId: 2,
-				counterpartUserId: 3,
-				counterpartNickname: "밤산책",
-				status: "CONFIRMED",
-				courseName: "잠실 한강공원",
-				location: "잠실역 2번 출구",
-				scheduledAt: "2026-09-19T09:00:00+09:00",
-				scheduledEndAt: "2026-09-19T11:00:00+09:00",
-				lastMessage: "출발 지점에 도착했어요",
-				lastMessageAt: "2026-09-19T08:58:00+09:00",
-			},
-			{
-				activityMatchId: 3,
-				counterpartUserId: 4,
-				counterpartNickname: null,
-				status: "ENDED",
-				courseName: "여의도 한강공원",
-				location: "여의나루역 2번 출구",
-				scheduledAt: "2026-09-05T10:00:00+09:00",
-				scheduledEndAt: "2026-09-05T12:00:00+09:00",
-				lastMessage: "도착했어요",
-				lastMessageAt: "2026-09-05T11:25:00+09:00",
-			},
-		]);
+		// return HttpResponse.json([
+		// 	{
+		// 		activityMatchId: 1,
+		// 		counterpartUserId: 2,
+		// 		counterpartNickname: "조용한러너",
+		// 		status: "CONFIRMED",
+		// 		courseName: "뚝섬 한강공원",
+		// 		location: "뚝섬유원지역 3번 출구",
+		// 		scheduledAt: "2026-09-12T07:00:00+09:00",
+		// 		scheduledEndAt: "2026-09-12T09:00:00+09:00",
+		// 		lastMessage: "5분 늦어요",
+		// 		lastMessageAt: "2026-09-12T06:55:00+09:00",
+		// 	},
+		// 	{
+		// 		activityMatchId: 2,
+		// 		counterpartUserId: 3,
+		// 		counterpartNickname: "밤산책",
+		// 		status: "CONFIRMED",
+		// 		courseName: "잠실 한강공원",
+		// 		location: "잠실역 2번 출구",
+		// 		scheduledAt: "2026-09-19T09:00:00+09:00",
+		// 		scheduledEndAt: "2026-09-19T11:00:00+09:00",
+		// 		lastMessage: "출발 지점에 도착했어요",
+		// 		lastMessageAt: "2026-09-19T08:58:00+09:00",
+		// 	},
+		// 	{
+		// 		activityMatchId: 3,
+		// 		counterpartUserId: 4,
+		// 		counterpartNickname: null,
+		// 		status: "ENDED",
+		// 		courseName: "여의도 한강공원",
+		// 		location: "여의나루역 2번 출구",
+		// 		scheduledAt: "2026-09-05T10:00:00+09:00",
+		// 		scheduledEndAt: "2026-09-05T12:00:00+09:00",
+		// 		lastMessage: "도착했어요",
+		// 		lastMessageAt: "2026-09-05T11:25:00+09:00",
+		// 	},
+		// ]);
+		return HttpResponse.json([]);
 	}),
 
 	// 후기 작성
@@ -724,16 +775,13 @@ export const handlers = [
 	),
 
 	// 후기/신고 제출 가능 여부 조회
-	http.get(
-		"*/api/matching/matches/:activityMatchId/feedback-status",
-		() => {
-			return HttpResponse.json({
-				canSubmit: true,
-				alreadySubmitted: false,
-				submittedType: null,
-			});
-		},
-	),
+	http.get("*/api/matching/matches/:activityMatchId/feedback-status", () => {
+		return HttpResponse.json({
+			canSubmit: true,
+			alreadySubmitted: false,
+			submittedType: null,
+		});
+	}),
 
 	//회원 탈퇴
 	http.post("*/api/users/me/withdraw", async ({ request }) => {

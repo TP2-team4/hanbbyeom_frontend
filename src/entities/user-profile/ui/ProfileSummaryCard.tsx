@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import type { UserProfile } from "../model/types";
+import logoHb from "../../../shared/assets/images/logo-hb.svg";
 
 type Props = {
 	profile: UserProfile;
@@ -36,9 +37,9 @@ export function ProfileSummaryCard({ profile }: Props) {
 					className="grid size-16 shrink-0 place-items-center rounded-full bg-primary-100"
 				>
 					<img
-						src="/logo-hb.svg"
+						src={logoHb}
 						alt=""
-						className="size-10 object-contain"
+						className="size-10 shrink-0 object-contain"
 					/>
 				</span>
 				<div className="min-w-0 flex-1">

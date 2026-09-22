@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import logoHb from "../../../shared/assets/images/logo-hb.svg";
 
 export function AppHeader() {
 	const navigate = useNavigate();
@@ -7,14 +8,12 @@ export function AppHeader() {
 			<h1
 				className="flex items-center gap-2 font-jejudoldam text-3xl text-secondary-500"
 				onClick={() => navigate("/home", { replace: true })}
-			>
-				<img
-					src="/logo-hb.svg"
-					alt=""
-					width={32}
-					height={32}
-					className="h-8 w-8 mr-2"
-				/>
+				>
+					<img
+						src={logoHb}
+						alt=""
+						className="mr-2 size-8 shrink-0 object-contain"
+					/>
 				한뼘
 			</h1>
 			{/*<button
